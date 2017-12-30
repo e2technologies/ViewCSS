@@ -23,30 +23,21 @@ class ViewCSSStyleConfig {
     var textAlign: NSTextAlignment?
     var borderRadius: CGFloat?
     
-    static func fromCSS(dict: Dictionary<String, Any>, root: Dictionary<String, Any>?) -> ViewCSSStyleConfig {
+    static func fromCSS(dict: Dictionary<String, Any>) -> ViewCSSStyleConfig {
         let config = ViewCSSStyleConfig()
         
-        config.cssBackgroundColor(string: self.checkRootVariables(string: dict[BACKGROUND_COLOR] as? String, root: root))
-        config.cssColor(string: self.checkRootVariables(string: dict[COLOR] as? String, root: root))
-        config.cssFontSize(string: self.checkRootVariables(string: dict[FONT_SIZE] as? String, root: root))
-        config.cssFontWeightValue(string: self.checkRootVariables(string: dict[FONT_WEIGHT] as? String, root: root))
-        config.cssTextAlign(string: self.checkRootVariables(string: dict[TEXT_ALIGN] as? String, root: root))
-        config.cssBorderRadius(string: self.checkRootVariables(string: dict[BORDER_RADIUS] as? String, root: root))
+        config.cssBackgroundColor(string: self.checkRootVariables(string: dict[BACKGROUND_COLOR] as? String))
+        config.cssColor(string: self.checkRootVariables(string: dict[COLOR] as? String))
+        config.cssFontSize(string: self.checkRootVariables(string: dict[FONT_SIZE] as? String))
+        config.cssFontWeightValue(string: self.checkRootVariables(string: dict[FONT_WEIGHT] as? String))
+        config.cssTextAlign(string: self.checkRootVariables(string: dict[TEXT_ALIGN] as? String))
+        config.cssBorderRadius(string: self.checkRootVariables(string: dict[BORDER_RADIUS] as? String))
         
         return config
     }
     
-    private static func checkRootVariables(string: String?, root: Dictionary<String, Any>?) -> String? {
-        if root == nil { return string }
-        if string == nil { return nil }
-        
-        var newString = string!.trimmingCharacters(in: .whitespaces)
-        if newString.hasPrefix("var(") {
-            newString = String(newString.dropFirst(4))
-            newString = String(newString.dropLast(1))
-            return (root![newString] as? String) ?? string
-        }
-        return string
+    private static func checkRootVariables(string: String?) -> String? {
+        return ViewCSSManager.shared.checkForVariable(string: string)
     }
     
     private func cssBackgroundColor(string: String?) {

@@ -29,6 +29,19 @@ public class ViewCSSManager {
         return ViewCSSManager()
     }()
     
+    func checkForVariable(string: String?) -> String? {
+        if self.styleLookupRoot == nil { return string }
+        if string == nil { return nil }
+        
+        var newString = string!.trimmingCharacters(in: .whitespaces)
+        if newString.hasPrefix("var(") {
+            newString = String(newString.dropFirst(4))
+            newString = String(newString.dropLast(1))
+            return (self.styleLookupRoot![newString] as? String) ?? string
+        }
+        return string
+    }
+    
     func getConfig(object: Any, style: String?, class klass: String?) -> ViewCSSStyleConfig {
         let klassName = self.getKlassName(object: object)
         let cacheKey = self.getCacheKey(klassName: klassName, style: style, class: klass)
@@ -42,7 +55,7 @@ public class ViewCSSManager {
         let dict = self.generateStyleDictionary(klassName: klassName, style: style, class: klass)
         
         // Now parse the final dictionary and return it to the user
-        let config = ViewCSSStyleConfig.fromCSS(dict: dict, root: self.styleLookupRoot)
+        let config = ViewCSSStyleConfig.fromCSS(dict: dict)
         self.styleCache[cacheKey] = config
         return config
     }

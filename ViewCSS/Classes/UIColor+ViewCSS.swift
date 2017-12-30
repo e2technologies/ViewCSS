@@ -172,7 +172,10 @@ extension UIColor {
     
     public convenience init?(css: String) {
         
-        var cleanCss = css.replacingOccurrences(of: " ", with: "")
+        let newCss = ViewCSSManager.shared.checkForVariable(string: css)
+        if newCss == nil { return nil }
+        
+        var cleanCss = newCss!.replacingOccurrences(of: " ", with: "")
         
         if cleanCss.hasPrefix("#") || cleanCss.hasPrefix("rgb(")  {
             
