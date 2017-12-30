@@ -23,7 +23,7 @@ class ViewController: UIViewController {
         self.label2?.css(class: "label2")
         self.label3?.css(class: "label3")
         self.label4?.css(style: "background-color:lightgray;text-align:center;", class: "primary")
-        self.button1?.css(class: "label3")
+        self.button1?.css(class: "bad_class")
     }
 
     override func didReceiveMemoryWarning() {

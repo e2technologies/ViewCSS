@@ -99,15 +99,24 @@ public class ViewCSSManager {
         
         // Priority 2: Classes
         if klass != nil {
+            var numberOfMatches: Int = 0
+            
             // Get the list
             for subStyle in klass!.split(separator: " ") {
                 // Look for the class by itself and the class with a "."
                 for name in [String(klassName + "." + subStyle), String("."+subStyle)] {
                     // If we find a match, merge it into the dictionary
                     if let subDict = self.styleLookup[name] as? Dictionary<String, Any> {
+                        numberOfMatches += 1
                         dict = dict.merging(subDict) { (current, _) in current }
                     }
                 }
+            }
+            
+            // If we didn't find any matches, print a message
+            if numberOfMatches == 0 {
+                print("ViewCSSManager WARN: No match found for CSS class '" + klass! +
+                    "', object class '" + String(describing: type(of: object)) + "'")
             }
         }
         
