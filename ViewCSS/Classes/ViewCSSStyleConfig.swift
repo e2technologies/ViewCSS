@@ -9,6 +9,8 @@ import Foundation
 
 public class ViewCSSStyleConfig {
     
+    static let DEFAULT_FONT_SIZE: CGFloat = 15
+    
     // Supported Tags
     static let BACKGROUND_COLOR = "background-color"
     static let TINT_COLOR = "tint-color"
@@ -43,6 +45,10 @@ public class ViewCSSStyleConfig {
         return config
     }
     
+    private func printWarning(attribute: String, value: String) {
+        print("ViewCSSManager WARN: Invalid CSS value '" + value + "' for attribute '" + attribute + "'")
+    }
+    
     private static func checkVariables(string: String?) -> String? {
         return ViewCSSManager.shared.checkForVariable(string: string)
     }
@@ -50,24 +56,72 @@ public class ViewCSSStyleConfig {
     private func cssBackgroundColor(string: String?) {
         if string != nil {
             self.backgroundColor = UIColor(css: string!)
+            if self.backgroundColor == nil {
+                self.printWarning(attribute: type(of: self).BACKGROUND_COLOR, value: string!)
+            }
         }
     }
     
     private func cssTintColor(string: String?) {
         if string != nil {
             self.tintColor = UIColor(css: string!)
+            if self.tintColor == nil {
+                self.printWarning(attribute: type(of: self).TINT_COLOR, value: string!)
+            }
         }
     }
     
     private func cssColor(string: String?) {
         if string != nil {
             self.color = UIColor(css: string!)
+            if self.color == nil {
+                self.printWarning(attribute: type(of: self).COLOR, value: string!)
+            }
         }
     }
     
     private func cssFontSize(string: String?) {
         if string != nil {
-            self.fontSize = string!.percentageToFloat
+            if string!.hasSuffix("%") {
+                if let percentage = string!.percentageToFloat {
+                    self.fontSize = type(of: self).DEFAULT_FONT_SIZE * percentage
+                }
+            }
+            else if string!.hasSuffix("px") {
+                let newString = String(string!.dropLast(2)).trimmingCharacters(in: .whitespaces)
+                if let tempInt = UInt(newString) {
+                    self.fontSize = CGFloat(tempInt)
+                }
+            }
+            else {
+                var offset: CGFloat? = nil
+                switch string! {
+                case "xx-small":
+                    offset = -3
+                case "x-small":
+                    offset = -2
+                case "small":
+                    offset = -1
+                case "medium":
+                    offset = 0
+                case "large":
+                    offset = 1
+                case "x-large":
+                    offset = 2
+                case "xx-large":
+                    offset = 3
+                default:
+                    offset = nil
+                }
+                
+                if offset != nil {
+                    self.fontSize = type(of: self).DEFAULT_FONT_SIZE + offset!
+                }
+            }
+            
+            if self.fontSize == nil {
+                self.printWarning(attribute: type(of: self).FONT_SIZE, value: string!)
+            }
         }
     }
     
@@ -105,6 +159,7 @@ public class ViewCSSStyleConfig {
                     self.fontWeight = nil
                 }
             } else {
+                self.printWarning(attribute: type(of: self).FONT_WEIGHT, value: string!)
                 self.fontWeight = nil
             }
         }
@@ -122,6 +177,7 @@ public class ViewCSSStyleConfig {
             case "justify":
                 self.textAlign = NSTextAlignment.justified
             default:
+                self.printWarning(attribute: type(of: self).TEXT_ALIGN, value: string!)
                 self.textAlign = nil
             }
         }
@@ -133,6 +189,9 @@ public class ViewCSSStyleConfig {
             if let tempInt = UInt(tempString) {
                 self.borderRadius = CGFloat(tempInt)
             }
+            else {
+                self.printWarning(attribute: type(of: self).BORDER_RADIUS, value: string!)
+            }
         }
     }
     
@@ -140,6 +199,9 @@ public class ViewCSSStyleConfig {
         if string != nil {
             if let tempNumber = NumberFormatter().number(from: string!) {
                 self.opacity = CGFloat(truncating: tempNumber)
+            }
+            else {
+                self.printWarning(attribute: type(of: self).OPACITY, value: string!)
             }
         }
     }

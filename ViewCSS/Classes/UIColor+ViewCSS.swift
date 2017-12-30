@@ -179,10 +179,10 @@ extension UIColor {
         
         if cleanCss.hasPrefix("#") || cleanCss.hasPrefix("rgb(")  {
             
-            let red: CGFloat
-            let green: CGFloat
-            let blue: CGFloat
-            let alpha: CGFloat
+            var red: CGFloat?
+            var green: CGFloat?
+            var blue: CGFloat?
+            var alpha: CGFloat?
             
             // Parse the HEX value
             if css.hasPrefix("#") {
@@ -193,10 +193,10 @@ extension UIColor {
                     cleanCss += "F"
                 }
                 
-                red = cleanCss.valueOfHex(start: 0, length: 2)/255.0
-                green = cleanCss.valueOfHex(start: 2, length: 2)/255.0
-                blue = cleanCss.valueOfHex(start: 4, length: 2)/255.0
-                alpha = cleanCss.valueOfHex(start: 6, length: 2)/255.0
+                red = cleanCss.valueOfHex(start: 0, length: 2)
+                green = cleanCss.valueOfHex(start: 2, length: 2)
+                blue = cleanCss.valueOfHex(start: 4, length: 2)
+                alpha = cleanCss.valueOfHex(start: 6, length: 2)
             }
                 // Parse the RGB function method
             else {
@@ -221,13 +221,20 @@ extension UIColor {
                     }
                 }
                 
-                red = colorFloatComponents[0]/255.0
-                green = colorFloatComponents[1]/255.0
-                blue = colorFloatComponents[2]/255.0
-                alpha = colorFloatComponents[3]/255.0
+                red = colorFloatComponents[0]
+                green = colorFloatComponents[1]
+                blue = colorFloatComponents[2]
+                alpha = colorFloatComponents[3]
             }
             
-            self.init(red: red, green: green, blue: blue, alpha: alpha)
+            if red == nil || green == nil || blue == nil || alpha == nil { return nil }
+            
+            red = red!/255.0
+            green = green!/255.0
+            blue = blue!/255.0
+            alpha = alpha!/255.0
+            
+            self.init(red: red!, green: green!, blue: blue!, alpha: alpha!)
         }
             
             // Static Color Lookup

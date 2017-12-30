@@ -41,29 +41,29 @@ extension String {
         return newString
     }
     
-    func valueOfHex(start: Int, length: Int) -> CGFloat {
+    func valueOfHex(start: Int, length: Int) -> CGFloat? {
         let startIndex = self.index(self.startIndex, offsetBy: start)
         let endIndex = self.index(self.startIndex, offsetBy: (start+length))
         let hexString = String(self[startIndex..<endIndex])
         return hexString.hexToFloat
     }
     
-    var hexToFloat: CGFloat {
+    var hexToFloat: CGFloat? {
         if let hexInt = UInt(self, radix: 16) {
             return CGFloat(hexInt)
         }
         else {
-            return CGFloat(0)
+            return nil
         }
     }
     
-    var percentageToFloat: CGFloat {
+    var percentageToFloat: CGFloat? {
         let converted = self.hasSuffix("%") ? String(self.dropLast(1)) : self
         if let percentInt = UInt(converted) {
             return CGFloat(percentInt)/100.0
         }
         else {
-            return CGFloat(0)
+            return nil
         }
     }
 }

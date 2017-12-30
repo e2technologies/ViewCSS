@@ -32,7 +32,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 "background-color": "orange",
             ],
             ".label1": [
-                "font-size": "60%",
+                "font-size": "60",
                 "font-weight": "500",
                 "color": "gray",
                 "text-transform": "uppercase",

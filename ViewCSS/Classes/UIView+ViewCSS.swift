@@ -107,8 +107,6 @@ public extension UIView {
         
         // Check if it responds to text protocol
         if let textProtocol = self as? ViewCSSTextProtocol {
-            let defaultFontSize: CGFloat = 15.0
-            
             // Set the color
             if config.color != nil {
                 textProtocol.setCSSTextColor(config.color!)
@@ -116,20 +114,18 @@ public extension UIView {
             
             // Set the size and the weight
             if #available(iOS 8.2, *) {
-                if config.fontSize != nil || config.fontWeight != nil {
-                    let scaledFontSize = round(15.0 * (config.fontSize ?? 1.0))
+                if config.fontSize != nil {
                     if config.fontWeight != nil {
-                        textProtocol.setCSSFont(UIFont.systemFont(ofSize: scaledFontSize, weight: config.fontWeight!))
+                        textProtocol.setCSSFont(UIFont.systemFont(ofSize: config.fontSize!, weight: config.fontWeight!))
                     }
                     else {
-                        textProtocol.setCSSFont(UIFont.systemFont(ofSize: scaledFontSize))
+                        textProtocol.setCSSFont(UIFont.systemFont(ofSize: config.fontSize!))
                     }
                 }
             }
             else {
                 if config.fontSize != nil {
-                    let scaledFontSize = round(defaultFontSize * config.fontSize!)
-                    textProtocol.setCSSFont(UIFont.systemFont(ofSize: scaledFontSize))
+                    textProtocol.setCSSFont(UIFont.systemFont(ofSize: config.fontSize!))
                 }
             }
 

@@ -116,7 +116,7 @@ public class ViewCSSManager {
             // If we didn't find any matches, print a message
             if numberOfMatches == 0 {
                 print("ViewCSSManager WARN: No match found for CSS class '" + klass! +
-                    "', object class '" + String(describing: type(of: object)) + "'")
+                    "' referenced from the an object of type '" + String(describing: type(of: object)) + "'")
             }
         }
         
