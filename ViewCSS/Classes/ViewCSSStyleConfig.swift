@@ -7,9 +7,11 @@
 
 import Foundation
 
-class ViewCSSStyleConfig {
+public class ViewCSSStyleConfig {
+    
     // Supported Tags
     static let BACKGROUND_COLOR = "background-color"
+    static let TINT_COLOR = "tint-color"
     static let COLOR = "color"
     static let FONT_SIZE = "font-size"
     static let FONT_WEIGHT = "font-weight"
@@ -17,6 +19,7 @@ class ViewCSSStyleConfig {
     static let BORDER_RADIUS = "border-radius"
     
     var backgroundColor: UIColor?
+    var tintColor: UIColor?
     var color: UIColor?
     var fontSize: CGFloat?
     var fontWeight: UIFont.Weight?
@@ -26,23 +29,30 @@ class ViewCSSStyleConfig {
     static func fromCSS(dict: Dictionary<String, Any>) -> ViewCSSStyleConfig {
         let config = ViewCSSStyleConfig()
         
-        config.cssBackgroundColor(string: self.checkRootVariables(string: dict[BACKGROUND_COLOR] as? String))
-        config.cssColor(string: self.checkRootVariables(string: dict[COLOR] as? String))
-        config.cssFontSize(string: self.checkRootVariables(string: dict[FONT_SIZE] as? String))
-        config.cssFontWeightValue(string: self.checkRootVariables(string: dict[FONT_WEIGHT] as? String))
-        config.cssTextAlign(string: self.checkRootVariables(string: dict[TEXT_ALIGN] as? String))
-        config.cssBorderRadius(string: self.checkRootVariables(string: dict[BORDER_RADIUS] as? String))
+        config.cssBackgroundColor(string: self.checkVariables(string: dict[BACKGROUND_COLOR] as? String))
+        config.cssTintColor(string: self.checkVariables(string: dict[TINT_COLOR] as? String))
+        config.cssColor(string: self.checkVariables(string: dict[COLOR] as? String))
+        config.cssFontSize(string: self.checkVariables(string: dict[FONT_SIZE] as? String))
+        config.cssFontWeightValue(string: self.checkVariables(string: dict[FONT_WEIGHT] as? String))
+        config.cssTextAlign(string: self.checkVariables(string: dict[TEXT_ALIGN] as? String))
+        config.cssBorderRadius(string: self.checkVariables(string: dict[BORDER_RADIUS] as? String))
         
         return config
     }
     
-    private static func checkRootVariables(string: String?) -> String? {
+    private static func checkVariables(string: String?) -> String? {
         return ViewCSSManager.shared.checkForVariable(string: string)
     }
     
     private func cssBackgroundColor(string: String?) {
         if string != nil {
             self.backgroundColor = UIColor(css: string!)
+        }
+    }
+    
+    private func cssTintColor(string: String?) {
+        if string != nil {
+            self.tintColor = UIColor(css: string!)
         }
     }
     

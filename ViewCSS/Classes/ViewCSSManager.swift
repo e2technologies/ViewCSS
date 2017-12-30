@@ -42,29 +42,27 @@ public class ViewCSSManager {
         return string
     }
     
+    func getConfig(cacheKey: String) -> ViewCSSStyleConfig? {
+        return self.styleCache[cacheKey]
+    }
+
     func getConfig(object: Any, style: String?, class klass: String?) -> ViewCSSStyleConfig {
-        let klassName = self.getKlassName(object: object)
-        let cacheKey = self.getCacheKey(klassName: klassName, style: style, class: klass)
+        let cacheKey = self.getCacheKey(object: object, style: style, class: klass)
         
         // Return the config value if it is already in the cache
-        if let cachedConfig = self.styleCache[cacheKey] {
-            return cachedConfig
-        }
+        if let cachedConfig = self.getConfig(cacheKey: cacheKey) { return cachedConfig }
         
         // Create the consolidated dictionary
-        let dict = self.generateStyleDictionary(klassName: klassName, style: style, class: klass)
+        let dict = self.generateStyleDictionary(object: object, style: style, class: klass)
         
         // Now parse the final dictionary and return it to the user
         let config = ViewCSSStyleConfig.fromCSS(dict: dict)
         self.styleCache[cacheKey] = config
         return config
     }
-    
-    private func getKlassName(object: Any) -> String {
-        return String(describing: type(of: object)).camelToSnake
-    }
 
-    private func getCacheKey(klassName: String, style: String?, class klass: String?) -> String {
+    func getCacheKey(object: Any, style: String?, class klass: String?) -> String {
+        let klassName = self.getKlassName(object: object)
         var cacheKey = klassName
         if style != nil && !style!.isEmpty {
             cacheKey += " " + style!
@@ -76,7 +74,12 @@ public class ViewCSSManager {
         return cacheKey
     }
     
-    private func generateStyleDictionary(klassName: String, style: String?, class klass: String?) -> Dictionary<String, Any> {
+    private func getKlassName(object: Any) -> String {
+        return String(describing: type(of: object)).camelToSnake
+    }
+    
+    private func generateStyleDictionary(object: Any, style: String?, class klass: String?) -> Dictionary<String, Any> {
+        let klassName = self.getKlassName(object: object)
         
         // Create a merged dictionary with all of the values
         var dict = Dictionary<String, Any>()

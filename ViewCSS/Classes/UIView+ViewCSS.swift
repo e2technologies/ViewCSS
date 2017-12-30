@@ -9,7 +9,7 @@ import Foundation
 
 protocol ViewCSSProtocol {
     func setCSSBackgroundColor(_ color: UIColor)
-    func setCSSColor(_ color: UIColor)
+    func setCSSTintColor(_ color: UIColor)
     func setCSSBorderRadius(_ radius: CGFloat)
 }
 
@@ -20,13 +20,8 @@ protocol ViewCSSTextProtocol: ViewCSSProtocol {
 }
 
 extension UIView: ViewCSSProtocol {
-    
     func setCSSBackgroundColor(_ color: UIColor) { self.backgroundColor = color }
-    func setCSSColor(_ color: UIColor) {
-        if String(describing: type(of: self)) == "UIView" {
-            self.tintColor = color
-        }
-    }
+    func setCSSTintColor(_ color: UIColor) { self.tintColor = color }
     func setCSSBorderRadius(_ radius: CGFloat) {
         self.layer.cornerRadius = radius
         self.layer.masksToBounds = true
@@ -67,7 +62,17 @@ extension UIButton: ViewCSSTextProtocol {
     }
 }
 
+private var CSSKeyObjectHandle: UInt8 = 0
 public extension UIView {
+    
+    private var cssKey: String? {
+        get {
+            return objc_getAssociatedObject(self, &CSSKeyObjectHandle) as? String
+        }
+        set {
+            objc_setAssociatedObject(self, &CSSKeyObjectHandle, newValue, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        }
+    }
 
     func css(style: String?) { self.css(style: style, class: nil) }
     func css(class klass: String?) { self.css(style: nil, class: klass) }
@@ -76,6 +81,7 @@ public extension UIView {
     func css(style: String?, class klass: String?) {
         
         // Set the style for this object
+        self.cssKey = ViewCSSManager.shared.getCacheKey(object: self, style: style, class: klass)
         let config = ViewCSSManager.shared.getConfig(object: self, style: style, class: klass)
         
         // COLORS
@@ -84,8 +90,8 @@ public extension UIView {
             self.setCSSBackgroundColor(color)
         }
         
-        if let color = config.color {
-             self.setCSSColor(color)
+        if let color = config.tintColor {
+             self.setCSSTintColor(color)
         }
         
         // CORNER RADIUS
@@ -126,6 +132,13 @@ public extension UIView {
                 textProtocol.setCSSTextAlignment(textAlign)
             }
         }
+    }
+    
+    func getCSS() -> ViewCSSStyleConfig? {
+        if let cacheKey = self.cssKey {
+            return ViewCSSManager.shared.getConfig(cacheKey: cacheKey)
+        }
+        return nil
     }
     
 }
