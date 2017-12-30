@@ -13,6 +13,7 @@ class ViewController: UIViewController {
     @IBOutlet weak var label2: UILabel?
     @IBOutlet weak var label3: UILabel?
     @IBOutlet weak var label4: UILabel?
+    @IBOutlet weak var button1: UIButton?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,6 +23,7 @@ class ViewController: UIViewController {
         self.label2?.css(class: "label2")
         self.label3?.css(class: "label3")
         self.label4?.css(style: "background-color:lightgray;text-align:center;", class: "primary")
+        self.button1?.css(class: "label3")
     }
 
     override func didReceiveMemoryWarning() {

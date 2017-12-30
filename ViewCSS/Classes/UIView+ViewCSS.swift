@@ -8,27 +8,43 @@
 import Foundation
 
 protocol ViewCSSTextProtocol {
-    func setTextColor(_ color: UIColor)
-    func setFont(_ font: UIFont)
-    func setTextAlignment( _ alignment: NSTextAlignment)
+    func setCSSTextColor(_ color: UIColor)
+    func setCSSFont(_ font: UIFont)
+    func setCSSTextAlignment( _ alignment: NSTextAlignment)
 }
 
 extension UILabel: ViewCSSTextProtocol {
-    func setTextColor(_ color: UIColor) { self.textColor = color }
-    func setFont(_ font: UIFont) { self.font = font }
-    func setTextAlignment( _ alignment: NSTextAlignment) { self.textAlignment = alignment }
+    func setCSSTextColor(_ color: UIColor) { self.textColor = color }
+    func setCSSFont(_ font: UIFont) { self.font = font }
+    func setCSSTextAlignment( _ alignment: NSTextAlignment) { self.textAlignment = alignment }
 }
 
 extension UITextField: ViewCSSTextProtocol {
-    func setTextColor(_ color: UIColor) { self.textColor = color }
-    func setFont(_ font: UIFont) { self.font = font }
-    func setTextAlignment( _ alignment: NSTextAlignment) { self.textAlignment = alignment }
+    func setCSSTextColor(_ color: UIColor) { self.textColor = color }
+    func setCSSFont(_ font: UIFont) { self.font = font }
+    func setCSSTextAlignment( _ alignment: NSTextAlignment) { self.textAlignment = alignment }
 }
 
 extension UITextView: ViewCSSTextProtocol {
-    func setTextColor(_ color: UIColor) { self.textColor = color }
-    func setFont(_ font: UIFont) { self.font = font }
-    func setTextAlignment( _ alignment: NSTextAlignment) { self.textAlignment = alignment }
+    func setCSSTextColor(_ color: UIColor) { self.textColor = color }
+    func setCSSFont(_ font: UIFont) { self.font = font }
+    func setCSSTextAlignment( _ alignment: NSTextAlignment) { self.textAlignment = alignment }
+}
+
+extension UIButton: ViewCSSTextProtocol {
+    func setCSSTextColor(_ color: UIColor) { self.setTitleColor(color, for: .normal) }
+    func setCSSFont(_ font: UIFont) { self.titleLabel?.font = font }
+    func setCSSTextAlignment( _ alignment: NSTextAlignment) {
+        if alignment == .left {
+            self.contentHorizontalAlignment = .left
+        }
+        else if alignment == .right {
+            self.contentHorizontalAlignment = .right
+        }
+        else {
+            self.contentHorizontalAlignment = .center
+        }
+    }
 }
 
 public extension UIView {
@@ -67,7 +83,7 @@ public extension UIView {
             
             // Set the color
             if config.color != nil {
-                textProtocol.setTextColor(config.color!)
+                textProtocol.setCSSTextColor(config.color!)
             }
             
             // Set the size and the weight
@@ -75,23 +91,23 @@ public extension UIView {
                 if config.fontSize != nil || config.fontWeight != nil {
                     let scaledFontSize = round(15.0 * (config.fontSize ?? 1.0))
                     if config.fontWeight != nil {
-                        textProtocol.setFont(UIFont.systemFont(ofSize: scaledFontSize, weight: config.fontWeight!))
+                        textProtocol.setCSSFont(UIFont.systemFont(ofSize: scaledFontSize, weight: config.fontWeight!))
                     }
                     else {
-                        textProtocol.setFont(UIFont.systemFont(ofSize: scaledFontSize))
+                        textProtocol.setCSSFont(UIFont.systemFont(ofSize: scaledFontSize))
                     }
                 }
             }
             else {
                 if config.fontSize != nil {
                     let scaledFontSize = round(defaultFontSize * config.fontSize!)
-                    textProtocol.setFont(UIFont.systemFont(ofSize: scaledFontSize))
+                    textProtocol.setCSSFont(UIFont.systemFont(ofSize: scaledFontSize))
                 }
             }
 
             // Set the alignment
             if let textAlign = config.textAlign {
-                textProtocol.setTextAlignment(textAlign)
+                textProtocol.setCSSTextAlignment(textAlign)
             }
         }
     }

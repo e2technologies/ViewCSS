@@ -27,6 +27,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 "text-align": "right",
                 "background-color": "pink",
             ],
+            "ui_button": [
+                "text-align": "left",
+                "background-color": "orange",
+            ],
             ".label1": [
                 "font-size": "60%",
                 "font-weight": "500",
