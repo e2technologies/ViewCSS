@@ -17,6 +17,10 @@ public class ViewCSSManager {
         }
     }
     
+    private var styleLookupRoot: Dictionary<String, Any>? {
+        return self.styleLookup[":root"] as? Dictionary<String, Any>
+    }
+    
     public func setCSS(dict: Dictionary<String, Any>) {
         self.styleLookup = dict
     }
@@ -38,7 +42,7 @@ public class ViewCSSManager {
         let dict = self.generateStyleDictionary(klassName: klassName, style: style, class: klass)
         
         // Now parse the final dictionary and return it to the user
-        let config = ViewCSSStyleConfig.fromCSS(dict: dict)
+        let config = ViewCSSStyleConfig.fromCSS(dict: dict, root: self.styleLookupRoot)
         self.styleCache[cacheKey] = config
         return config
     }

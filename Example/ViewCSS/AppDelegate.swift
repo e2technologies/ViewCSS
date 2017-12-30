@@ -20,6 +20,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         // Setup CSS
         let styles: [String:Any] = [
+            ":root": [
+                "--main-color": "yellow",
+            ],
             "ui_label": [
                 "text-align": "right",
                 "background-color": "pink",
@@ -35,7 +38,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 "font-weight": "100",
                 "text-align": "left",
                 "color": "black",
-                "background-color": "red",
+                "background-color": "var(--main-color)",
             ],
             ".label3": [
                 "font-size": "120%",
@@ -44,7 +47,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 "border-radius": "5px",
             ],
             ".primary": [
-                "color": "blue",
+                "color": "var(--main-color)",
                 "font-weight": "900",
                 "font-size": "200%"
             ]
