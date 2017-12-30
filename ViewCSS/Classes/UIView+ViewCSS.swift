@@ -7,6 +7,10 @@
 
 import Foundation
 
+public protocol ViewCSSCustomizableProtocol {
+    func cssCustomize(config: ViewCSSConfig)
+}
+
 protocol ViewCSSProtocol {
     func setCSSBackgroundColor(_ color: UIColor)
     func setCSSTintColor(_ color: UIColor)
@@ -81,15 +85,15 @@ public extension UIView {
         }
     }
 
-    func css(style: String?, custom: ((ViewCSSStyleConfig) -> Void)?=nil) {
+    func css(style: String?, custom: ((ViewCSSConfig) -> Void)?=nil) {
         self.css(class: nil, style: style, custom: custom)
     }
     
-    func css(class klass: String?, custom: ((ViewCSSStyleConfig) -> Void)?=nil) {
+    func css(class klass: String?, custom: ((ViewCSSConfig) -> Void)?=nil) {
         self.css(class: klass, style: nil, custom: custom)
     }
     
-    func css(class klass: String?, style: String?, custom: ((ViewCSSStyleConfig) -> Void)?=nil) {
+    func css(class klass: String?, style: String?, custom: ((ViewCSSConfig) -> Void)?=nil) {
         
         // Set the style for this object
         self.cssKey = ViewCSSManager.shared.getCacheKey(object: self, style: style, class: klass)
@@ -97,7 +101,7 @@ public extension UIView {
         
         // COLORS
         // If it is a UIView, check for main color first, else just background color
-        if let color = config.backgroundColor {
+        if let color = config.background?.color {
             self.setCSSBackgroundColor(color)
         }
         
@@ -110,12 +114,14 @@ public extension UIView {
         }
         
         // BORDER
-        if config.borderRadius != nil {
-            self.setCSSBorderRadius(config.borderRadius!)
+        if let radius = config.border?.radius {
+            self.setCSSBorderRadius(radius)
         }
         
-        if config.borderWidth != nil && config.borderColor != nil {
-            self.setCSSBorder(width: config.borderWidth!, color: config.borderColor!)
+        if let width = config.border?.width {
+            if let color = config.border?.color {
+                self.setCSSBorder(width: width, color: color)
+            }
         }
         
         // Check if it responds to text protocol
@@ -125,26 +131,14 @@ public extension UIView {
                 textProtocol.setCSSTextColor(config.color!)
             }
             
-            // Set the size and the weight
-            if #available(iOS 8.2, *) {
-                if config.fontSize != nil {
-                    if config.fontWeight != nil {
-                        textProtocol.setCSSFont(UIFont.systemFont(ofSize: config.fontSize!, weight: config.fontWeight!))
-                    }
-                    else {
-                        textProtocol.setCSSFont(UIFont.systemFont(ofSize: config.fontSize!))
-                    }
-                }
-            }
-            else {
-                if config.fontSize != nil {
-                    textProtocol.setCSSFont(UIFont.systemFont(ofSize: config.fontSize!))
-                }
+            // Set the font
+            if let font = config.font?.getFont() {
+                textProtocol.setCSSFont(font)
             }
 
             // Set the alignment
-            if let textAlign = config.textAlign {
-                textProtocol.setCSSTextAlignment(textAlign)
+            if let align = config.text?.align {
+                textProtocol.setCSSTextAlignment(align)
             }
         }
         
@@ -152,9 +146,14 @@ public extension UIView {
         if custom != nil {
             custom!(config)
         }
+        
+        // Check if there is a defined cusomt CSS method
+        if let customizeProtocol = self as? ViewCSSCustomizableProtocol {
+            customizeProtocol.cssCustomize(config: config)
+        }
     }
     
-    func getCSS() -> ViewCSSStyleConfig? {
+    func getCSS() -> ViewCSSConfig? {
         if let cacheKey = self.cssKey {
             return ViewCSSManager.shared.getConfig(cacheKey: cacheKey)
         }

@@ -9,7 +9,7 @@ import Foundation
 
 public class ViewCSSManager {
     
-    private var styleCache = [String:ViewCSSStyleConfig]()
+    private var styleCache = [String:ViewCSSConfig]()
     
     private var styleLookup = Dictionary<String, Any>() {
         didSet {
@@ -42,11 +42,11 @@ public class ViewCSSManager {
         return string
     }
     
-    func getConfig(cacheKey: String) -> ViewCSSStyleConfig? {
+    func getConfig(cacheKey: String) -> ViewCSSConfig? {
         return self.styleCache[cacheKey]
     }
 
-    func getConfig(object: Any, style: String?, class klass: String?) -> ViewCSSStyleConfig {
+    func getConfig(object: Any, style: String?, class klass: String?) -> ViewCSSConfig {
         let cacheKey = self.getCacheKey(object: object, style: style, class: klass)
         
         // Return the config value if it is already in the cache
@@ -56,7 +56,7 @@ public class ViewCSSManager {
         let dict = self.generateStyleDictionary(object: object, style: style, class: klass)
         
         // Now parse the final dictionary and return it to the user
-        let config = ViewCSSStyleConfig.fromCSS(dict: dict)
+        let config = ViewCSSConfig.fromCSS(dict: dict)
         self.styleCache[cacheKey] = config
         return config
     }

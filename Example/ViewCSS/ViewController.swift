@@ -9,6 +9,12 @@
 import UIKit
 import ViewCSS
 
+class CustomLabel: UILabel, ViewCSSCustomizableProtocol {
+    func cssCustomize(config: ViewCSSConfig) {
+        self.textColor = UIColor.green
+    }
+}
+
 class ViewController: UIViewController {
     @IBOutlet weak var label1: UILabel?
     @IBOutlet weak var label2: UILabel?
@@ -21,11 +27,11 @@ class ViewController: UIViewController {
         // Do any additional setup after loading the view, typically from a nib.
         
         self.label1?.css(class: "label1")
-        self.label2?.css(class: "label2") { (config: ViewCSSStyleConfig) in
+        self.label2?.css(class: "label2") { (config: ViewCSSConfig) in
             self.label2?.backgroundColor = config.color
         }
         self.label3?.css(class: "label3")
-        self.label4?.css(style: "background-color:lightgray;text-align:center;", class: "primary")
+        self.label4?.css(class: "primary", style: "background-color:lightgray;text-align:center;")
         self.button1?.css(class: "bad_class")
     }
 
