@@ -54,11 +54,17 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Button"/>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xCq-lx-ZEx">
+                                <rect key="frame" x="172" y="309" width="46" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Button"/>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     </view>
                     <connections>
                         <outlet property="button1" destination="f4N-aJ-Brx" id="K3r-kp-qeb"/>
+                        <outlet property="button2" destination="xCq-lx-ZEx" id="LG9-CR-RPk"/>
                         <outlet property="label1" destination="b1H-Pt-MSN" id="ONh-ME-YYB"/>
                         <outlet property="label2" destination="ACY-4Y-y6t" id="nuf-j9-GcN"/>
                         <outlet property="label3" destination="o1H-gf-N5T" id="Aop-a5-fYZ"/>

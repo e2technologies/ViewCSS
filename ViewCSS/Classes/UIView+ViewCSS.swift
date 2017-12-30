@@ -85,6 +85,10 @@ public extension UIView {
         }
     }
 
+    func css(custom: ((ViewCSSConfig) -> Void)?=nil) {
+        self.css(class: nil, style: nil, custom: custom)
+    }
+    
     func css(style: String?, custom: ((ViewCSSConfig) -> Void)?=nil) {
         self.css(class: nil, style: style, custom: custom)
     }
