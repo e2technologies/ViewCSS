@@ -21,7 +21,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Setup CSS
         let styles: [String:Any] = [
             ":root": [
-                "--main-color": "yellow",
+                "--main-color": "var(--main-second-color)",
+                "--main-second-color": "yellow",
             ],
             "ui_label": [
                 "text-align": "right",

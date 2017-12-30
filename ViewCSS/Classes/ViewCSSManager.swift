@@ -33,13 +33,26 @@ public class ViewCSSManager {
         if self.styleLookupRoot == nil { return string }
         if string == nil { return nil }
         
-        var newString = string!.trimmingCharacters(in: .whitespaces)
-        if newString.hasPrefix("var(") {
-            newString = String(newString.dropFirst(4))
-            newString = String(newString.dropLast(1))
-            return (self.styleLookupRoot![newString] as? String) ?? string
-        }
-        return string
+        var nextString = string
+        
+        // Repeat while the next one is not nil and has a "var" prefix
+        repeat {
+            // Trim the white space off of the next string
+            var newString = nextString!.trimmingCharacters(in: .whitespaces)
+            
+            // If it starts with "var(", perform the lookup
+            if newString.hasPrefix("var(") {
+                
+                // Strip the var parameteres
+                newString = String(newString.dropFirst(4))
+                newString = String(newString.dropLast(1))
+                
+                // Get the next one
+                nextString = self.styleLookupRoot![newString] as? String
+            }
+        } while nextString != nil && nextString!.hasPrefix("var(")
+        
+        return nextString
     }
     
     func getConfig(cacheKey: String) -> ViewCSSConfig? {
