@@ -17,6 +17,7 @@ public class ViewCSSStyleConfig {
     static let FONT_WEIGHT = "font-weight"
     static let TEXT_ALIGN = "text-align"
     static let BORDER_RADIUS = "border-radius"
+    static let OPACITY = "opacity"
     
     var backgroundColor: UIColor?
     var tintColor: UIColor?
@@ -25,6 +26,7 @@ public class ViewCSSStyleConfig {
     var fontWeight: UIFont.Weight?
     var textAlign: NSTextAlignment?
     var borderRadius: CGFloat?
+    var opacity: CGFloat?
     
     static func fromCSS(dict: Dictionary<String, Any>) -> ViewCSSStyleConfig {
         let config = ViewCSSStyleConfig()
@@ -36,6 +38,7 @@ public class ViewCSSStyleConfig {
         config.cssFontWeightValue(string: self.checkVariables(string: dict[FONT_WEIGHT] as? String))
         config.cssTextAlign(string: self.checkVariables(string: dict[TEXT_ALIGN] as? String))
         config.cssBorderRadius(string: self.checkVariables(string: dict[BORDER_RADIUS] as? String))
+        config.cssOpacity(string: self.checkVariables(string: dict[OPACITY] as? String))
         
         return config
     }
@@ -129,6 +132,14 @@ public class ViewCSSStyleConfig {
             let tempString = string!.dropLast(2)
             if let tempInt = UInt(tempString) {
                 self.borderRadius = CGFloat(tempInt)
+            }
+        }
+    }
+    
+    private func cssOpacity(string: String?) {
+        if string != nil {
+            if let tempNumber = NumberFormatter().number(from: string!) {
+                self.opacity = CGFloat(truncating: tempNumber)
             }
         }
     }

@@ -11,6 +11,7 @@ protocol ViewCSSProtocol {
     func setCSSBackgroundColor(_ color: UIColor)
     func setCSSTintColor(_ color: UIColor)
     func setCSSBorderRadius(_ radius: CGFloat)
+    func setCSSOpacity(_ opacity: CGFloat)
 }
 
 protocol ViewCSSTextProtocol: ViewCSSProtocol {
@@ -26,6 +27,7 @@ extension UIView: ViewCSSProtocol {
         self.layer.cornerRadius = radius
         self.layer.masksToBounds = true
     }
+    func setCSSOpacity(_ opacity: CGFloat) { self.alpha = opacity }
 }
 
 extension UILabel: ViewCSSTextProtocol {
@@ -92,6 +94,10 @@ public extension UIView {
         
         if let color = config.tintColor {
              self.setCSSTintColor(color)
+        }
+        
+        if let opacity = config.opacity {
+            self.setCSSOpacity(opacity)
         }
         
         // CORNER RADIUS
