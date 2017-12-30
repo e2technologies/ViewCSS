@@ -11,6 +11,7 @@ protocol ViewCSSProtocol {
     func setCSSBackgroundColor(_ color: UIColor)
     func setCSSTintColor(_ color: UIColor)
     func setCSSBorderRadius(_ radius: CGFloat)
+    func setCSSBorder(width: CGFloat, color: UIColor)
     func setCSSOpacity(_ opacity: CGFloat)
 }
 
@@ -26,6 +27,10 @@ extension UIView: ViewCSSProtocol {
     func setCSSBorderRadius(_ radius: CGFloat) {
         self.layer.cornerRadius = radius
         self.layer.masksToBounds = true
+    }
+    func setCSSBorder(width: CGFloat, color: UIColor) {
+        self.layer.borderColor = color.cgColor
+        self.layer.borderWidth = width
     }
     func setCSSOpacity(_ opacity: CGFloat) { self.alpha = opacity }
 }
@@ -77,18 +82,14 @@ public extension UIView {
     }
 
     func css(style: String?, custom: ((ViewCSSStyleConfig) -> Void)?=nil) {
-        self.css(style: style, class: nil, custom: custom)
+        self.css(class: nil, style: style, custom: custom)
     }
     
     func css(class klass: String?, custom: ((ViewCSSStyleConfig) -> Void)?=nil) {
-        self.css(style: nil, class: klass, custom: custom)
+        self.css(class: klass, style: nil, custom: custom)
     }
     
     func css(class klass: String?, style: String?, custom: ((ViewCSSStyleConfig) -> Void)?=nil) {
-        self.css(style: style, class: klass, custom: custom)
-    }
-    
-    func css(style: String?, class klass: String?, custom: ((ViewCSSStyleConfig) -> Void)?=nil) {
         
         // Set the style for this object
         self.cssKey = ViewCSSManager.shared.getCacheKey(object: self, style: style, class: klass)
@@ -108,9 +109,13 @@ public extension UIView {
             self.setCSSOpacity(opacity)
         }
         
-        // CORNER RADIUS
+        // BORDER
         if config.borderRadius != nil {
             self.setCSSBorderRadius(config.borderRadius!)
+        }
+        
+        if config.borderWidth != nil && config.borderColor != nil {
+            self.setCSSBorder(width: config.borderWidth!, color: config.borderColor!)
         }
         
         // Check if it responds to text protocol

@@ -18,8 +18,11 @@ public class ViewCSSStyleConfig {
     static let FONT_SIZE = "font-size"
     static let FONT_WEIGHT = "font-weight"
     static let TEXT_ALIGN = "text-align"
-    static let BORDER_RADIUS = "border-radius"
     static let OPACITY = "opacity"
+    
+    static let BORDER_RADIUS = "border-radius"
+    static let BORDER_WIDTH = "border-width"
+    static let BORDER_COLOR = "border-color"
     
     public private(set) var backgroundColor: UIColor?
     public private(set) var tintColor: UIColor?
@@ -27,8 +30,10 @@ public class ViewCSSStyleConfig {
     public private(set) var fontSize: CGFloat?
     public private(set) var fontWeight: UIFont.Weight?
     public private(set) var textAlign: NSTextAlignment?
-    public private(set)var borderRadius: CGFloat?
-    public private(set)var opacity: CGFloat?
+    public private(set) var opacity: CGFloat?
+    public private(set) var borderRadius: CGFloat?
+    public private(set) var borderWidth: CGFloat?
+    public private(set) var borderColor: UIColor?
     
     static func fromCSS(dict: Dictionary<String, Any>) -> ViewCSSStyleConfig {
         let config = ViewCSSStyleConfig()
@@ -40,6 +45,8 @@ public class ViewCSSStyleConfig {
         config.cssFontWeightValue(string: self.checkVariables(string: dict[FONT_WEIGHT] as? String))
         config.cssTextAlign(string: self.checkVariables(string: dict[TEXT_ALIGN] as? String))
         config.cssBorderRadius(string: self.checkVariables(string: dict[BORDER_RADIUS] as? String))
+        config.cssBorderColor(string: self.checkVariables(string: dict[BORDER_COLOR] as? String))
+        config.cssBorderWidth(string: self.checkVariables(string: dict[BORDER_WIDTH] as? String))
         config.cssOpacity(string: self.checkVariables(string: dict[OPACITY] as? String))
         
         return config
@@ -56,6 +63,7 @@ public class ViewCSSStyleConfig {
     private func cssBackgroundColor(string: String?) {
         if string != nil {
             self.backgroundColor = UIColor(css: string!)
+            
             if self.backgroundColor == nil {
                 self.printWarning(attribute: type(of: self).BACKGROUND_COLOR, value: string!)
             }
@@ -65,6 +73,7 @@ public class ViewCSSStyleConfig {
     private func cssTintColor(string: String?) {
         if string != nil {
             self.tintColor = UIColor(css: string!)
+            
             if self.tintColor == nil {
                 self.printWarning(attribute: type(of: self).TINT_COLOR, value: string!)
             }
@@ -74,6 +83,7 @@ public class ViewCSSStyleConfig {
     private func cssColor(string: String?) {
         if string != nil {
             self.color = UIColor(css: string!)
+            
             if self.color == nil {
                 self.printWarning(attribute: type(of: self).COLOR, value: string!)
             }
@@ -84,16 +94,11 @@ public class ViewCSSStyleConfig {
         if string != nil {
             let trimmedString = string!.trimmingCharacters(in: .whitespaces)
             
-            if trimmedString.hasSuffix("%") {
-                if let percentage = trimmedString.percentageToFloat {
-                    self.fontSize = type(of: self).DEFAULT_FONT_SIZE * percentage
-                }
+            if let percentage = trimmedString.percentageToFloat {
+                self.fontSize = type(of: self).DEFAULT_FONT_SIZE * percentage
             }
-            else if trimmedString.hasSuffix("px") {
-                let tempString = String(trimmedString.dropLast(2))
-                if let tempInt = UInt(tempString) {
-                    self.fontSize = CGFloat(tempInt)
-                }
+            else if let length = trimmedString.lengthToFloat {
+                self.fontSize = length
             }
             else {
                 var offset: CGFloat? = nil
@@ -160,9 +165,10 @@ public class ViewCSSStyleConfig {
                 default:
                     self.fontWeight = nil
                 }
-            } else {
+            }
+            
+            if self.fontWeight == nil {
                 self.printWarning(attribute: type(of: self).FONT_WEIGHT, value: string!)
-                self.fontWeight = nil
             }
         }
     }
@@ -179,30 +185,70 @@ public class ViewCSSStyleConfig {
             case "justify":
                 self.textAlign = NSTextAlignment.justified
             default:
-                self.printWarning(attribute: type(of: self).TEXT_ALIGN, value: string!)
                 self.textAlign = nil
+            }
+            
+            if self.textAlign == nil {
+                self.printWarning(attribute: type(of: self).TEXT_ALIGN, value: string!)
             }
         }
     }
     
     private func cssBorderRadius(string: String?) {
-        if string != nil && string!.hasSuffix("px") {
-            let tempString = string!.dropLast(2)
-            if let tempInt = UInt(tempString) {
-                self.borderRadius = CGFloat(tempInt)
+        if string != nil {
+            if let radius = string!.lengthToFloat {
+                self.borderRadius = radius
+            }
+            
+            if self.borderRadius == nil {
+                self.printWarning(attribute: type(of: self).BORDER_RADIUS, value: string!)
+            }
+        }
+    }
+    
+    private func cssBorderColor(string: String?) {
+        if string != nil {
+            self.borderColor = UIColor(css: string!)
+            
+            if self.borderColor == nil {
+                self.printWarning(attribute: type(of: self).BORDER_COLOR, value: string!)
+            }
+        }
+    }
+    
+    private func cssBorderWidth(string: String?) {
+        if string != nil {
+            let trimmedString = string!.trimmingCharacters(in: .whitespaces)
+            
+            if let length = trimmedString.lengthToFloat {
+                self.borderWidth = length
             }
             else {
-                self.printWarning(attribute: type(of: self).BORDER_RADIUS, value: string!)
+                switch trimmedString {
+                case "medium":
+                    self.borderWidth = 2
+                case "thin":
+                    self.borderWidth = 1
+                case "thick":
+                    self.borderWidth = 3
+                default:
+                    self.borderWidth = nil
+                }
+            }
+            
+            if self.borderWidth == nil {
+                self.printWarning(attribute: type(of: self).BORDER_WIDTH, value: string!)
             }
         }
     }
     
     private func cssOpacity(string: String?) {
         if string != nil {
-            if let tempNumber = NumberFormatter().number(from: string!) {
-                self.opacity = CGFloat(truncating: tempNumber)
+            if let number = string!.numberToFloat {
+                self.opacity = number
             }
-            else {
+            
+            if self.opacity == nil {
                 self.printWarning(attribute: type(of: self).OPACITY, value: string!)
             }
         }

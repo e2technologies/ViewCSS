@@ -58,12 +58,29 @@ extension String {
     }
     
     var percentageToFloat: CGFloat? {
-        let converted = self.hasSuffix("%") ? String(self.dropLast(1)) : self
-        if let percentInt = UInt(converted) {
-            return CGFloat(percentInt)/100.0
+        if self.hasSuffix("%") {
+            let precentString = dropLast(1)
+            if let percentInt = UInt(precentString) {
+                return CGFloat(percentInt)/100.0
+            }
         }
-        else {
-            return nil
+        return nil
+    }
+    
+    var lengthToFloat: CGFloat? {
+        if self.hasSuffix("px") {
+            let lengthString = dropLast(2)
+            if let lengthInt = UInt(lengthString) {
+                return CGFloat(lengthInt)
+            }
         }
+        return nil
+    }
+    
+    var numberToFloat: CGFloat? {
+        if let numberDouble = NumberFormatter().number(from: self) {
+            return CGFloat(truncating: numberDouble)
+        }
+        return nil
     }
 }
