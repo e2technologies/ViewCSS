@@ -21,14 +21,14 @@ public class ViewCSSStyleConfig {
     static let BORDER_RADIUS = "border-radius"
     static let OPACITY = "opacity"
     
-    var backgroundColor: UIColor?
-    var tintColor: UIColor?
-    var color: UIColor?
-    var fontSize: CGFloat?
-    var fontWeight: UIFont.Weight?
-    var textAlign: NSTextAlignment?
-    var borderRadius: CGFloat?
-    var opacity: CGFloat?
+    public private(set) var backgroundColor: UIColor?
+    public private(set) var tintColor: UIColor?
+    public private(set) var color: UIColor?
+    public private(set) var fontSize: CGFloat?
+    public private(set) var fontWeight: UIFont.Weight?
+    public private(set) var textAlign: NSTextAlignment?
+    public private(set)var borderRadius: CGFloat?
+    public private(set)var opacity: CGFloat?
     
     static func fromCSS(dict: Dictionary<String, Any>) -> ViewCSSStyleConfig {
         let config = ViewCSSStyleConfig()

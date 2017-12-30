@@ -76,11 +76,19 @@ public extension UIView {
         }
     }
 
-    func css(style: String?) { self.css(style: style, class: nil) }
-    func css(class klass: String?) { self.css(style: nil, class: klass) }
-    func css(class klass: String?, style: String?) { self.css(style: style, class: klass) }
+    func css(style: String?, custom: ((ViewCSSStyleConfig) -> Void)?=nil) {
+        self.css(style: style, class: nil, custom: custom)
+    }
     
-    func css(style: String?, class klass: String?) {
+    func css(class klass: String?, custom: ((ViewCSSStyleConfig) -> Void)?=nil) {
+        self.css(style: nil, class: klass, custom: custom)
+    }
+    
+    func css(class klass: String?, style: String?, custom: ((ViewCSSStyleConfig) -> Void)?=nil) {
+        self.css(style: style, class: klass, custom: custom)
+    }
+    
+    func css(style: String?, class klass: String?, custom: ((ViewCSSStyleConfig) -> Void)?=nil) {
         
         // Set the style for this object
         self.cssKey = ViewCSSManager.shared.getCacheKey(object: self, style: style, class: klass)
@@ -133,6 +141,11 @@ public extension UIView {
             if let textAlign = config.textAlign {
                 textProtocol.setCSSTextAlignment(textAlign)
             }
+        }
+        
+        // Call the custom config callback
+        if custom != nil {
+            custom!(config)
         }
     }
     
