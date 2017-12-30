@@ -42,6 +42,7 @@ public extension UIView {
         // Set the style for this object
         let config = ViewCSSManager.shared.getConfig(object: self, style: style, class: klass)
         
+        // BACKGROUND COLOR
         // If it is a UIView, check for main color first, else just background color
         if String(describing: type(of: self)) == "UIView" {
             if let color = config.color ?? config.backgroundColor {
@@ -52,6 +53,12 @@ public extension UIView {
             if let color = config.backgroundColor {
                 self.backgroundColor = color
             }
+        }
+        
+        // CORNER RADIUS
+        if config.borderRadius != nil {
+            self.layer.cornerRadius = config.borderRadius!
+            self.layer.masksToBounds = true
         }
         
         // Check if it responds to text protocol

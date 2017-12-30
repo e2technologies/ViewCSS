@@ -41,6 +41,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 "font-size": "120%",
                 "font-weight": "900",
                 "color": "green",
+                "border-radius": "5px",
             ],
             ".primary": [
                 "color": "blue",

@@ -14,12 +14,14 @@ class ViewCSSStyleConfig {
     static let FONT_SIZE = "font-size"
     static let FONT_WEIGHT = "font-weight"
     static let TEXT_ALIGN = "text-align"
+    static let BORDER_RADIUS = "border-radius"
     
     var backgroundColor: UIColor?
     var color: UIColor?
     var fontSize: CGFloat?
     var fontWeight: UIFont.Weight?
     var textAlign: NSTextAlignment?
+    var borderRadius: CGFloat?
     
     static func fromCSS(dict: Dictionary<String, Any>) -> ViewCSSStyleConfig {
         let config = ViewCSSStyleConfig()
@@ -29,6 +31,7 @@ class ViewCSSStyleConfig {
         config.cssFontSize(string: dict[FONT_SIZE] as? String)
         config.cssFontWeightValue(string: dict[FONT_WEIGHT] as? String)
         config.cssTextAlign(string: dict[TEXT_ALIGN] as? String)
+        config.cssBorderRadius(string: dict[BORDER_RADIUS] as? String)
         
         return config
     }
@@ -103,6 +106,15 @@ class ViewCSSStyleConfig {
                 self.textAlign = NSTextAlignment.justified
             default:
                 self.textAlign = nil
+            }
+        }
+    }
+    
+    private func cssBorderRadius(string: String?) {
+        if string != nil && string!.hasSuffix("px") {
+            let tempString = string!.dropLast(2)
+            if let tempInt = UInt(tempString) {
+                self.borderRadius = CGFloat(tempInt)
             }
         }
     }
