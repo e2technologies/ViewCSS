@@ -7,10 +7,30 @@
 
 import Foundation
 
-protocol ViewCSSTextProtocol {
+protocol ViewCSSProtocol {
+    func setCSSBackgroundColor(_ color: UIColor)
+    func setCSSColor(_ color: UIColor)
+    func setCSSBorderRadius(_ radius: CGFloat)
+}
+
+protocol ViewCSSTextProtocol: ViewCSSProtocol {
     func setCSSTextColor(_ color: UIColor)
     func setCSSFont(_ font: UIFont)
     func setCSSTextAlignment( _ alignment: NSTextAlignment)
+}
+
+extension UIView: ViewCSSProtocol {
+    
+    func setCSSBackgroundColor(_ color: UIColor) { self.backgroundColor = color }
+    func setCSSColor(_ color: UIColor) {
+        if String(describing: type(of: self)) == "UIView" {
+            self.tintColor = color
+        }
+    }
+    func setCSSBorderRadius(_ radius: CGFloat) {
+        self.layer.cornerRadius = radius
+        self.layer.masksToBounds = true
+    }
 }
 
 extension UILabel: ViewCSSTextProtocol {
@@ -58,23 +78,19 @@ public extension UIView {
         // Set the style for this object
         let config = ViewCSSManager.shared.getConfig(object: self, style: style, class: klass)
         
-        // BACKGROUND COLOR
+        // COLORS
         // If it is a UIView, check for main color first, else just background color
-        if String(describing: type(of: self)) == "UIView" {
-            if let color = config.color ?? config.backgroundColor {
-                self.backgroundColor = color
-            }
+        if let color = config.backgroundColor {
+            self.setCSSBackgroundColor(color)
         }
-        else {
-            if let color = config.backgroundColor {
-                self.backgroundColor = color
-            }
+        
+        if let color = config.color {
+             self.setCSSColor(color)
         }
         
         // CORNER RADIUS
         if config.borderRadius != nil {
-            self.layer.cornerRadius = config.borderRadius!
-            self.layer.masksToBounds = true
+            self.setCSSBorderRadius(config.borderRadius!)
         }
         
         // Check if it responds to text protocol
