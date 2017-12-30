@@ -7,39 +7,60 @@
 
 import Foundation
 
+protocol ViewCSSTextProtocol {
+    func setTextColor(_ color: UIColor)
+    func setFont(_ font: UIFont)
+    func setTextAlignment( _ alignment: NSTextAlignment)
+}
+
+extension UILabel: ViewCSSTextProtocol {
+    func setTextColor(_ color: UIColor) { self.textColor = color }
+    func setFont(_ font: UIFont) { self.font = font }
+    func setTextAlignment( _ alignment: NSTextAlignment) { self.textAlignment = alignment }
+}
+
+extension UITextField: ViewCSSTextProtocol {
+    func setTextColor(_ color: UIColor) { self.textColor = color }
+    func setFont(_ font: UIFont) { self.font = font }
+    func setTextAlignment( _ alignment: NSTextAlignment) { self.textAlignment = alignment }
+}
+
+extension UITextView: ViewCSSTextProtocol {
+    func setTextColor(_ color: UIColor) { self.textColor = color }
+    func setFont(_ font: UIFont) { self.font = font }
+    func setTextAlignment( _ alignment: NSTextAlignment) { self.textAlignment = alignment }
+}
+
 public extension UIView {
 
-    func css(style: String?) {
-        self.css(style: style, class: nil)
-    }
-    
-    func css(class klass: String?) {
-        self.css(style: nil, class: klass)
-    }
-    
-    func css(class klass: String?, style: String?) {
-        self.css(style: style, class: klass)
-    }
+    func css(style: String?) { self.css(style: style, class: nil) }
+    func css(class klass: String?) { self.css(style: nil, class: klass) }
+    func css(class klass: String?, style: String?) { self.css(style: style, class: klass) }
     
     func css(style: String?, class klass: String?) {
         
         // Set the style for this object
         let config = ViewCSSManager.shared.getConfig(object: self, style: style, class: klass)
         
-        // Set the static atttributes
-        if let backgroundColor = config.backgroundColor {
-            self.backgroundColor = backgroundColor
+        // If it is a UIView, check for main color first, else just background color
+        if String(describing: type(of: self)) == "UIView" {
+            if let color = config.color ?? config.backgroundColor {
+                self.backgroundColor = color
+            }
+        }
+        else {
+            if let color = config.backgroundColor {
+                self.backgroundColor = color
+            }
         }
         
-        // UILabel methods
-        // TODO: Move this to another extension once extension declarations can be overriden and
-        // call the super
-        if let selfLabel = self as? UILabel {
+        // Check if it responds to text protocol
+        if let textProtocol = self as? ViewCSSTextProtocol {
             let defaultFontSize: CGFloat = 15.0
             
             // Set the color
             if config.color != nil {
-                selfLabel.textColor = config.color
+                textProtocol.setTextColor(config.color!)
             }
             
             // Set the size and the weight
@@ -47,23 +68,23 @@ public extension UIView {
                 if config.fontSize != nil || config.fontWeight != nil {
                     let scaledFontSize = round(15.0 * (config.fontSize ?? 1.0))
                     if config.fontWeight != nil {
-                        selfLabel.font = UIFont.systemFont(ofSize: scaledFontSize, weight: config.fontWeight!)
+                        textProtocol.setFont(UIFont.systemFont(ofSize: scaledFontSize, weight: config.fontWeight!))
                     }
                     else {
-                        selfLabel.font = UIFont.systemFont(ofSize: scaledFontSize)
+                        textProtocol.setFont(UIFont.systemFont(ofSize: scaledFontSize))
                     }
                 }
             }
             else {
                 if config.fontSize != nil {
                     let scaledFontSize = round(defaultFontSize * config.fontSize!)
-                    selfLabel.font = UIFont.systemFont(ofSize: scaledFontSize)
+                    textProtocol.setFont(UIFont.systemFont(ofSize: scaledFontSize))
                 }
             }
 
             // Set the alignment
             if let textAlign = config.textAlign {
-                selfLabel.textAlignment = textAlign
+                textProtocol.setTextAlignment(textAlign)
             }
         }
     }
