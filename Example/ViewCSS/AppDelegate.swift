@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import ViewCSS
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -16,6 +17,34 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        
+        // Setup CSS
+        let styles: [String:Any] = [
+            "ui_label" : [
+                "text-align": "right",
+                "background-color": "pink",
+            ],
+            ".label1" : [
+                "font-size": "60%",
+                "font-weight": "500",
+                "color": "gray",
+                "text-transform": "uppercase",
+            ],
+            ".label2" : [
+                "font-size": "90%",
+                "font-weight": "100",
+                "text-align": "left",
+                "color": "black",
+                "background-color": "red",
+            ],
+            ".label3" : [
+                "font-size": "120%",
+                "font-weight": "900",
+                "color": "green",
+            ],
+        ]
+        ViewCSSManager.shared.styleLookup = styles
+        
         return true
     }
 
