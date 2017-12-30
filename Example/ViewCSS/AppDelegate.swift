@@ -20,30 +20,35 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         // Setup CSS
         let styles: [String:Any] = [
-            "ui_label" : [
+            "ui_label": [
                 "text-align": "right",
                 "background-color": "pink",
             ],
-            ".label1" : [
+            ".label1": [
                 "font-size": "60%",
                 "font-weight": "500",
                 "color": "gray",
                 "text-transform": "uppercase",
             ],
-            ".label2" : [
+            ".label2": [
                 "font-size": "90%",
                 "font-weight": "100",
                 "text-align": "left",
                 "color": "black",
                 "background-color": "red",
             ],
-            ".label3" : [
+            ".label3": [
                 "font-size": "120%",
                 "font-weight": "900",
                 "color": "green",
             ],
+            ".primary": [
+                "color": "blue",
+                "font-weight": "900",
+                "font-size": "200%"
+            ]
         ]
-        ViewCSSManager.shared.styleLookup = styles
+        ViewCSSManager.shared.setCSS(dict: styles)
         
         return true
     }

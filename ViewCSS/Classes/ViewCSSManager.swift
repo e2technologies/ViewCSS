@@ -9,78 +9,36 @@ import Foundation
 
 public class ViewCSSManager {
     
-    // Supported Tags
-    let BACKGROUND_COLOR = "background-color"
-    let COLOR = "color"
-    let FONT_SIZE = "font-size"
-    let FONT_WEIGHT = "font-weight"
-    let TEXT_ALIGN = "text-align"
+    private var styleCache = [String:ViewCSSStyleConfig]()
     
-    var styleCache = [String:ViewCSSStyleConfig]()
-    
-    public var styleLookup = Dictionary<String, Any>() {
+    private var styleLookup = Dictionary<String, Any>() {
         didSet {
             self.styleCache.removeAll()
         }
+    }
+    
+    public func setCSS(dict: Dictionary<String, Any>) {
+        self.styleLookup = dict
     }
     
     public static var shared: ViewCSSManager = {
         return ViewCSSManager()
     }()
     
-    func getConfig(object: Any, style: String?) -> ViewCSSStyleConfig {
+    func getConfig(object: Any, style: String?, class klass: String?) -> ViewCSSStyleConfig {
         let klassName = self.getKlassName(object: object)
-        
-        // Create the cache key
-        let cacheKey: String
-        if style == nil || style!.isEmpty {
-            cacheKey = klassName
-        }
-        else {
-            cacheKey = style! + " " + klassName
-        }
+        let cacheKey = self.getCacheKey(klassName: klassName, style: style, class: klass)
         
         // Return the config value if it is already in the cache
         if let cachedConfig = self.styleCache[cacheKey] {
             return cachedConfig
         }
         
-        // Create a merged dictionary with all of the values
-        var mergedDictionary = Dictionary<String, Any>()
-        
-        // If this contains a ":", then it is inline style
-        if style!.contains(":") {
-            // Remove the whitespace
-            let inlineStyle = style!.trimmingCharacters(in: .whitespaces)
-            
-            // Break the inline into components and set as values in the dictionary
-            for subStyle in inlineStyle.split(separator: ";") {
-                let components = subStyle.split(separator: ":")
-                if components.count != 2 { continue }
-                mergedDictionary[String(components[0])] = String(components[1])
-            }
-        }
-            // Else it is a list of classes.  Parse them
-        else {
-            // Get the list
-            for subStyle in style!.split(separator: " ") {
-                // Look for the class by itself and the class with a "."
-                for name in [String(klassName + "." + subStyle), String("."+subStyle)] {
-                    // If we find a match, merge it into the dictionary
-                    if let subDict = self.styleLookup[name] as? Dictionary<String, Any> {
-                        mergedDictionary = mergedDictionary.merging(subDict) { (current, _) in current }
-                    }
-                }
-            }
-        }
-        
-        // Lastly, see if there is a class by itself
-        if let subDict = self.styleLookup[klassName] as? Dictionary<String, Any> {
-            mergedDictionary = mergedDictionary.merging(subDict) { (current, _) in current }
-        }
+        // Create the consolidated dictionary
+        let dict = self.generateStyleDictionary(klassName: klassName, style: style, class: klass)
         
         // Now parse the final dictionary and return it to the user
-        let config = self.parseStyleDictionary(mergedDictionary)
+        let config = ViewCSSStyleConfig.fromCSS(dict: dict)
         self.styleCache[cacheKey] = config
         return config
     }
@@ -88,16 +46,56 @@ public class ViewCSSManager {
     private func getKlassName(object: Any) -> String {
         return String(describing: type(of: object)).camelToSnake
     }
-    
-    private func parseStyleDictionary(_ dict: Dictionary<String, Any>) -> ViewCSSStyleConfig {
-        let config = ViewCSSStyleConfig()
+
+    private func getCacheKey(klassName: String, style: String?, class klass: String?) -> String {
+        var cacheKey = klassName
+        if style != nil && !style!.isEmpty {
+            cacheKey += " " + style!
+        }
+        if klass != nil && !klass!.isEmpty {
+            cacheKey += " " + klass!
+        }
         
-        config.cssBackgroundColor(string: dict[BACKGROUND_COLOR] as? String)
-        config.cssColor(string: dict[COLOR] as? String)
-        config.cssFontSize(string: dict[FONT_SIZE] as? String)
-        config.cssFontWeightValue(string: dict[FONT_WEIGHT] as? String)
-        config.cssTextAlign(string: dict[TEXT_ALIGN] as? String)
- 
-        return config
+        return cacheKey
+    }
+    
+    private func generateStyleDictionary(klassName: String, style: String?, class klass: String?) -> Dictionary<String, Any> {
+        
+        // Create a merged dictionary with all of the values
+        var dict = Dictionary<String, Any>()
+        
+        // Priority 1: Style attributes
+        if style != nil {
+            // Remove the whitespace
+            let inlineStyle = style!.trimmingCharacters(in: .whitespaces)
+            
+            // Break the inline into components and set as values in the dictionary
+            for subStyle in inlineStyle.split(separator: ";") {
+                let components = subStyle.split(separator: ":")
+                if components.count != 2 { continue }
+                dict[String(components[0])] = String(components[1])
+            }
+        }
+        
+        // Priority 2: Classes
+        if klass != nil {
+            // Get the list
+            for subStyle in klass!.split(separator: " ") {
+                // Look for the class by itself and the class with a "."
+                for name in [String(klassName + "." + subStyle), String("."+subStyle)] {
+                    // If we find a match, merge it into the dictionary
+                    if let subDict = self.styleLookup[name] as? Dictionary<String, Any> {
+                        dict = dict.merging(subDict) { (current, _) in current }
+                    }
+                }
+            }
+        }
+        
+        // Priority 3: General class defines
+        if let subDict = self.styleLookup[klassName] as? Dictionary<String, Any> {
+            dict = dict.merging(subDict) { (current, _) in current }
+        }
+        
+        return dict
     }
 }

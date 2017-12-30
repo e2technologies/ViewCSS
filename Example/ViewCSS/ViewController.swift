@@ -18,10 +18,10 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-        self.label1?.style("subheading")
-        self.label2?.style("label2")
-        self.label3?.style("label3")
-        self.label4?.style("background-color:lightgray;text-align:center;")
+        self.label1?.css(class: "subheading")
+        self.label2?.css(class: "label2")
+        self.label3?.css(class: "label3")
+        self.label4?.css(style: "background-color:lightgray;text-align:center;", class: "primary")
     }
 
     override func didReceiveMemoryWarning() {

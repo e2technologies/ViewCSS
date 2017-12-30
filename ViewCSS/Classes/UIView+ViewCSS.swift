@@ -7,23 +7,24 @@
 
 import Foundation
 
-private var StyleObjectHandle: UInt8 = 0
 public extension UIView {
-    
-    private var style: String? {
-        get {
-            return objc_getAssociatedObject(self, &StyleObjectHandle) as? String
-        }
-        set {
-            objc_setAssociatedObject(self, &StyleObjectHandle, newValue, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-        }
+
+    func css(style: String?) {
+        self.css(style: style, class: nil)
     }
     
-    func style(_ style: String) {
-        self.style = style
+    func css(class klass: String?) {
+        self.css(style: nil, class: klass)
+    }
+    
+    func css(class klass: String?, style: String?) {
+        self.css(style: style, class: klass)
+    }
+    
+    func css(style: String?, class klass: String?) {
         
         // Set the style for this object
-        let config = ViewCSSManager.shared.getConfig(object: self, style: style)
+        let config = ViewCSSManager.shared.getConfig(object: self, style: style, class: klass)
         
         // Set the static atttributes
         if let backgroundColor = config.backgroundColor {
@@ -34,23 +35,33 @@ public extension UIView {
         // TODO: Move this to another extension once extension declarations can be overriden and
         // call the super
         if let selfLabel = self as? UILabel {
-            if let color = config.color {
-                selfLabel.textColor = color
+            let defaultFontSize: CGFloat = 15.0
+            
+            // Set the color
+            if config.color != nil {
+                selfLabel.textColor = config.color
             }
-            if let fontSize = config.fontSize {
-                let scaledFontSize = round(15.0 * fontSize)
-                if #available(iOS 8.2, *) {
-                    if let fontWeight = config.fontWeight {
-                        selfLabel.font = UIFont.systemFont(ofSize: scaledFontSize, weight: fontWeight)
+            
+            // Set the size and the weight
+            if #available(iOS 8.2, *) {
+                if config.fontSize != nil || config.fontWeight != nil {
+                    let scaledFontSize = round(15.0 * (config.fontSize ?? 1.0))
+                    if config.fontWeight != nil {
+                        selfLabel.font = UIFont.systemFont(ofSize: scaledFontSize, weight: config.fontWeight!)
                     }
                     else {
                         selfLabel.font = UIFont.systemFont(ofSize: scaledFontSize)
                     }
                 }
-                else {
+            }
+            else {
+                if config.fontSize != nil {
+                    let scaledFontSize = round(defaultFontSize * config.fontSize!)
                     selfLabel.font = UIFont.systemFont(ofSize: scaledFontSize)
                 }
             }
+
+            // Set the alignment
             if let textAlign = config.textAlign {
                 selfLabel.textAlignment = textAlign
             }

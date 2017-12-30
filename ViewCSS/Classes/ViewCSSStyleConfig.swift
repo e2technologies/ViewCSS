@@ -8,31 +8,50 @@
 import Foundation
 
 class ViewCSSStyleConfig {
+    // Supported Tags
+    static let BACKGROUND_COLOR = "background-color"
+    static let COLOR = "color"
+    static let FONT_SIZE = "font-size"
+    static let FONT_WEIGHT = "font-weight"
+    static let TEXT_ALIGN = "text-align"
+    
     var backgroundColor: UIColor?
     var color: UIColor?
     var fontSize: CGFloat?
     var fontWeight: UIFont.Weight?
     var textAlign: NSTextAlignment?
     
-    func cssBackgroundColor(string: String?) {
+    static func fromCSS(dict: Dictionary<String, Any>) -> ViewCSSStyleConfig {
+        let config = ViewCSSStyleConfig()
+        
+        config.cssBackgroundColor(string: dict[BACKGROUND_COLOR] as? String)
+        config.cssColor(string: dict[COLOR] as? String)
+        config.cssFontSize(string: dict[FONT_SIZE] as? String)
+        config.cssFontWeightValue(string: dict[FONT_WEIGHT] as? String)
+        config.cssTextAlign(string: dict[TEXT_ALIGN] as? String)
+        
+        return config
+    }
+    
+    private func cssBackgroundColor(string: String?) {
         if string != nil {
             self.backgroundColor = UIColor(css: string!)
         }
     }
     
-    func cssColor(string: String?) {
+    private func cssColor(string: String?) {
         if string != nil {
             self.color = UIColor(css: string!)
         }
     }
     
-    func cssFontSize(string: String?) {
+    private func cssFontSize(string: String?) {
         if string != nil {
             self.fontSize = string!.percentageToFloat
         }
     }
     
-    func cssFontWeightValue(string: String?) {
+    private func cssFontWeightValue(string: String?) {
         if string != nil {
             if #available(iOS 8.2, *) {
                 switch string! {
@@ -71,7 +90,7 @@ class ViewCSSStyleConfig {
         }
     }
     
-    func cssTextAlign(string: String?) {
+    private func cssTextAlign(string: String?) {
         if string != nil {
             switch string! {
             case "center":
