@@ -185,7 +185,7 @@ extension UIColor {
             var alpha: CGFloat?
             
             // Parse the HEX value
-            if css.hasPrefix("#") {
+            if cleanCss.hasPrefix("#") {
                 cleanCss = String(cleanCss.dropFirst())
                 
                 // Ensure there are 8 characters

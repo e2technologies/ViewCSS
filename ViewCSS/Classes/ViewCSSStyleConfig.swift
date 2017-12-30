@@ -82,34 +82,36 @@ public class ViewCSSStyleConfig {
     
     private func cssFontSize(string: String?) {
         if string != nil {
-            if string!.hasSuffix("%") {
-                if let percentage = string!.percentageToFloat {
+            let trimmedString = string!.trimmingCharacters(in: .whitespaces)
+            
+            if trimmedString.hasSuffix("%") {
+                if let percentage = trimmedString.percentageToFloat {
                     self.fontSize = type(of: self).DEFAULT_FONT_SIZE * percentage
                 }
             }
-            else if string!.hasSuffix("px") {
-                let newString = String(string!.dropLast(2)).trimmingCharacters(in: .whitespaces)
-                if let tempInt = UInt(newString) {
+            else if trimmedString.hasSuffix("px") {
+                let tempString = String(trimmedString.dropLast(2))
+                if let tempInt = UInt(tempString) {
                     self.fontSize = CGFloat(tempInt)
                 }
             }
             else {
                 var offset: CGFloat? = nil
-                switch string! {
+                switch trimmedString {
                 case "xx-small":
-                    offset = -3
+                    offset = -6
                 case "x-small":
-                    offset = -2
+                    offset = -4
                 case "small":
-                    offset = -1
+                    offset = -2
                 case "medium":
                     offset = 0
                 case "large":
-                    offset = 1
-                case "x-large":
                     offset = 2
+                case "x-large":
+                    offset = 4
                 case "xx-large":
-                    offset = 3
+                    offset = 6
                 default:
                     offset = nil
                 }
