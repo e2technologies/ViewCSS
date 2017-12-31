@@ -59,13 +59,18 @@ public extension NSObject {
             target.css(className: className, class: klass, style: style, custom: custom)
             
             // If we are snooping, generate the CSS dictionary
-            if ViewCSSManager.shared.snoop {
+            let cssManager = ViewCSSManager.shared
+            if cssManager.snoop || cssManager.classMissing {
                 let cssDict = ViewCSSConfig.toCSS(object: target)
                 var keyName = className
                 if klass != nil {
                     keyName += "." + klass!
                 }
-                ViewCSSManager.shared.logSnoop(key: keyName, dict: cssDict)
+                cssManager.logSnoop(key: keyName, dict: cssDict)
+                if cssManager.classMissing {
+                    print("Properties for unknown class " + keyName + ":")
+                    cssManager.printDictionary(dict: cssDict)
+                }
             }
         }
     }

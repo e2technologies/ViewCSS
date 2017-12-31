@@ -30,10 +30,16 @@ public class ViewCSSManager {
         self.snoopDict[key] = dict
     }
     public func printSnoop() {
-        let data = try! JSONSerialization.data(withJSONObject: self.snoopDict, options: .prettyPrinted)
+        self.printDictionary(dict: self.snoopDict)
+    }
+    func printDictionary(dict: Dictionary<String, Any>) {
+        let data = try! JSONSerialization.data(withJSONObject: dict, options: .prettyPrinted)
         let string = NSString(data: data, encoding: String.Encoding.utf8.rawValue)
         dump(string!)
     }
+    
+    // Mark missing class error
+    var classMissing = false
     
     // Ths method sets the manager with the CSS
     public func setCSS(dict: Dictionary<String, Any>) {
@@ -121,6 +127,9 @@ public class ViewCSSManager {
     
     private func generateStyleDictionary(className: String, style: String?, class klass: String?) -> Dictionary<String, Any> {
         
+        // Clear the error flag
+        self.classMissing = false
+        
         // Create a merged dictionary with all of the values
         var dict = Dictionary<String, Any>()
         
@@ -157,6 +166,7 @@ public class ViewCSSManager {
             if numberOfMatches == 0 {
                 print("ViewCSSManager WARN: No match found for CSS class '" + klass! +
                     "' referenced from the object of type '" + className + "'")
+                self.classMissing = true
             }
         }
         
