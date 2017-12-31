@@ -127,9 +127,6 @@ public class ViewCSSManager {
     
     private func generateStyleDictionary(className: String, style: String?, class klass: String?) -> Dictionary<String, Any> {
         
-        // Clear the error flag
-        self.classMissing = false
-        
         // Create a merged dictionary with all of the values
         var dict = Dictionary<String, Any>()
         

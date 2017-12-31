@@ -56,10 +56,14 @@ extension UIView {
     }
 
     func css(className: String, class klass: String?, style: String?, custom: ((ViewCSSConfig) -> Void)?=nil) {
+        let cssManager = ViewCSSManager.shared
+        
+        // Clear the missing flag (probably a better place to do this)
+        cssManager.classMissing = false
         
         // Store the cache key.  This will be used later to retrieve
-        self.cssKey = ViewCSSManager.shared.getCacheKey(className: className, style: style, class: klass)
-        let config = ViewCSSManager.shared.getConfig(className: className, style: style, class: klass)
+        self.cssKey = cssManager.getCacheKey(className: className, style: style, class: klass)
+        let config = cssManager.getConfig(className: className, style: style, class: klass)
         
         // If it is a UIView, check for main color first, else just background color
         if let color = config.background?.color {
@@ -111,6 +115,20 @@ extension UIView {
         // Check if there is a defined cusomt CSS method
         if let customizeProtocol = self as? ViewCSSCustomizableProtocol {
             customizeProtocol.cssCustomize(config: config)
+        }
+        
+        // If we are snooping, handle it
+        if cssManager.snoop || cssManager.classMissing {
+            let cssDict = ViewCSSConfig.toCSS(object: self)
+            var keyName = className
+            if klass != nil {
+                keyName += "." + klass!
+            }
+            cssManager.logSnoop(key: keyName, dict: cssDict)
+            if cssManager.classMissing {
+                print("Properties for unknown class " + keyName + ":")
+                cssManager.printDictionary(dict: cssDict)
+            }
         }
     }
     

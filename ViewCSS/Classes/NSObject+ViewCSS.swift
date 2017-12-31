@@ -54,24 +54,7 @@ public extension NSObject {
     func css(object: Any?, class klass: String?, style: String?, custom: ((ViewCSSConfig) -> Void)?=nil) {
         let className = ViewCSSManager.shared.getClassName(object: self)
         if let target = (object ?? self) as? UIView {
-            
-            // Run the CSS
             target.css(className: className, class: klass, style: style, custom: custom)
-            
-            // If we are snooping, generate the CSS dictionary
-            let cssManager = ViewCSSManager.shared
-            if cssManager.snoop || cssManager.classMissing {
-                let cssDict = ViewCSSConfig.toCSS(object: target)
-                var keyName = className
-                if klass != nil {
-                    keyName += "." + klass!
-                }
-                cssManager.logSnoop(key: keyName, dict: cssDict)
-                if cssManager.classMissing {
-                    print("Properties for unknown class " + keyName + ":")
-                    cssManager.printDictionary(dict: cssDict)
-                }
-            }
         }
     }
 }
