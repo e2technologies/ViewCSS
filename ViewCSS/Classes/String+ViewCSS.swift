@@ -18,16 +18,16 @@ extension String {
                 temp += str
             }
             else {
-                if temp.count > 1 {
+                if temp.count > 0 {
                     if newString.count > 0 { newString += "_" }
-                    newString += temp.dropLast().lowercased() + "_" + temp.dropFirst(temp.count-1).lowercased() + str
-                    temp = ""
-                }
-                else if temp.count == 1 {
-                    if newString.count > 0 {
-                        newString += "_"
+                    
+                    if temp.count > 1 {
+                        newString += temp.dropLast().lowercased() + "_" + temp.dropFirst(temp.count-1).lowercased() + str
                     }
-                    newString += temp.lowercased() + str
+                    else {
+                        newString += temp.lowercased() + str
+                    }
+                    
                     temp = ""
                 }
                 else {
@@ -37,7 +37,10 @@ extension String {
         }
         
         if temp.count > 0 {
-            newString += "_" + temp.lowercased()
+            if newString.count > 0 { newString += "_" }
+            
+            newString += temp.lowercased()
+            
             temp = ""
         }
         

@@ -92,7 +92,7 @@ public class ViewCSSFontConfig: ViewCSSBaseConfig {
         let config = ViewCSSFontConfig()
         
         config.cssSize(string: self.checkVariables(string: dict[FONT_SIZE] as? String))
-        config.cssWeightValue(string: self.checkVariables(string: dict[FONT_WEIGHT] as? String))
+        config.cssWeight(string: self.checkVariables(string: dict[FONT_WEIGHT] as? String))
         
         return config
     }
@@ -160,7 +160,7 @@ public class ViewCSSFontConfig: ViewCSSBaseConfig {
         }
     }
     
-    private func cssWeightValue(string: String?) {
+    private func cssWeight(string: String?) {
         if string != nil {
             if #available(iOS 8.2, *) {
                 switch string! {
