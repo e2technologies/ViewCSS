@@ -1,79 +1,28 @@
-//
-//  UIView+ViewCSS.swift
-//  FBSnapshotTestCase
-//
-//  Created by Eric Chapman on 12/29/17.
-//
+/*
+ Copyright 2018 Eric Chapman
+ 
+ Permission is hereby granted, free of charge, to any person obtaining a copy of this
+ software and associated documentation files (the "Software"), to deal in the Software
+ without restriction, including without limitation the rights to use, copy, modify,
+ merge, publish, distribute, sublicense, and/or sell copies of the Software, and to
+ permit persons to whom the Software is furnished to do so, subject to the following
+ conditions:
+ 
+ The above copyright notice and this permission notice shall be included in all copies
+ or substantial portions of the Software.
+ 
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+ PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE
+ OR OTHER DEALINGS IN THE SOFTWARE.
+ */
 
 import Foundation
 
-public protocol ViewCSSCustomizableProtocol {
-    func cssCustomize(config: ViewCSSConfig)
-}
-
-protocol ViewCSSProtocol {
-    func setCSSBackgroundColor(_ color: UIColor)
-    func setCSSTintColor(_ color: UIColor)
-    func setCSSBorderRadius(_ radius: CGFloat)
-    func setCSSBorder(width: CGFloat, color: UIColor)
-    func setCSSOpacity(_ opacity: CGFloat)
-}
-
-protocol ViewCSSTextProtocol: ViewCSSProtocol {
-    func setCSSTextColor(_ color: UIColor)
-    func setCSSFont(_ font: UIFont)
-    func setCSSTextAlignment( _ alignment: NSTextAlignment)
-}
-
-extension UIView: ViewCSSProtocol {
-    func setCSSBackgroundColor(_ color: UIColor) { self.backgroundColor = color }
-    func setCSSTintColor(_ color: UIColor) { self.tintColor = color }
-    func setCSSBorderRadius(_ radius: CGFloat) {
-        self.layer.cornerRadius = radius
-        self.layer.masksToBounds = true
-    }
-    func setCSSBorder(width: CGFloat, color: UIColor) {
-        self.layer.borderColor = color.cgColor
-        self.layer.borderWidth = width
-    }
-    func setCSSOpacity(_ opacity: CGFloat) { self.alpha = opacity }
-}
-
-extension UILabel: ViewCSSTextProtocol {
-    func setCSSTextColor(_ color: UIColor) { self.textColor = color }
-    func setCSSFont(_ font: UIFont) { self.font = font }
-    func setCSSTextAlignment( _ alignment: NSTextAlignment) { self.textAlignment = alignment }
-}
-
-extension UITextField: ViewCSSTextProtocol {
-    func setCSSTextColor(_ color: UIColor) { self.textColor = color }
-    func setCSSFont(_ font: UIFont) { self.font = font }
-    func setCSSTextAlignment( _ alignment: NSTextAlignment) { self.textAlignment = alignment }
-}
-
-extension UITextView: ViewCSSTextProtocol {
-    func setCSSTextColor(_ color: UIColor) { self.textColor = color }
-    func setCSSFont(_ font: UIFont) { self.font = font }
-    func setCSSTextAlignment( _ alignment: NSTextAlignment) { self.textAlignment = alignment }
-}
-
-extension UIButton: ViewCSSTextProtocol {
-    func setCSSTextColor(_ color: UIColor) { self.setTitleColor(color, for: .normal) }
-    func setCSSFont(_ font: UIFont) { self.titleLabel?.font = font }
-    func setCSSTextAlignment( _ alignment: NSTextAlignment) {
-        if alignment == .left {
-            self.contentHorizontalAlignment = .left
-        }
-        else if alignment == .right {
-            self.contentHorizontalAlignment = .right
-        }
-        else {
-            self.contentHorizontalAlignment = .center
-        }
-    }
-}
-
 private var CSSKeyObjectHandle: UInt8 = 0
+
 public extension NSObject {
     
     private var cssKey: String? {
@@ -121,7 +70,8 @@ public extension NSObject {
     }
     
     private func css(className: String, class klass: String?, style: String?, custom: ((ViewCSSConfig) -> Void)?=nil) {
-        // Set the style for this object
+        
+        // Store the cache key.  This will be used later to retrieve
         self.cssKey = ViewCSSManager.shared.getCacheKey(className: className, style: style, class: klass)
         let config = ViewCSSManager.shared.getConfig(className: className, style: style, class: klass)
         
