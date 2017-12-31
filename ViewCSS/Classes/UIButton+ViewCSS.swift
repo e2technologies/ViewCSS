@@ -35,4 +35,18 @@ extension UIButton: ViewCSSTextProtocol {
             self.contentHorizontalAlignment = .center
         }
     }
+    
+    func getCSSTextColor() -> UIColor? { return self.titleColor(for: .normal) }
+    func getCSSFont() -> UIFont? { return self.titleLabel?.font }
+    func getCSSTextAlignment() -> NSTextAlignment {
+        if self.contentHorizontalAlignment == .left {
+            return .left
+        }
+        else if self.contentHorizontalAlignment == .right {
+            return .right
+        }
+        else {
+            return .center
+        }
+    }
 }

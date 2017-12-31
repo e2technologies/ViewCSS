@@ -62,6 +62,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             ]
         ]
         ViewCSSManager.shared.setCSS(dict: styles)
+        ViewCSSManager.shared.snoop = true
         
         return true
     }

@@ -21,18 +21,7 @@
 
 import Foundation
 
-private var CSSKeyObjectHandle: UInt8 = 0
-
 public extension NSObject {
-    
-    private var cssKey: String? {
-        get {
-            return objc_getAssociatedObject(self, &CSSKeyObjectHandle) as? String
-        }
-        set {
-            objc_setAssociatedObject(self, &CSSKeyObjectHandle, newValue, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-        }
-    }
 
     func css(custom: ((ViewCSSConfig) -> Void)?=nil) {
         self.css(object: nil, class: nil, style: nil, custom: custom)
@@ -64,77 +53,15 @@ public extension NSObject {
 
     func css(object: Any?, class klass: String?, style: String?, custom: ((ViewCSSConfig) -> Void)?=nil) {
         let className = ViewCSSManager.shared.getClassName(object: self)
-        if let target = (object ?? self) as? NSObject {
+        if let target = (object ?? self) as? UIView {
             target.css(className: className, class: klass, style: style, custom: custom)
+            
+            // If we are snooping, generate the CSS dictionary
+            if ViewCSSManager.shared.snoop && klass != nil {
+                let cssDict = ViewCSSConfig.toCSS(object: target)
+                let keyName = className + "." + klass!
+                ViewCSSManager.shared.logSnoop(key: keyName, dict: cssDict)
+            }
         }
     }
-    
-    private func css(className: String, class klass: String?, style: String?, custom: ((ViewCSSConfig) -> Void)?=nil) {
-        
-        // Store the cache key.  This will be used later to retrieve
-        self.cssKey = ViewCSSManager.shared.getCacheKey(className: className, style: style, class: klass)
-        let config = ViewCSSManager.shared.getConfig(className: className, style: style, class: klass)
-        
-        // If it is a UIView, check for main color first, else just background color
-        if let viewProtocol = self as? ViewCSSProtocol {
-            if let color = config.background?.color {
-                viewProtocol.setCSSBackgroundColor(color)
-            }
-            
-            if let color = config.tintColor {
-                viewProtocol.setCSSTintColor(color)
-            }
-            
-            if let opacity = config.opacity {
-                viewProtocol.setCSSOpacity(opacity)
-            }
-            
-            // BORDER
-            if let radius = config.border?.radius {
-                viewProtocol.setCSSBorderRadius(radius)
-            }
-            
-            if let width = config.border?.width {
-                if let color = config.border?.color {
-                    viewProtocol.setCSSBorder(width: width, color: color)
-                }
-            }
-        }
-        
-        // Check if it responds to text protocol
-        if let textProtocol = self as? ViewCSSTextProtocol {
-            // Set the color
-            if config.color != nil {
-                textProtocol.setCSSTextColor(config.color!)
-            }
-            
-            // Set the font
-            if let font = config.font?.getFont() {
-                textProtocol.setCSSFont(font)
-            }
-            
-            // Set the alignment
-            if let align = config.text?.align {
-                textProtocol.setCSSTextAlignment(align)
-            }
-        }
-        
-        // Call the custom config callback
-        if custom != nil {
-            custom!(config)
-        }
-        
-        // Check if there is a defined cusomt CSS method
-        if let customizeProtocol = self as? ViewCSSCustomizableProtocol {
-            customizeProtocol.cssCustomize(config: config)
-        }
-    }
-
-    func getCSS() -> ViewCSSConfig? {
-        if let cacheKey = self.cssKey {
-            return ViewCSSManager.shared.getConfig(cacheKey: cacheKey)
-        }
-        return nil
-    }
-    
 }

@@ -23,6 +23,18 @@ import Foundation
 
 public class ViewCSSManager {
     
+    // Snoop Feature Logic
+    public var snoop = false
+    private var snoopDict = Dictionary<String, Any>()
+    func logSnoop(key: String, dict: Dictionary<String, Any>) {
+        self.snoopDict[key] = dict
+    }
+    public func printSnoop() {
+        let data = try! JSONSerialization.data(withJSONObject: self.snoopDict, options: .prettyPrinted)
+        let string = NSString(data: data, encoding: String.Encoding.utf8.rawValue)
+        dump(string!)
+    }
+    
     // Ths method sets the manager with the CSS
     public func setCSS(dict: Dictionary<String, Any>) {
         self.styleLookup = dict

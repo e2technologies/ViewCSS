@@ -31,10 +31,21 @@ protocol ViewCSSProtocol {
     func setCSSBorderRadius(_ radius: CGFloat)
     func setCSSBorder(width: CGFloat, color: UIColor)
     func setCSSOpacity(_ opacity: CGFloat)
+    
+    func getCSSBackgroundColor() -> UIColor?
+    func getCSSTintColor() -> UIColor?
+    func getCSSBorderRadius() -> CGFloat
+    func getCSSBorderWidth() -> CGFloat
+    func getCSSBorderColor() -> UIColor?
+    func getCSSOpacity() -> CGFloat
 }
 
 protocol ViewCSSTextProtocol: ViewCSSProtocol {
     func setCSSTextColor(_ color: UIColor)
     func setCSSFont(_ font: UIFont)
     func setCSSTextAlignment( _ alignment: NSTextAlignment)
+    
+    func getCSSTextColor() -> UIColor?
+    func getCSSFont() -> UIFont?
+    func getCSSTextAlignment() -> NSTextAlignment
 }

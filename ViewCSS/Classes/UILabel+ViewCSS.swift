@@ -25,4 +25,8 @@ extension UILabel: ViewCSSTextProtocol {
     func setCSSTextColor(_ color: UIColor) { self.textColor = color }
     func setCSSFont(_ font: UIFont) { self.font = font }
     func setCSSTextAlignment( _ alignment: NSTextAlignment) { self.textAlignment = alignment }
+    
+    func getCSSTextColor() -> UIColor? { return self.textColor }
+    func getCSSFont() -> UIFont? { return self.font }
+    func getCSSTextAlignment() -> NSTextAlignment { return self.textAlignment }
 }

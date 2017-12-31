@@ -35,6 +35,8 @@ class ViewController: UIViewController {
         }
         self.button1?.css(class: "bad_class")
         self.button2?.css()
+        
+        ViewCSSManager.shared.printSnoop()
     }
 
     override func didReceiveMemoryWarning() {

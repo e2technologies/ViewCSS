@@ -261,4 +261,30 @@ extension UIColor {
             }
         }
     }
+    
+    public var toCSS: String {
+        var red = 255
+        var green = 255
+        var blue = 255
+        var alpha = 255
+        
+        if let colors = self.cgColor.components {
+            if self.cgColor.numberOfComponents >= 3 {
+                // Have RGB value
+                red = Int(255 * colors[0])
+                green = Int(255 * colors[1])
+                blue = Int(255 * colors[2])
+                alpha = self.cgColor.numberOfComponents == 4 ? Int(255 * colors[3]) : 255
+            }
+            else {
+                // Have Grayscale value
+                red = Int(255 * colors[0])
+                green = Int(255 * colors[0])
+                blue = Int(255 * colors[0])
+                alpha = self.cgColor.numberOfComponents == 2 ? Int(255 * colors[1]) : 255
+            }
+        }
+        
+        return String(format:"#%02X%02X%02X%02X", red, green, blue, alpha)
+    }
 }

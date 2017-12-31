@@ -45,6 +45,18 @@ public class ViewCSSBackgroundConfig: ViewCSSBaseConfig {
         return config
     }
     
+    static func toCSS(object: Any) -> Dictionary<String, String> {
+        var dict = Dictionary<String, String>()
+        
+        if let viewProtocol = object as? ViewCSSProtocol {
+            if let backgroundColor = viewProtocol.getCSSBackgroundColor() {
+                dict[BACKGROUND_COLOR] = backgroundColor.toCSS
+            }
+        }
+        
+        return dict
+    }
+    
     private func cssColor(string: String?) {
         if string != nil {
             self.color = UIColor(css: string!)
@@ -68,6 +80,29 @@ public class ViewCSSTextConfig: ViewCSSBaseConfig {
         config.cssAlign(string: self.checkVariables(string: dict[TEXT_ALIGN] as? String))
         
         return config
+    }
+    
+    static func toCSS(object: Any) -> Dictionary<String, String> {
+        var dict = Dictionary<String, String>()
+        
+        if let textProtocol = object as? ViewCSSTextProtocol {
+            var align: String? = nil
+            switch textProtocol.getCSSTextAlignment() {
+            case .center:
+                align = "center"
+            case .left:
+                align = "left"
+            case .right:
+                align = "right"
+            default:
+                align = "center"
+            }
+            if align != nil {
+                dict[TEXT_ALIGN] = align
+            }
+        }
+        
+        return dict
     }
     
     private func cssAlign(string: String?) {
@@ -109,6 +144,19 @@ public class ViewCSSFontConfig: ViewCSSBaseConfig {
         config.cssWeight(string: self.checkVariables(string: dict[FONT_WEIGHT] as? String))
         
         return config
+    }
+    
+    static func toCSS(object: Any) -> Dictionary<String, String> {
+        var dict = Dictionary<String, String>()
+        
+        if let textProtocol = object as? ViewCSSTextProtocol {
+            if let font = textProtocol.getCSSFont() {
+                dict[FONT_SIZE] = font.pointSize.toPX
+                // TODO: Get font weight
+            }
+        }
+        
+        return dict
     }
     
     func getFont() -> UIFont? {
@@ -236,6 +284,27 @@ public class ViewCSSBorderConfig: ViewCSSBaseConfig {
         return config
     }
     
+    static func toCSS(object: Any) -> Dictionary<String, String> {
+        var dict = Dictionary<String, String>()
+        
+        if let viewProtocol = object as? ViewCSSProtocol {
+            let borderRadius = viewProtocol.getCSSBorderRadius()
+            let borderColor = viewProtocol.getCSSBorderColor()
+            let borderWidth = viewProtocol.getCSSBorderWidth()
+            
+            if borderRadius > 0 {
+                dict[BORDER_RADIUS] = borderRadius.toPX
+            }
+            
+            if borderWidth > 0 && borderColor != nil {
+                dict[BORDER_WIDTH] = borderWidth.toPX
+                dict[BORDER_COLOR] = borderColor!.toCSS
+            }
+        }
+        
+        return dict
+    }
+    
     private func cssRadius(string: String?) {
         if string != nil {
             if let radius = string!.lengthToFloat {
@@ -313,6 +382,33 @@ public class ViewCSSConfig: ViewCSSBaseConfig {
         config.cssOpacity(string: self.checkVariables(string: dict[OPACITY] as? String))
         
         return config
+    }
+    
+    static func toCSS(object: Any) -> Dictionary<String, String> {
+        var dict = Dictionary<String, String>()
+        
+        if let viewProtocol = object as? ViewCSSProtocol {
+            if let tintColor = viewProtocol.getCSSTintColor() {
+                dict[TINT_COLOR] = tintColor.toCSS
+            }
+            let opacity = viewProtocol.getCSSOpacity()
+            if opacity < 1.0 {
+                dict[OPACITY] = String(format:"%f", opacity)
+            }
+        }
+        
+        if let textProtocol = object as? ViewCSSTextProtocol {
+            if let color = textProtocol.getCSSTextColor() {
+                dict[COLOR] = color.toCSS
+            }
+        }
+        
+        dict.merge(ViewCSSBackgroundConfig.toCSS(object: object), uniquingKeysWith: { (current, _) in current })
+        dict.merge(ViewCSSFontConfig.toCSS(object: object), uniquingKeysWith: { (current, _) in current })
+        dict.merge(ViewCSSBorderConfig.toCSS(object: object), uniquingKeysWith: { (current, _) in current })
+        dict.merge(ViewCSSTextConfig.toCSS(object: object), uniquingKeysWith: { (current, _) in current })
+        
+        return dict
     }
     
     private func cssTintColor(string: String?) {
