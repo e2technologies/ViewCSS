@@ -95,7 +95,7 @@ public class ViewCSSTextConfig: ViewCSSBaseConfig {
             case .right:
                 align = "right"
             default:
-                align = "center"
+                align = "left"
             }
             if align != nil {
                 dict[TEXT_ALIGN] = align
@@ -389,7 +389,11 @@ public class ViewCSSConfig: ViewCSSBaseConfig {
         
         if let viewProtocol = object as? ViewCSSProtocol {
             if let tintColor = viewProtocol.getCSSTintColor() {
-                dict[TINT_COLOR] = tintColor.toCSS
+                let tintColorCSS = tintColor.toCSS
+                // Ignore Apple default
+                if tintColorCSS != "#007AFFFF" {
+                    dict[TINT_COLOR] = tintColorCSS
+                }
             }
             let opacity = viewProtocol.getCSSOpacity()
             if opacity < 1.0 {
