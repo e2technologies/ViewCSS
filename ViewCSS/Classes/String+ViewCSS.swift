@@ -24,7 +24,10 @@ extension String {
                     temp = ""
                 }
                 else if temp.count == 1 {
-                    newString += "_" + temp.lowercased() + str
+                    if newString.count > 0 {
+                        newString += "_"
+                    }
+                    newString += temp.lowercased() + str
                     temp = ""
                 }
                 else {

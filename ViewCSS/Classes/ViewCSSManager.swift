@@ -59,14 +59,14 @@ public class ViewCSSManager {
         return self.styleCache[cacheKey]
     }
 
-    func getConfig(object: Any, style: String?, class klass: String?) -> ViewCSSConfig {
-        let cacheKey = self.getCacheKey(object: object, style: style, class: klass)
+    func getConfig(className: String, style: String?, class klass: String?) -> ViewCSSConfig {
+        let cacheKey = self.getCacheKey(className: className, style: style, class: klass)
         
         // Return the config value if it is already in the cache
         if let cachedConfig = self.getConfig(cacheKey: cacheKey) { return cachedConfig }
         
         // Create the consolidated dictionary
-        let dict = self.generateStyleDictionary(object: object, style: style, class: klass)
+        let dict = self.generateStyleDictionary(className: className, style: style, class: klass)
         
         // Now parse the final dictionary and return it to the user
         let config = ViewCSSConfig.fromCSS(dict: dict)
@@ -74,9 +74,8 @@ public class ViewCSSManager {
         return config
     }
 
-    func getCacheKey(object: Any, style: String?, class klass: String?) -> String {
-        let klassName = self.getKlassName(object: object)
-        var cacheKey = klassName
+    func getCacheKey(className: String, style: String?, class klass: String?) -> String {
+        var cacheKey = className
         if style != nil && !style!.isEmpty {
             cacheKey += " " + style!
         }
@@ -87,12 +86,11 @@ public class ViewCSSManager {
         return cacheKey
     }
     
-    private func getKlassName(object: Any) -> String {
+    func getClassName(object: Any) -> String {
         return String(describing: type(of: object)).camelToSnake
     }
     
-    private func generateStyleDictionary(object: Any, style: String?, class klass: String?) -> Dictionary<String, Any> {
-        let klassName = self.getKlassName(object: object)
+    private func generateStyleDictionary(className: String, style: String?, class klass: String?) -> Dictionary<String, Any> {
         
         // Create a merged dictionary with all of the values
         var dict = Dictionary<String, Any>()
@@ -117,7 +115,7 @@ public class ViewCSSManager {
             // Get the list
             for subStyle in klass!.split(separator: " ") {
                 // Look for the class by itself and the class with a "."
-                for name in [String(klassName + "." + subStyle), String("."+subStyle)] {
+                for name in [String(className + "." + subStyle), String("."+subStyle)] {
                     // If we find a match, merge it into the dictionary
                     if let subDict = self.styleLookup[name] as? Dictionary<String, Any> {
                         numberOfMatches += 1
@@ -129,12 +127,12 @@ public class ViewCSSManager {
             // If we didn't find any matches, print a message
             if numberOfMatches == 0 {
                 print("ViewCSSManager WARN: No match found for CSS class '" + klass! +
-                    "' referenced from the an object of type '" + String(describing: type(of: object)) + "'")
+                    "' referenced from the object of type '" + className + "'")
             }
         }
         
         // Priority 3: General class defines
-        if let subDict = self.styleLookup[klassName] as? Dictionary<String, Any> {
+        if let subDict = self.styleLookup[className] as? Dictionary<String, Any> {
             dict = dict.merging(subDict) { (current, _) in current }
         }
         

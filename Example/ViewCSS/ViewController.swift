@@ -27,9 +27,9 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-        self.label1?.css(class: "label1")
+        self.css(object: self.label1, class: "label1")
         self.label2?.css(class: "label2")
-        self.label3?.css(class: "label3")
+        self.label3?.css(object: self, class: "label3")
         self.label4?.css(class: "primary", style: "background-color:lightgray;text-align:center;") { (config: ViewCSSConfig) in
             self.label2?.backgroundColor = config.color
         }

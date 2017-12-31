@@ -74,7 +74,7 @@ extension UIButton: ViewCSSTextProtocol {
 }
 
 private var CSSKeyObjectHandle: UInt8 = 0
-public extension UIView {
+public extension NSObject {
     
     private var cssKey: String? {
         get {
@@ -86,45 +86,68 @@ public extension UIView {
     }
 
     func css(custom: ((ViewCSSConfig) -> Void)?=nil) {
-        self.css(class: nil, style: nil, custom: custom)
+        self.css(object: nil, class: nil, style: nil, custom: custom)
     }
     
     func css(style: String?, custom: ((ViewCSSConfig) -> Void)?=nil) {
-        self.css(class: nil, style: style, custom: custom)
+        self.css(object: nil, class: nil, style: style, custom: custom)
     }
     
     func css(class klass: String?, custom: ((ViewCSSConfig) -> Void)?=nil) {
-        self.css(class: klass, style: nil, custom: custom)
+        self.css(object: nil, class: klass, style: nil, custom: custom)
     }
     
     func css(class klass: String?, style: String?, custom: ((ViewCSSConfig) -> Void)?=nil) {
-        
+        self.css(object: nil, class: klass, style: style, custom: custom)
+    }
+    
+    func css(object: Any?, custom: ((ViewCSSConfig) -> Void)?=nil) {
+        self.css(object: object, class: nil, style: nil, custom: custom)
+    }
+    
+    func css(object: Any?, style: String?, custom: ((ViewCSSConfig) -> Void)?=nil) {
+        self.css(object: object, class: nil, style: style, custom: custom)
+    }
+    
+    func css(object: Any?, class klass: String?, custom: ((ViewCSSConfig) -> Void)?=nil) {
+        self.css(object: object, class: klass, style: nil, custom: custom)
+    }
+
+    func css(object: Any?, class klass: String?, style: String?, custom: ((ViewCSSConfig) -> Void)?=nil) {
+        let className = ViewCSSManager.shared.getClassName(object: self)
+        if let target = (object ?? self) as? NSObject {
+            target.css(className: className, class: klass, style: style, custom: custom)
+        }
+    }
+    
+    private func css(className: String, class klass: String?, style: String?, custom: ((ViewCSSConfig) -> Void)?=nil) {
         // Set the style for this object
-        self.cssKey = ViewCSSManager.shared.getCacheKey(object: self, style: style, class: klass)
-        let config = ViewCSSManager.shared.getConfig(object: self, style: style, class: klass)
+        self.cssKey = ViewCSSManager.shared.getCacheKey(className: className, style: style, class: klass)
+        let config = ViewCSSManager.shared.getConfig(className: className, style: style, class: klass)
         
-        // COLORS
         // If it is a UIView, check for main color first, else just background color
-        if let color = config.background?.color {
-            self.setCSSBackgroundColor(color)
-        }
-        
-        if let color = config.tintColor {
-             self.setCSSTintColor(color)
-        }
-        
-        if let opacity = config.opacity {
-            self.setCSSOpacity(opacity)
-        }
-        
-        // BORDER
-        if let radius = config.border?.radius {
-            self.setCSSBorderRadius(radius)
-        }
-        
-        if let width = config.border?.width {
-            if let color = config.border?.color {
-                self.setCSSBorder(width: width, color: color)
+        if let viewProtocol = self as? ViewCSSProtocol {
+            if let color = config.background?.color {
+                viewProtocol.setCSSBackgroundColor(color)
+            }
+            
+            if let color = config.tintColor {
+                viewProtocol.setCSSTintColor(color)
+            }
+            
+            if let opacity = config.opacity {
+                viewProtocol.setCSSOpacity(opacity)
+            }
+            
+            // BORDER
+            if let radius = config.border?.radius {
+                viewProtocol.setCSSBorderRadius(radius)
+            }
+            
+            if let width = config.border?.width {
+                if let color = config.border?.color {
+                    viewProtocol.setCSSBorder(width: width, color: color)
+                }
             }
         }
         
@@ -139,7 +162,7 @@ public extension UIView {
             if let font = config.font?.getFont() {
                 textProtocol.setCSSFont(font)
             }
-
+            
             // Set the alignment
             if let align = config.text?.align {
                 textProtocol.setCSSTextAlignment(align)
@@ -156,7 +179,7 @@ public extension UIView {
             customizeProtocol.cssCustomize(config: config)
         }
     }
-    
+
     func getCSS() -> ViewCSSConfig? {
         if let cacheKey = self.cssKey {
             return ViewCSSManager.shared.getConfig(cacheKey: cacheKey)

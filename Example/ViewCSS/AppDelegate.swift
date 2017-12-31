@@ -32,11 +32,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 "text-align": "left",
                 "background-color": "orange",
             ],
-            ".label1": [
-                "font-size": "60",
+            "view_controller.label1": [
+                "font-size": "30px",
                 "font-weight": "500",
-                "color": "gray",
+                "color": "green",
                 "text-transform": "uppercase",
+                "text-align": "center",
             ],
             ".label2": [
                 "font-size": "90%",
