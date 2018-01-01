@@ -45,15 +45,6 @@ extension UIView: ViewCSSProtocol {
 private var CSSKeyObjectHandle: UInt8 = 0
 
 extension UIView {
-    
-    private var cssKey: String? {
-        get {
-            return objc_getAssociatedObject(self, &CSSKeyObjectHandle) as? String
-        }
-        set {
-            objc_setAssociatedObject(self, &CSSKeyObjectHandle, newValue, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-        }
-    }
 
     func css(className: String, class klass: String?, style: String?, custom: ((ViewCSSConfig) -> Void)?=nil) {
         let cssManager = ViewCSSManager.shared
@@ -61,8 +52,7 @@ extension UIView {
         // Clear the missing flag (probably a better place to do this)
         cssManager.classMissing = false
         
-        // Store the cache key.  This will be used later to retrieve
-        self.cssKey = cssManager.getCacheKey(className: className, style: style, class: klass)
+        // Get the config
         let config = cssManager.getConfig(className: className, style: style, class: klass)
         
         // If it is a UIView, check for main color first, else just background color
@@ -112,11 +102,6 @@ extension UIView {
             custom!(config)
         }
         
-        // Check if there is a defined cusomt CSS method
-        if let customizeProtocol = self as? ViewCSSCustomizableProtocol {
-            customizeProtocol.cssCustomize(config: config)
-        }
-        
         // If we are snooping, handle it
         if cssManager.snoop || cssManager.classMissing {
             let cssDict = ViewCSSConfig.toCSS(object: self)
@@ -130,12 +115,5 @@ extension UIView {
                 cssManager.printDictionary(dict: cssDict)
             }
         }
-    }
-    
-    func getCSS() -> ViewCSSConfig? {
-        if let cacheKey = self.cssKey {
-            return ViewCSSManager.shared.getConfig(cacheKey: cacheKey)
-        }
-        return nil
     }
 }

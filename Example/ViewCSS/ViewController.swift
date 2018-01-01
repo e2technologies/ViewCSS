@@ -9,13 +9,7 @@
 import UIKit
 import ViewCSS
 
-class CustomLabel: UILabel, ViewCSSCustomizableProtocol {
-    func cssCustomize(config: ViewCSSConfig) {
-        self.textColor = UIColor.green
-    }
-}
-
-class ViewController: UIViewController {
+class ViewController: UIViewController, ViewCSSCustomizableProtocol {
     @IBOutlet weak var label1: UILabel?
     @IBOutlet weak var label2: UILabel?
     @IBOutlet weak var label3: UILabel?
@@ -36,7 +30,17 @@ class ViewController: UIViewController {
         self.button1?.css(class: "bad_class")
         self.button2?.css()
         
+        var config = self.cssConfig(class: "label1")
+        print(String(describing: config))
+        
+        config = ViewController.cssConfig(class: "label1")
+        print(String(describing: config))
+        
         ViewCSSManager.shared.printSnoop()
+    }
+    
+    func cssCustomize(config: ViewCSSConfig) {
+        self.label1?.textColor = UIColor.red
     }
 
     override func didReceiveMemoryWarning() {

@@ -23,6 +23,10 @@ import Foundation
 
 public extension NSObject {
 
+    // ================================================================
+    // CSS Methods
+    // ================================================================
+    
     func css(custom: ((ViewCSSConfig) -> Void)?=nil) {
         self.css(object: nil, class: nil, style: nil, custom: custom)
     }
@@ -55,6 +59,48 @@ public extension NSObject {
         let className = ViewCSSManager.shared.getClassName(object: self)
         if let target = (object ?? self) as? UIView {
             target.css(className: className, class: klass, style: style, custom: custom)
+            
+            // Check if there is a defined custom CSS method
+            if let customizeProtocol = self as? ViewCSSCustomizableProtocol {
+                let config = target.cssConfig(class: klass, style: style)
+                customizeProtocol.cssCustomize(config: config)
+            }
         }
+    }
+    
+    // ================================================================
+    // CSS Config Methods
+    // ================================================================
+    
+    func cssConfig(style: String?) -> ViewCSSConfig {
+        return self.cssConfig(class: nil, style: style)
+    }
+    
+    func cssConfig(class klass: String?) -> ViewCSSConfig {
+        return self.cssConfig(class: klass, style: nil)
+    }
+    
+    func cssConfig(class klass: String?, style: String?) -> ViewCSSConfig {
+        let cssManager = ViewCSSManager.shared
+        let className = cssManager.getClassName(object: self)
+        return cssManager.getConfig(className: className, style: style, class: klass)
+    }
+    
+    // ================================================================
+    // CSS Class Config Methods
+    // ================================================================
+    
+    class func cssConfig(style: String?) -> ViewCSSConfig {
+        return self.cssConfig(class: nil, style: style)
+    }
+    
+    class func cssConfig(class klass: String?) -> ViewCSSConfig {
+        return self.cssConfig(class: klass, style: nil)
+    }
+    
+    class func cssConfig(class klass: String?, style: String?) -> ViewCSSConfig {
+        let cssManager = ViewCSSManager.shared
+        let className = cssManager.getClassName(class: self)
+        return cssManager.getConfig(className: className, style: style, class: klass)
     }
 }

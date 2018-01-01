@@ -77,16 +77,12 @@ public class ViewCSSManager {
         
         return nextString
     }
-    
-    func getConfig(cacheKey: String) -> ViewCSSConfig? {
-        return self.styleCache[cacheKey]
-    }
 
     func getConfig(className: String, style: String?, class klass: String?) -> ViewCSSConfig {
         let cacheKey = self.getCacheKey(className: className, style: style, class: klass)
         
         // Return the config value if it is already in the cache
-        if let cachedConfig = self.getConfig(cacheKey: cacheKey) { return cachedConfig }
+        if let cachedConfig = self.styleCache[cacheKey] { return cachedConfig }
         
         // Create the consolidated dictionary
         let dict = self.generateStyleDictionary(className: className, style: style, class: klass)
@@ -97,7 +93,7 @@ public class ViewCSSManager {
         return config
     }
 
-    func getCacheKey(className: String, style: String?, class klass: String?) -> String {
+    private func getCacheKey(className: String, style: String?, class klass: String?) -> String {
         var cacheKey = className
         if style != nil && !style!.isEmpty {
             cacheKey += " " + style!
@@ -110,7 +106,11 @@ public class ViewCSSManager {
     }
     
     func getClassName(object: Any) -> String {
-        return String(describing: type(of: object)).camelToSnake
+        return self.getClassName(class: type(of: object))
+    }
+    
+    func getClassName(class klass: Any.Type) -> String {
+        return String(describing: klass).camelToSnake
     }
     
     private var styleCache = [String:ViewCSSConfig]()
