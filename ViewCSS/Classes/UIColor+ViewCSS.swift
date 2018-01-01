@@ -172,7 +172,8 @@ extension UIColor {
             "white": "#FFFFFFFF",
             "whitesmoke": "#F5F5F5FF",
             "yellow": "#FFFF00FF",
-            "yellowgreen": "#9ACD32FF"
+            "yellowgreen": "#9ACD32FF",
+            "transparent": "#00000000",
         ]
         
         let cleanedName = name.replacingOccurrences(of: " ", with: "").lowercased()

@@ -10,6 +10,7 @@ import UIKit
 import ViewCSS
 
 class ViewController: UIViewController, ViewCSSCustomizableProtocol {
+    
     @IBOutlet weak var label1: UILabel?
     @IBOutlet weak var label2: UILabel?
     @IBOutlet weak var label3: UILabel?
@@ -39,7 +40,7 @@ class ViewController: UIViewController, ViewCSSCustomizableProtocol {
         ViewCSSManager.shared.printSnoop()
     }
     
-    func cssCustomize(config: ViewCSSConfig) {
+    func cssCustomize(object: Any?, class klass: String?, style: String?, config: ViewCSSConfig) {
         self.label1?.textColor = UIColor.red
     }
 

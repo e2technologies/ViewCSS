@@ -94,8 +94,10 @@ public class ViewCSSTextConfig: ViewCSSBaseConfig {
                 align = "left"
             case .right:
                 align = "right"
+            case .justified:
+                align = "justify"
             default:
-                align = "left"
+                align = nil
             }
             if align != nil {
                 dict[TEXT_ALIGN] = align

@@ -19,7 +19,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Override point for customization after application launch.
         
         // Setup CSS
-        let styles: [String:Any] = [
+        let css: [String:Any] = [
             ":root": [
                 "--main-color": "var(--main-second-color)",
                 "--main-second-color": "yellow",
@@ -61,7 +61,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 "font-size": "200%"
             ]
         ]
-        ViewCSSManager.shared.setCSS(dict: styles)
+        ViewCSSManager.shared.setCSS(dict: css)
         ViewCSSManager.shared.snoop = true
         
         return true

@@ -22,7 +22,7 @@
 import Foundation
 
 public protocol ViewCSSCustomizableProtocol {
-    func cssCustomize(config: ViewCSSConfig)
+    func cssCustomize(object: Any?, class klass: String?, style: String?, config: ViewCSSConfig)
 }
 
 protocol ViewCSSProtocol {

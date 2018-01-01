@@ -5,9 +5,548 @@
 [![License](https://img.shields.io/cocoapods/l/ViewCSS.svg?style=flat)](http://cocoapods.org/pods/ViewCSS)
 [![Platform](https://img.shields.io/cocoapods/p/ViewCSS.svg?style=flat)](http://cocoapods.org/pods/ViewCSS)
 
-## Example
+## Overview
 
-To run the example project, clone the repo, and run `pod install` from the Example directory first.
+ViewCSS is a CSS like plugin for iOS Applications.  It provides a simple 
+interface to define different attributes for UIView elements.  Here is an 
+example below
+
+```swift
+import UIKit
+import ViewCSS
+
+class MyCustomViewController: UIViewController {
+    @IBOutlet weak var label1: UILabel?
+    @IBOutlet weak var label2: UILabel?
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        // Set the global CSS dictionary (see later section on this)
+        let css: [String:Any] = [
+            ".bold" : [
+                "font-weight" : "bold"
+            ],
+        	  "my_custom_view_controller.label1" : [
+        	      "font-size" : "16px",
+                "text-align": "left",
+                "color" : "red",
+        	  ],
+            "my_custom_view_controller.label2" : [
+                "font-size" : "12px",
+                "text-align": "right",
+                "color" : "white",
+        	  ],
+        ]
+        ViewCSSManager.shared.setCSS(dict: css)
+        
+        // ...
+        
+        self.css(object: self.label1, class: "label1")
+        self.css(object: self.label2, class: "bold label2")
+    }
+    
+}
+```
+
+This will dynamically configure "label1" and "label2" with the defined
+settings in the "css" dictionary.  Note that it only overrides the settings
+that were included in the dictionary, so any customizations that were
+done in code or a NIB will remain.
+
+This enables common styles to be reused throughout the application.  It
+also enables the attributes of UI elements to be changed outside of the 
+compiled application.  For example, the CSS dictionary could be a json 
+file that is stored on a server somewhere that the application can
+periodically check for updates.
+
+Also since only the properties that are in the dictionary are modified,
+you can use this library purely as a way to override the default settings.
+In other words, you do not need to have every property defined in the
+dictionary, just those where you want to override a specific setting.
+This makes the use of this library NOT an "all or nothing" exercise.  You
+can override the attributes on an "as needed" basis.
+
+### Supported Attributes
+
+The ViewCSS library supports the below CSS properties.  Note that I
+attempted to stick with the standard CSS properties the best that I could,
+but some custom properties had to be created (such as "tint-color")
+
+| Property         | UIView | UILabel | UITextField | UITextView | UIButton |
+|:-----------------|:------:|:-------:|:-----------:|:----------:|:--------:|
+| background-color |    X   |    -    |      -      |     -      |     -    |
+| border-color     |    X   |    -    |      -      |     -      |     -    |
+| border-radius    |    X   |    -    |      -      |     -      |     -    |
+| border-width     |    X   |    -    |      -      |     -      |     -    |
+| color            |        |    X    |      X      |     X      |     X    |
+| font-family      |        |   SOON  |     SOON    |    SOON    |   SOON   |
+| font-size        |        |    X    |      X      |     X      |     X    |
+| font-weight      |        |    X    |      X      |     X      |     X    |
+| opacity          |    X   |    -    |      -      |     -      |     -    |
+| text-align       |        |    X    |      X      |     X      |     X    |
+| tint-color       |    X   |    -    |      -      |     -      |     -    |
+
+#### Standard Types
+
+##### color
+The "color" property provides a few different ways to specify a color.
+
+It supports the following values
+
+  - ```rgb(red, green, blue, [alpha])``` - Value from 0-255 specifying the color value.
+    Note that "alpha" is optional and will default to 255.  An example of this for
+    the color "red" is ```rgb(255,0,0)```
+  - ```<name>``` - The name of the color.  The complete list of supported colors can
+    be found [here](https://www.w3schools.com/colors/colors_names.asp).  An example
+    of this for the color red is ```red```
+  - ```#<hex>``` - The hex value of the color.  If "alpha" is omitted, it will assume
+    255 (FF).  An example of this for the color red is ```#FF0000```
+  - ```transparent``` - A transparent color
+
+#### percentage
+The "percentage" property provides a way to specify a percentage.  It expects the
+value to end with a "%".  For example, a value of 150 percent for "font-size" would
+be ```"font-size" : "150%"```
+
+#### length
+The "length" property provides a way to specify a value in pixels.  It expects the
+value to end with a "px".  For example, a value of 20 pixels for "border-radius"
+would be ```"border-radius" : "20px"```
+
+#### number
+The "number" property provides a way to specify a raw number.  It expects just the
+number.  For example, a value of 0.75 for "opacity" would be ```"opacity" : "0.75"```
+
+#### background-color
+The "background-color" property will set the "backgroundColor" attribute
+of the UIView.
+
+It supports the following values
+
+  - *color* - Sets the background color to the specified color
+
+#### color
+The "color" property will set the "textColor" attribute of the text views.
+A UIButton is a special case where it will use "setTitleColor(color, for: .normal)".
+
+It supports the following values
+
+  - *color* - Sets the text color to the specified color
+
+#### border-radius
+The "border-radius" property will set the "layer.cornerRadius" attribute of
+a view.  It also sets the "layer.masksToBounds" which will not allow
+drawing outside of the view.
+
+It supports the following values
+
+  - *length* - Defines the shape of the corners
+
+#### border-width
+The "border-width" property will set the "layer.borderWidth" attribute of a
+view.  Note that it must be used in conjunction with "border-color".
+
+It supports the following values
+
+  - medium - Specifies a medium border of "2px"
+  - thin - Specifies a thin border of "1px"
+  - thick	Specifies a thick border of "3px"
+  - *length* - Allows you to define the thickness of the border
+
+#### border-color
+The "border-color" property will set the "layer.borderColor" attribute of a
+view.  Note that it must be used in conjunction with "border-width".
+
+It supports the following values
+
+  - *color* - Sets the border color to the specified color
+
+#### font-family
+NOT IMPLEMENTED YET
+
+#### font-size
+The "font-size" property will set the size of the font.  This assumes "system"
+font if "font-family" is not defined.  The library uses a font size of "15" as
+the "default" and then scales that value based on the values.
+
+It supports the following values
+
+  - xx-small - Sets the font-size to an xx-small size (default-6)
+  - x-small - Sets the font-size to an extra small size (default-4)
+  - small - Sets the font-size to a small size (default-2)
+  - medium - Sets the font-size to a medium size. This is default (default)
+  - large - Sets the font-size to a large size (default+2)
+  - x-large - Sets the font-size to an extra large size (default+4)
+  - xx-large - Sets the font-size to an xx-large size (default+6)
+  - *length* - Sets the font-size to a fixed size in px
+  - *percentage* - Sets the font-size to a percent of the *default*
+
+#### font-weight
+The "font-weight" property will set the weight of the font.  Note that this
+is only available in iOS 8.2 and above (it will just ignore the value if
+used on an earlier OS version).
+
+It supports the following values
+
+  - normal - Defines normal characters. This is "regular" in iOS terms
+  - bold - Defines thick characters. This is "bold" in iOS terms
+  - bolder - Defines thicker characters. This is "black" in iOS terms
+  - lighter - Defines lighter characters. This is "thin" in iOS terms
+  - 100 - This is "ultraLight" in iOS terms
+  - 200 - This is "thin" in iOS terms
+  - 300 - This is "light" in iOS terms
+  - 400 - This is "regular" in iOS terms
+  - 500 - This is "medium" in iOS terms
+  - 600 - This is "semibold" in iOS terms
+  - 700 - This is "bold" in iOS terms
+  - 800 - This is "heavy" in iOS terms
+  - 900 - This is "black" in iOS terms
+
+#### opacity
+The "opacity" property will set the "alpha" attribute of the view.
+
+It supports the following values
+
+  - *number* - Specifies the opacity. From 0.0 (fully transparent) to 1.0 (fully opaque)
+
+#### text-align
+The "text-align" property will set the "textAlignment" attribute of the text
+view.  A UIButton is a special case where it will use "contentHorizontalAlignment".
+
+It supports the following values
+
+  - left - Aligns the text to the left
+  - right - Aligns the text to the right
+  - center - Centers the text
+  - justify - Stretches the lines so that each line has equal width (like in
+    newspapers and magazines)
+
+#### tint-color
+The "tint-color" property will set the "tinColor" attribute of the view.
+
+It supports the following values
+
+  - *color* - Sets the tint color to the specified color
+
+### Attribute Dictionary
+
+#### Initialization
+
+The attribute dictionary should be set in the app delegate's "init" method.
+This will make sure it is loaded before any views are loaded.
+
+```swift
+class AppDelegate: UIResponder, UIApplicationDelegate {
+
+    override init() {
+        super.init()
+
+        let css: [String:Any] = [
+            // CSS Properties
+        ]
+        
+        ViewCSSManager.shared.setCSS(dict: css)
+    }
+}
+```
+
+The library leaves the generation of the dictionary to the developer.  This
+removes any unnecessary dependencies from the library on the format of the
+file that is capturing the CSS properties.
+
+Here are some examples of getting the file from other sources
+
+##### JSON File Example
+Here is an example of reading the properties from a json file in the bundle
+called "css.json"
+
+```swift
+class AppDelegate: UIResponder, UIApplicationDelegate {
+
+    override init() {
+        super.init()
+
+        if let path = Bundle.main.path(forResource: "css", ofType: "json") {
+            do {
+                let data = try Data(contentsOf: URL(fileURLWithPath: path), options: .mappedIfSafe)
+                let jsonResult = try JSONSerialization.jsonObject(with: data, options: .mutableLeaves)
+                if let jsonResult = jsonResult as? Dictionary<String, AnyObject> {
+                    ViewCSSManager.shared.setCSS(dict: jsonResult)
+                }
+            } catch {
+                print(error)
+            }
+        }
+    }
+}
+```
+
+#### Variables
+
+The attribute dictionary allows custom variables to be defined.  To do this,
+you must define the variable in a ":root" tag of the dictionary and access
+the variable using the ```var(<variable>)``` method.  This is shown below
+
+```swift
+    let css: [String:Any] = [
+        ":root": [
+            "--primary-color": "blue"
+        ],
+        "my_controller.label": [
+            "background-color": "var(--primary-color)"
+        ]
+    ]
+```
+
+Note that the library also supports nested variables.  For example
+
+```swift
+    let css: [String:Any] = [
+        ":root": [
+            "--main-color": "blue",
+            "--primary-color": "var(--main-color)"
+        ],
+        "my_controller.label": [
+            "background-color": "var(--primary-color)"
+        ]
+    ]
+```
+
+It will recursively search until a variable is not found
+
+### CSS Method
+The library extends "NSObject" to provide "css" helper methods that can
+be called.  The methods provide the user a means to apply CSS to an object.
+
+The properties for this method are as follows
+
+  - object: Any? - The object that the CSS is being applied to.  If ommited,
+    it will default to the object that called "css"
+  - class: String? - A list of classes for the object.  This is similar to the
+    "class" tag used in standard HTML/CSS
+  - style: String? - A string of additional elements.  This is similar to the
+    "style" tag used in standard HTML/CSS
+
+The library searches for properties in the following order.  It will
+keep the first value that it sees for a property
+
+  - "style" values
+  - "class" values - for each class (separated by a " ")
+      - <class_name>.class
+      - .class
+  - class_name
+
+Where the class_name is the name of the class that called the ".css" method.
+For example
+
+```swift
+class MyController: UIViewController {
+	@IBOutlet weak var label1: UILabel?
+	
+	func viewDidLoad() [
+	    super.viewDidLoad()
+	    self.css(object: self.label1, class: "bold label")
+	}
+}
+```
+
+will search for the following dictionaries
+
+  - my_controller.bold
+  - .bold
+  - my_controller.label1
+  - .label1
+  - my_controller
+
+Note there is an important distinction on how the ".css" method is called.
+Using the above example, class_name = "my_controller".  We can also call
+".css" directly from the "label1" object, but this will change the names of
+the dictionaries that the library searches for.  For example
+
+```swift
+class MyController: UIViewController {
+	@IBOutlet weak var label1: UILabel?
+	
+	func viewDidLoad() [
+	    super.viewDidLoad()
+	    self.label1.css(class: "bold label")
+	}
+}
+```
+
+will search for the following dictionaries
+
+  - ui_label.bold
+  - .bold
+  - ui_label.label1
+  - .label1
+  - ui_label
+
+This behavior may be desireable.  It depends on the application.
+
+In cases where a element is subclassed, for example like "UIButton", you
+may want to do the following
+
+```swift
+class MyButton: UIButton {
+	
+	override func awakeFromNib() {
+	    super.awakeFromNib()
+	    
+	    self.css()
+	}
+	
+}
+```
+This will search for the following dictionaries
+
+  - my_button
+
+
+### Customizations
+Sometimes there is a need to customize an additional element.  For example,
+maybe a button is created that has a custom "bar" at the bottom and you
+always want that to be the same color as the text.  There are 2 ways to do
+this.
+
+#### custom attribute
+The "custom" attribute is an option on the CSS call.  It will call back once
+the CSS has been applied.  Below is an example
+
+```swift
+class MyButton: UIButton {
+	@IBOutlet weak var bar: UIView?
+	
+	override func awakeFromNib() {
+	    super.awakeFromNib()
+	    
+	    self.css() { (config: ViewCSSConfig) in
+	    	self.bar.backgroundColor = config.color
+	    }
+	}
+	
+}
+```
+
+#### cssCustomize
+The "cssCustomize" provides a similar option as above, but uses a protocol
+instead.  Below is an example
+
+```swift
+class MyButton: UIButton, ViewCSSCustomizableProtocol {
+	@IBOutlet weak var bar: UIView?
+	
+	override func awakeFromNib() {
+	    super.awakeFromNib()
+	    
+	    self.css()
+	}
+	
+	func cssCustomize(object: Any?, class klass: String?, style: String?, config: ViewCSSConfig) {
+	    self.bar.backgroundColor = config.color
+	}
+	
+}
+```
+
+Note that the "cssCustomize" method is called every time ".css" is called.  In
+order to differentiate between the different calls, the "object", "class", and
+"style" from the ".css" call are included in hte callback.
+
+### Snooping
+Snooping is a mechanism that provides a way to print out the initial values
+that the application currently has in order to pre-intialize the dictionary.
+
+To turn on snooping, set the "snoop" flag on the ViewCSSManager.
+
+```swift
+class AppDelegate: UIResponder, UIApplicationDelegate {
+
+    override init() {
+        super.init()
+
+        let css: [String:Any] = [
+            // CSS Properties
+        ]
+        
+        ViewCSSManager.shared.snoop = true
+        ViewCSSManager.shared.setCSS(dict: css)
+    }
+}
+```
+
+Turning this on will do 2 things.
+
+Firstly, if a class is specified in the ".css" call but no matching dictionary
+is found, it will print the name with the current settings of the object.  For
+example
+
+```swift
+class MyController: UIViewController {
+	@IBOutlet weak var label1: UILabel?
+	
+	func viewDidLoad() [
+	    super.viewDidLoad()
+	    self.css(object: self.label1, class: "label")
+	}
+}
+```
+
+will print the following in the console
+
+```
+ViewCSSManager WARN: No match found for CSS class 'bad_class' referenced from the object of type 'ui_button'
+Properties for unknown class my_controller.label:
+- {
+  "font-size" : "15px",
+  "text-align" : "left",
+  "background-color" : "#FFA500FF",
+  "color" : "#007AFFFF"
+}
+```
+
+This is intended to alert you that you specified the use of a class but
+the library didn't find one and it gives the suggested values.  Note that
+the "ViewCSSManager WARN: No match found..." message prints even if "snoop"
+is off.
+
+The second thing snoop does is store all of the values and allows you to 
+print them all at once, for example, when the app is backgrounded. This 
+is done by calling the "printSnoop" method.
+
+```swift
+class AppDelegate: UIResponder, UIApplicationDelegate {
+
+    override init() {
+        super.init()
+
+        let css: [String:Any] = [
+            // CSS Properties
+        ]
+        
+        ViewCSSManager.shared.snoop = true
+        ViewCSSManager.shared.setCSS(dict: css)
+    }
+    
+     func applicationWillResignActive(_ application: UIApplication) {
+        ViewCSSManager.shared.printSnoop()
+    }
+}
+```
+
+This will print the entire dictionary in json to the console.
+
+### Performance
+For performance, the configuration object is lazily created and then cached
+so that subsequent calls with the same "class name", "class", and "style"
+will re0use the cached value.
+
+The cache is reset when the dictionary object is set.  If the CSS dictionary
+can be updated while the application is running, for example, a new version
+was fetched from the server, it is recommended not to reload the dictionary
+until the application is reloaded.  This will ensure that the user experience
+is consistent.
 
 ## Requirements
 

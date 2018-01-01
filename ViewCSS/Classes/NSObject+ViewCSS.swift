@@ -63,7 +63,7 @@ public extension NSObject {
             // Check if there is a defined custom CSS method
             if let customizeProtocol = self as? ViewCSSCustomizableProtocol {
                 let config = target.cssConfig(class: klass, style: style)
-                customizeProtocol.cssCustomize(config: config)
+                customizeProtocol.cssCustomize(object: object, class: klass, style: style, config: config)
             }
         }
     }
