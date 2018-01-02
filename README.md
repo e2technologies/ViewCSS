@@ -5,6 +5,10 @@
 [![License](https://img.shields.io/cocoapods/l/ViewCSS.svg?style=flat)](http://cocoapods.org/pods/ViewCSS)
 [![Platform](https://img.shields.io/cocoapods/p/ViewCSS.svg?style=flat)](http://cocoapods.org/pods/ViewCSS)
 
+## Versions
+
+  - 0.1.0 - Initial Revision
+
 ## Examples
 
 ```swift
@@ -46,6 +50,7 @@ class MyCustomViewController: UIViewController {
 ```
 
 ## Requirements
+IOS 8.0 and greater
 
 ## Installation
 
