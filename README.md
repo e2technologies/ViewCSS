@@ -31,12 +31,12 @@ class MyCustomViewController: UIViewController {
                 "font-size" : "16px",
                 "text-align": "left",
                 "color" : "red",
-        	  ],
+            ],
             "my_custom_view_controller.label2" : [
                 "font-size" : "12px",
                 "text-align": "right",
                 "color" : "white",
-        	  ],
+            ],
         ]
         ViewCSSManager.shared.setCSS(dict: css)
         
@@ -93,16 +93,16 @@ class MyCustomViewController: UIViewController {
             ".bold" : [
                 "font-weight" : "bold"
             ],
-        	  "my_custom_view_controller.label1" : [
-        	      "font-size" : "16px",
+            "my_custom_view_controller.label1" : [
+                "font-size" : "16px",
                 "text-align": "left",
                 "color" : "red",
-        	  ],
+            ],
             "my_custom_view_controller.label2" : [
                 "font-size" : "12px",
                 "text-align": "right",
                 "color" : "white",
-        	  ],
+            ],
         ]
         ViewCSSManager.shared.setCSS(dict: css)
         
