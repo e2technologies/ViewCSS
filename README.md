@@ -23,8 +23,8 @@ class MyCustomViewController: UIViewController {
             ".bold" : [
                 "font-weight" : "bold"
             ],
-        	  "my_custom_view_controller.label1" : [
-        	      "font-size" : "16px",
+            "my_custom_view_controller.label1" : [
+                "font-size" : "16px",
                 "text-align": "left",
                 "color" : "red",
         	  ],
@@ -128,7 +128,7 @@ dictionary, just those where you want to override a specific setting.
 This makes the use of this library NOT an "all or nothing" exercise.  You
 can override the attributes on an "as needed" basis.
 
-### Supported Attributes
+### Supported Properties
 
 The ViewCSS library supports the below CSS properties.  Note that I
 attempted to stick with the standard CSS properties the best that I could,
@@ -165,21 +165,22 @@ It supports the following values
     255 (FF).  An example of this for the color red is ```#FF0000```
   - ```transparent``` - A transparent color
 
-#### percentage
+##### percentage
 The "percentage" property provides a way to specify a percentage.  It expects the
 value to end with a "%".  For example, a value of 150 percent for "font-size" would
 be ```"font-size" : "150%"```
 
-#### length
+##### length
 The "length" property provides a way to specify a value in pixels.  It expects the
 value to end with a "px".  For example, a value of 20 pixels for "border-radius"
 would be ```"border-radius" : "20px"```
 
-#### number
+##### number
 The "number" property provides a way to specify a raw number.  It expects just the
 number.  For example, a value of 0.75 for "opacity" would be ```"opacity" : "0.75"```
 
-#### background-color
+#### Attributes
+##### background-color
 The "background-color" property will set the "backgroundColor" attribute
 of the UIView.
 
@@ -187,7 +188,7 @@ It supports the following values
 
   - *color* - Sets the background color to the specified color
 
-#### color
+##### color
 The "color" property will set the "textColor" attribute of the text views.
 A UIButton is a special case where it will use "setTitleColor(color, for: .normal)".
 
@@ -195,7 +196,7 @@ It supports the following values
 
   - *color* - Sets the text color to the specified color
 
-#### border-radius
+##### border-radius
 The "border-radius" property will set the "layer.cornerRadius" attribute of
 a view.  It also sets the "layer.masksToBounds" which will not allow
 drawing outside of the view.
@@ -204,7 +205,7 @@ It supports the following values
 
   - *length* - Defines the shape of the corners
 
-#### border-width
+##### border-width
 The "border-width" property will set the "layer.borderWidth" attribute of a
 view.  Note that it must be used in conjunction with "border-color".
 
@@ -215,7 +216,7 @@ It supports the following values
   - thick	Specifies a thick border of "3px"
   - *length* - Allows you to define the thickness of the border
 
-#### border-color
+##### border-color
 The "border-color" property will set the "layer.borderColor" attribute of a
 view.  Note that it must be used in conjunction with "border-width".
 
@@ -223,10 +224,10 @@ It supports the following values
 
   - *color* - Sets the border color to the specified color
 
-#### font-family
+##### font-family
 NOT IMPLEMENTED YET
 
-#### font-size
+##### font-size
 The "font-size" property will set the size of the font.  This assumes "system"
 font if "font-family" is not defined.  The library uses a font size of "15" as
 the "default" and then scales that value based on the values.
@@ -243,7 +244,7 @@ It supports the following values
   - *length* - Sets the font-size to a fixed size in px
   - *percentage* - Sets the font-size to a percent of the *default*
 
-#### font-weight
+##### font-weight
 The "font-weight" property will set the weight of the font.  Note that this
 is only available in iOS 8.2 and above (it will just ignore the value if
 used on an earlier OS version).
@@ -264,14 +265,14 @@ It supports the following values
   - 800 - This is "heavy" in iOS terms
   - 900 - This is "black" in iOS terms
 
-#### opacity
+##### opacity
 The "opacity" property will set the "alpha" attribute of the view.
 
 It supports the following values
 
   - *number* - Specifies the opacity. From 0.0 (fully transparent) to 1.0 (fully opaque)
 
-#### text-align
+##### text-align
 The "text-align" property will set the "textAlignment" attribute of the text
 view.  A UIButton is a special case where it will use "contentHorizontalAlignment".
 
@@ -283,7 +284,7 @@ It supports the following values
   - justify - Stretches the lines so that each line has equal width (like in
     newspapers and magazines)
 
-#### tint-color
+##### tint-color
 The "tint-color" property will set the "tinColor" attribute of the view.
 
 It supports the following values
@@ -557,7 +558,7 @@ class MyController: UIViewController {
 will print the following in the console
 
 ```
-ViewCSSManager WARN: No match found for CSS class 'bad_class' referenced from the object of type 'ui_button'
+ViewCSSManager WARN: No match found for CSS class 'label' referenced from the object of type 'my_controller'
 Properties for unknown class my_controller.label:
 - {
   "font-size" : "15px",
