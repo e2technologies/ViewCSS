@@ -5,7 +5,68 @@
 [![License](https://img.shields.io/cocoapods/l/ViewCSS.svg?style=flat)](http://cocoapods.org/pods/ViewCSS)
 [![Platform](https://img.shields.io/cocoapods/p/ViewCSS.svg?style=flat)](http://cocoapods.org/pods/ViewCSS)
 
-## Overview
+## Examples
+
+```swift
+import UIKit
+import ViewCSS
+
+class MyCustomViewController: UIViewController {
+    @IBOutlet weak var label1: UILabel?
+    @IBOutlet weak var label2: UILabel?
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        // Set the global CSS dictionary (see later section on this)
+        let css: [String:Any] = [
+            ".bold" : [
+                "font-weight" : "bold"
+            ],
+        	  "my_custom_view_controller.label1" : [
+        	      "font-size" : "16px",
+                "text-align": "left",
+                "color" : "red",
+        	  ],
+            "my_custom_view_controller.label2" : [
+                "font-size" : "12px",
+                "text-align": "right",
+                "color" : "white",
+        	  ],
+        ]
+        ViewCSSManager.shared.setCSS(dict: css)
+        
+        // ...
+        
+        self.css(object: self.label1, class: "label1")
+        self.css(object: self.label2, class: "bold label2")
+    }
+    
+}
+```
+
+## Requirements
+
+## Installation
+
+ViewCSS is available through [CocoaPods](http://cocoapods.org). To install
+it, simply add the following line to your Podfile:
+
+```ruby
+pod 'ViewCSS'
+```
+
+## Author
+
+Eric Chapman, eric.chappy@gmail.com
+
+## License
+
+ViewCSS is available under the MIT license. See the LICENSE file for more info.
+
+## Usage
+
+### Overview
 
 ViewCSS is a CSS like plugin for iOS Applications.  It provides a simple 
 interface to define different attributes for UIView elements.  Here is an 
@@ -452,7 +513,7 @@ class MyButton: UIButton, ViewCSSCustomizableProtocol {
 
 Note that the "cssCustomize" method is called every time ".css" is called.  In
 order to differentiate between the different calls, the "object", "class", and
-"style" from the ".css" call are included in hte callback.
+"style" from the ".css" call are included in the callback.
 
 ### Snooping
 Snooping is a mechanism that provides a way to print out the initial values
@@ -540,7 +601,7 @@ This will print the entire dictionary in json to the console.
 ### Performance
 For performance, the configuration object is lazily created and then cached
 so that subsequent calls with the same "class name", "class", and "style"
-will re0use the cached value.
+will reuse the cached value.
 
 The cache is reset when the dictionary object is set.  If the CSS dictionary
 can be updated while the application is running, for example, a new version
@@ -548,21 +609,33 @@ was fetched from the server, it is recommended not to reload the dictionary
 until the application is reloaded.  This will ensure that the user experience
 is consistent.
 
-## Requirements
+### UIColor Extension
+ViewCSS adds 2 useful methods
 
-## Installation
+#### UIColor?(name: String)
+This constructor will create a UIColor object using any of the supported CSS 
+color names, like "lightblue" or "yellowgreen"
 
-ViewCSS is available through [CocoaPods](http://cocoapods.org). To install
-it, simply add the following line to your Podfile:
+#### UIColor?(css: String)
+This constructor will create a UIColor object using any of the supported CSS
+color methods, such as ```rgb(red, green, blue, [alpha])```.  This adds some 
+interesting capabilities.  For example, you can make your applications primary
+color be defined in the CSS dictionary.  For example
 
-```ruby
-pod 'ViewCSS'
+```swift
+// ... In your CSS dictionary
+let css: [String, Any] = [
+    ":root" : [
+        "--primary-color", "#456789FF"
+    ]
+]
+
+// Somewhere else...
+extension UIColor {
+    class var primary: UIColor {
+        return UIColor(css: "var(--primary-color") ?? UIColor.black
+    }
+}
 ```
 
-## Author
 
-Eric Chapman, eric.chappy@gmail.com
-
-## License
-
-ViewCSS is available under the MIT license. See the LICENSE file for more info.
