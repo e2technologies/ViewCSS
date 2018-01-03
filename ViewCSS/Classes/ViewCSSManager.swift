@@ -105,6 +105,10 @@ public class ViewCSSManager {
         return cacheKey
     }
     
+    func clearCache() {
+        self.styleCache.removeAll()
+    }
+    
     func getClassName(object: Any) -> String {
         return self.getClassName(class: type(of: object))
     }
@@ -117,7 +121,7 @@ public class ViewCSSManager {
     
     private var styleLookup = Dictionary<String, Any>() {
         didSet {
-            self.styleCache.removeAll()
+            self.clearCache()
         }
     }
     

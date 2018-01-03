@@ -24,9 +24,9 @@ class ViewController: UIViewController, ViewCSSCustomizableProtocol {
         
         self.css(object: self.label1, class: "label1")
         self.label2?.css(class: "label2")
-        self.label3?.css(object: self, class: "label3")
+        self.css(object: self.label3, class: "label3")
         self.label4?.css(class: "primary", style: "background-color:lightgray;text-align:center;") { (config: ViewCSSConfig) in
-            self.label2?.backgroundColor = config.color
+            self.label1?.backgroundColor = config.color
         }
         self.button1?.css(class: "bad_class")
         self.button2?.css()

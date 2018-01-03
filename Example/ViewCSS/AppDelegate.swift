@@ -34,6 +34,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             ],
             "view_controller.label1": [
                 "font-size": "30px",
+                "font-size-scale": "0.5",
                 "font-weight": "500",
                 "color": "green",
                 "text-transform": "uppercase",
@@ -50,6 +51,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 "font-size": "120%",
                 "font-weight": "900",
                 "color": "green",
+                "font-size-scale": "auto",
                 "border-radius": "5px",
                 "border-width": "5px",
                 "border-color": "blue",

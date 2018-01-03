@@ -129,20 +129,95 @@ public class ViewCSSTextConfig: ViewCSSBaseConfig {
     }
 }
 
+private class ViewCSSAutoScaleCache {
+    public static var shared: ViewCSSAutoScaleCache = {
+        return ViewCSSAutoScaleCache()
+    }()
+    
+    var scale: CGFloat = 1.0
+    
+    @objc func updateScale() {
+        switch UIApplication.shared.preferredContentSizeCategory {
+        case .extraSmall:
+            self.scale = 0.8
+        case .small:
+            self.scale = 0.9
+        case .medium:
+            self.scale = 1.0
+        case .large:
+            self.scale = 1.1
+        case .extraLarge:
+            self.scale = 1.2
+        case .extraExtraLarge:
+            self.scale = 1.3
+        case .extraExtraExtraLarge:
+            self.scale = 1.4
+        case .accessibilityMedium:
+            self.scale = 1.5
+        case .accessibilityLarge:
+            self.scale = 1.6
+        case .accessibilityExtraLarge:
+            self.scale = 1.7
+        case .accessibilityExtraExtraLarge:
+            self.scale = 1.8
+        case .accessibilityExtraExtraExtraLarge:
+            self.scale = 1.8
+        default:
+            self.scale = 1.0
+        }
+        
+        // Clear the View Manager Cache since the scale was updated
+        ViewCSSManager.shared.clearCache()
+    }
+    
+    init() {
+        self.updateScale()
+        
+        // Subscribe to update notification
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(updateScale),
+                                               name: NSNotification.Name.UIContentSizeCategoryDidChange,
+                                               object: nil)
+    }
+}
+
 public class ViewCSSFontConfig: ViewCSSBaseConfig {
     
     static let DEFAULT_FONT_SIZE: CGFloat = 15
+    static let AUTO_SCALE: CGFloat = -1.0 // Use the value of "-1" to represent auto scale
     
     static let FONT_SIZE = "font-size"
     static let FONT_WEIGHT = "font-weight"
+    static let FONT_SIZE_SCALE = "font-size-scale"
     
     public private(set) var size: CGFloat?
+    public private(set) var sizeScale: CGFloat?
     public private(set) var weight: UIFont.Weight?
+    public var scaledSize: CGFloat? {
+        if self.size != nil {
+            var scale: CGFloat? = nil
+            if self.sizeScale == type(of: self).AUTO_SCALE {
+                scale = ViewCSSAutoScaleCache.shared.scale
+            }
+            else if self.sizeScale != nil {
+                scale = self.sizeScale
+            }
+            
+            if scale != nil {
+                return (scale! * self.size!).rounded()
+            }
+            
+            return self.size
+        }
+        
+        return nil
+    }
     
     static func fromCSS(dict: Dictionary<String, Any>) -> ViewCSSFontConfig {
         let config = ViewCSSFontConfig()
         
         config.cssSize(string: self.checkVariables(string: dict[FONT_SIZE] as? String))
+        config.cssSizeScale(string: self.checkVariables(string: dict[FONT_SIZE_SCALE] as? String))
         config.cssWeight(string: self.checkVariables(string: dict[FONT_WEIGHT] as? String))
         
         return config
@@ -164,18 +239,18 @@ public class ViewCSSFontConfig: ViewCSSBaseConfig {
     func getFont() -> UIFont? {
         // Set the size and the weight
         if #available(iOS 8.2, *) {
-            if self.size != nil {
+            if self.scaledSize != nil {
                 if self.weight != nil {
-                    return UIFont.systemFont(ofSize: self.size!, weight: self.weight!)
+                    return UIFont.systemFont(ofSize: self.scaledSize!, weight: self.weight!)
                 }
                 else {
-                    return UIFont.systemFont(ofSize: self.size!)
+                    return UIFont.systemFont(ofSize: self.scaledSize!)
                 }
             }
         }
         else {
-            if self.size != nil {
-                return UIFont.systemFont(ofSize: self.size!)
+            if self.scaledSize != nil {
+                return UIFont.systemFont(ofSize: self.scaledSize!)
             }
         }
         
@@ -220,6 +295,23 @@ public class ViewCSSFontConfig: ViewCSSBaseConfig {
             
             if self.size == nil {
                 self.printWarning(attribute: type(of: self).FONT_SIZE, value: string!)
+            }
+        }
+    }
+    
+    private func cssSizeScale(string: String?) {
+        if string != nil {
+            let trimmedString = string!.trimmingCharacters(in: .whitespaces)
+            
+            if trimmedString == "auto" {
+                self.sizeScale = type(of: self).AUTO_SCALE
+            }
+            else if let number = trimmedString.numberToFloat {
+                self.sizeScale = number
+            }
+            
+            if self.sizeScale == nil {
+                self.printWarning(attribute: type(of: self).FONT_SIZE_SCALE, value: string!)
             }
         }
     }

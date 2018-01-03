@@ -8,6 +8,8 @@
 ## Versions
 
   - 0.1.0 - Initial Revision
+  - 0.2.0 - Added the "font-size-scale" property to support auto scaling of font size
+    based on the user's OS settings
 
 ## Examples
 
@@ -139,19 +141,20 @@ The ViewCSS library supports the below CSS properties.  Note that I
 attempted to stick with the standard CSS properties the best that I could,
 but some custom properties had to be created (such as "tint-color")
 
-| Property         | UIView | UILabel | UITextField | UITextView | UIButton |
-|:-----------------|:------:|:-------:|:-----------:|:----------:|:--------:|
-| background-color |    X   |    -    |      -      |     -      |     -    |
-| border-color     |    X   |    -    |      -      |     -      |     -    |
-| border-radius    |    X   |    -    |      -      |     -      |     -    |
-| border-width     |    X   |    -    |      -      |     -      |     -    |
-| color            |        |    X    |      X      |     X      |     X    |
-| font-family      |        |   SOON  |     SOON    |    SOON    |   SOON   |
-| font-size        |        |    X    |      X      |     X      |     X    |
-| font-weight      |        |    X    |      X      |     X      |     X    |
-| opacity          |    X   |    -    |      -      |     -      |     -    |
-| text-align       |        |    X    |      X      |     X      |     X    |
-| tint-color       |    X   |    -    |      -      |     -      |     -    |
+| Property         | UIView | UILabel | UITextField | UITextView | UIButton | Snoopable |
+|:-----------------|:------:|:-------:|:-----------:|:----------:|:--------:|:---------:|
+| background-color |    X   |    -    |      -      |     -      |     -    |     X     |
+| border-color     |    X   |    -    |      -      |     -      |     -    |     X     |
+| border-radius    |    X   |    -    |      -      |     -      |     -    |     X     |
+| border-width     |    X   |    -    |      -      |     -      |     -    |     X     |
+| color            |        |    X    |      X      |     X      |     X    |     X     |
+| font-family      |        |   SOON  |     SOON    |    SOON    |   SOON   |     X     |
+| font-size        |        |    X    |      X      |     X      |     X    |     X     |
+| font-size-scale  |        |    X    |      X      |     X      |     X    |           |
+| font-weight      |        |    X    |      X      |     X      |     X    |           |
+| opacity          |    X   |    -    |      -      |     -      |     -    |     X     |
+| text-align       |        |    X    |      X      |     X      |     X    |     X     |
+| tint-color       |    X   |    -    |      -      |     -      |     -    |     X     |
 
 #### Standard Types
 
@@ -249,6 +252,15 @@ It supports the following values
   - *length* - Sets the font-size to a fixed size in px
   - *percentage* - Sets the font-size to a percent of the *default*
 
+##### font-size-scale (custom)
+The "font-size-scale" property will scale the size of the font based on
+the setting.
+
+It supports the following values
+
+  - auto - Font size scales based on the user's OS settings
+  - *number* - Font size scales based on the number that is passed in from 0.0 to 1.0
+
 ##### font-weight
 The "font-weight" property will set the weight of the font.  Note that this
 is only available in iOS 8.2 and above (it will just ignore the value if
@@ -289,7 +301,7 @@ It supports the following values
   - justify - Stretches the lines so that each line has equal width (like in
     newspapers and magazines)
 
-##### tint-color
+##### tint-color (custom)
 The "tint-color" property will set the "tinColor" attribute of the view.
 
 It supports the following values
@@ -382,9 +394,12 @@ Note that the library also supports nested variables.  For example
 
 It will recursively search until a variable is not found
 
-### CSS Method
+### Methods
+
+#### func css(object: Any?, class klass: String?, custom: ((ViewCSSConfig) -> Void)?=nil)
 The library extends "NSObject" to provide "css" helper methods that can
-be called.  The methods provide the user a means to apply CSS to an object.
+be called.  The methods provide the developer a means to apply CSS to an 
+object.
 
 The properties for this method are as follows
 
@@ -452,7 +467,7 @@ will search for the following dictionaries
 
 This behavior may be desireable.  It depends on the application.
 
-In cases where a element is subclassed, for example like "UIButton", you
+In cases where an element is subclassed, for example like "UIButton", you
 may want to do the following
 
 ```swift
@@ -470,6 +485,33 @@ This will search for the following dictionaries
 
   - my_button
 
+#### [class] func cssConfig(class klass: String?, style: String?) -> ViewCSSConfig
+The "cssConfig" method provides a way for the developer to access the config
+object directly from either the class or the instance that is calling "css".
+This is useful, for example, to get the font size in order to estimate how
+big a table view cell will be when subclassing UITableViewCell.  This is shown below
+
+```swift
+class MyCustomCell: UITableViewCell {
+    @IBOutlet weak var label: UILabel?
+    
+    override func awakFromNib() {
+        super.awakeFromNib()
+        
+        self.css(object: self.label, class: "label")
+    }
+    
+    class var cellHeight: CGFloat {
+        let config = self.css(class: "label") // Note that "self" is "MyCustomCell"
+        if let font = config.font.getFont() {
+            // Estimate the height of the cell based on the font size
+        }
+    }
+}
+```
+
+Note that the same value must be used for "class" and "style" for the library 
+to get the correct config.
 
 ### Customizations
 Sometimes there is a need to customize an additional element.  For example,
@@ -520,6 +562,57 @@ class MyButton: UIButton, ViewCSSCustomizableProtocol {
 Note that the "cssCustomize" method is called every time ".css" is called.  In
 order to differentiate between the different calls, the "object", "class", and
 "style" from the ".css" call are included in the callback.
+
+### Font Size Scaling
+iOS offers the user the ability to globally change their font size settings.
+It is up to the application developer to implement this which can be extremely
+cumbersome.  If you are using "ViewCSS", this is straight forward (this is the 
+entire reason I thought to create this library).
+
+ViewCSS defines the "font-size-scale" property which allows the developer to
+automatically specify that a certain text element should scale.  Note that it
+is still up to the developer to make sure the UI looks OK when the text is
+scaled.
+
+The library implements the scaling by applying the scale factor to the original
+font size and rounding the font size to the nearest pixel to ensure there is
+no strange aliasing.  The final font size will be in the "config.font.scaledSize"
+attribute of the config object.  This is the attribute that the 
+"config.font.getFont()" method uses.
+
+There are 2 ways (possibly more) to do this
+
+#### number
+The *number* value for "font-size-scale" allows a number to be specified.
+Using the CSS variables, the developer can do the following
+
+```swift
+let css: [String:Any] = [
+    ":root": [
+        "--global-font-size-scale": "1.0"
+    ],
+    "my_controller.label": [
+        "font-size-scale": "var(--global-font-size-scale)"
+    ]
+]
+```
+
+This approach defines a global scaling factor in the CSS dictionary that can
+then be changed by the developer based on the user's OS settings.  Remember,
+these values are cached so you will want to do it BEFORE loading.  You can
+force a cache flush by setting the CSS dictionary again.  (This is not 
+recommended because it will affect user-experience)
+
+#### auto
+By setting the "font-size-scale" property to "auto", you are telling the
+ViewCSS logic to decide automatically how much the font size should scale 
+based on the user's OS settings.  The library will use the 
+UIApplication.shared.preferredContentSizeCategory to get the user's setting
+and a "0.1" increment of the scaling factor for each "tick".
+
+Note that with auto, you are not in control of supplying maximums and things
+like that.  You can use the *number* approach described above if you need
+to customize the behavior
 
 ### Snooping
 Snooping is a mechanism that provides a way to print out the initial values
