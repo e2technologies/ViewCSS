@@ -24,6 +24,7 @@ import Foundation
 public class ViewCSSShadowConfig: ViewCSSBaseConfig {
     static let SHADOW = "shadow"
     static let SHADOW_OPACITY = "shadow-opacity"
+    static let OPACITY_DEFAULT: CGFloat = 1.0
     
     private var base: String?
     public private(set) var offset: CGSize?
@@ -42,34 +43,29 @@ public class ViewCSSShadowConfig: ViewCSSBaseConfig {
         return type(of: self).getParam(param, base: self.base)
     }
     
-    static func fromCSS(dict: Dictionary<String, Any>, base: String?=nil) -> ViewCSSShadowConfig {
-        let config = ViewCSSShadowConfig()
+    func setAll(dict: Dictionary<String, Any>) {
+        let string = dict[self.getParam(type(of: self).SHADOW)] as? String
         
-        config.base = base
-        config.cssAll(string: self.checkVariables(string: dict[config.getParam(SHADOW)] as? String))
-        config.cssOpacity(string: self.checkVariables(string: dict[config.getParam(SHADOW_OPACITY)] as? String))
-        
-        return config
-    }
-    
-    private func cssAll(string: String?) {
         if string != nil {
             let shadowComponents = string!.split(separator: " ")
             
             // Get the horizontal and vertial offsets
             if shadowComponents.count >= 2 {
-                let hShadow = String(shadowComponents[0]).lengthToFloat
-                let vShadow = String(shadowComponents[1]).lengthToFloat
+                let hShadow = type(of: self).valueFromString(String(shadowComponents[0]), types: [.length]) as? CGFloat
+                let vShadow = type(of: self).valueFromString(String(shadowComponents[1]), types: [.length]) as? CGFloat
                 if hShadow != nil && vShadow != nil {
                     self.offset = CGSize(width: hShadow!, height: vShadow!)
-                    self.opacity = 1.0
+                    self.opacity = type(of: self).OPACITY_DEFAULT
+                }
+                else {
+                    return
                 }
             }
             
             // Check for a radius
             var index = 2;
             if shadowComponents.count > index {
-                if let radius = String(shadowComponents[index]).lengthToFloat {
+                if let radius = type(of: self).valueFromString(String(shadowComponents[index]), types: [.length]) as? CGFloat {
                     self.radius = radius
                     index += 1
                 }
@@ -77,24 +73,33 @@ public class ViewCSSShadowConfig: ViewCSSBaseConfig {
             
             // Check for color
             if shadowComponents.count > index {
-                if let color = UIColor(css: String(shadowComponents[index])) {
+                if let color = type(of: self).valueFromString(String(shadowComponents[index]), types: [.color]) as? UIColor {
                     self.color = color
                 }
             }
             
             if self.offset == nil {
-                self.printWarning(attribute: type(of: self).SHADOW, value: string!)
+                self.printWarning(attribute: self.getParam(type(of: self).SHADOW), value: string!)
             }
         }
     }
     
-    private func cssOpacity(string: String?) {
-        if string != nil {
-            let trimmedString = string!.trimmingCharacters(in: .whitespaces)
-            if let opacity = trimmedString.lengthToFloat {
-                self.opacity = opacity
-            }
+    func setOpacity(dict: Dictionary<String, Any>) {
+        if let opacity = type(of: self).valueFromDict(dict,
+                                                      attribute: self.getParam(type(of: self).SHADOW_OPACITY),
+                                                      types:[.number]) as? CGFloat {
+            self.opacity = opacity
         }
+    }
+    
+    static func fromCSS(dict: Dictionary<String, Any>, base: String?=nil) -> ViewCSSShadowConfig {
+        let config = ViewCSSShadowConfig()
+        
+        config.base = base
+        config.setAll(dict: dict)
+        config.setOpacity(dict: dict)
+  
+        return config
     }
     
     static func toCSS(object: Any, base: String?=nil) -> Dictionary<String, String> {
@@ -127,8 +132,8 @@ public class ViewCSSShadowConfig: ViewCSSBaseConfig {
                 dict[self.getParam(SHADOW, base: base)] = shadow
                 
                 // Opacity defaults to 1.0.  Explicitely print it if it is different
-                if opacity != 1.0 {
-                    dict[self.getParam(SHADOW_OPACITY, base: base)] = String(format:"%f", opacity)
+                if opacity != OPACITY_DEFAULT {
+                    dict[self.getParam(SHADOW_OPACITY, base: base)] = opacity.toCSS
                 }
             }
         }

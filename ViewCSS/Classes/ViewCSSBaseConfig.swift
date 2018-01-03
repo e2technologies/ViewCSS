@@ -22,6 +22,47 @@
 import Foundation
 
 public class ViewCSSBaseConfig {
+    
+    enum PropertyType {
+        case color
+        case length
+        case number
+        case percentage
+    }
+    
+    static func valueFromDict(_ dict: Dictionary<String, Any?>, attribute: String, types:[PropertyType]) -> Any? {
+        let string = dict[attribute] as? String
+        let value = self.valueFromString(string, types: types)
+        
+        if value == nil {
+            // TODO: Report Error
+        }
+        
+        return value
+    }
+    
+    static func valueFromString(_ string: String?, types:[PropertyType]) -> Any? {
+        if string == nil { return nil }
+        
+        for type in types {
+            let trimmedString = string!.trimmingCharacters(in: .whitespaces)
+            if type == .color {
+                return UIColor(css: trimmedString)
+            }
+            else if type == .length {
+                return trimmedString.lengthToFloat
+            }
+            else if type == .number {
+                return trimmedString.numberToFloat
+            }
+            else if type == .percentage {
+                return trimmedString.percentageToFloat
+            }
+        }
+        
+        return nil
+    }
+    
     func printWarning(attribute: String, value: String) {
         print("ViewCSSManager WARN: Invalid CSS value '" + value + "' for attribute '" + attribute + "'")
     }
