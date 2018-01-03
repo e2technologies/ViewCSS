@@ -49,3 +49,12 @@ protocol ViewCSSTextProtocol: ViewCSSProtocol {
     func getCSSFont() -> UIFont?
     func getCSSTextAlignment() -> NSTextAlignment
 }
+
+protocol ViewCSSShadowProtocol: ViewCSSProtocol {
+    func setCSSShadow(offset: CGSize, radius: CGFloat?, color: UIColor?, opacity: CGFloat)
+    
+    func getCSSShadowOffset() -> CGSize?
+    func getCSSShadowRadius() -> CGFloat
+    func getCSSShadowColor() -> UIColor?
+    func getCSSShadowOpacity() -> CGFloat
+}

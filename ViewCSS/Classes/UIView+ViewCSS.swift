@@ -55,27 +55,50 @@ extension UIView {
         // Get the config
         let config = cssManager.getConfig(className: className, style: style, class: klass)
         
-        // If it is a UIView, check for main color first, else just background color
+        // background-color
         if let color = config.background?.color {
             self.setCSSBackgroundColor(color)
         }
         
+        // tint-color
         if let color = config.tintColor {
             self.setCSSTintColor(color)
         }
         
+        // opacity
         if let opacity = config.opacity {
             self.setCSSOpacity(opacity)
         }
         
-        // BORDER
+        // border-radius
         if let radius = config.border?.radius {
             self.setCSSBorderRadius(radius)
         }
         
+        // border-width, border-color
         if let width = config.border?.width {
             if let color = config.border?.color {
                 self.setCSSBorder(width: width, color: color)
+            }
+        }
+        
+        // Check if it responds to shadow protocol
+        if let shadowProtocol = self as? ViewCSSShadowProtocol {
+            
+            // Get the correct shadow config
+            var shadow: ViewCSSShadowConfig? = nil
+            
+            // text-shadow
+            if config.text?.shadow != nil {
+                shadow = config.text?.shadow
+            }
+            
+            // If we have a valid shadow config, configure it
+            if shadow != nil && shadow!.offset != nil {
+                shadowProtocol.setCSSShadow(offset: shadow!.offset!,
+                                            radius: shadow!.radius,
+                                            color: shadow!.color,
+                                            opacity: (shadow!.opacity ?? 1.0))
             }
         }
         

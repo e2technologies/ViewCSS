@@ -11,7 +11,7 @@ PODS:
     - FBSnapshotTestCase (~> 2.0)
     - Nimble (~> 7.0)
   - Quick (1.2.0)
-  - ViewCSS (0.1.0)
+  - ViewCSS (0.3.0)
 
 DEPENDENCIES:
   - FBSnapshotTestCase (~> 2.1.4)
@@ -29,7 +29,7 @@ SPEC CHECKSUMS:
   Nimble: 7f5a9c447a33002645a071bddafbfb24ea70e0ac
   Nimble-Snapshots: f5459b5b091678dc942d03ec4741cacb58ba4a52
   Quick: 58d203b1c5e27fff7229c4c1ae445ad7069a7a08
-  ViewCSS: 6b02989ebc7396d16a223f4c116491f384dfea5e
+  ViewCSS: 34339f72723867ae9aad5efbe659553080cc447f
 
 PODFILE CHECKSUM: 707dd72c7f27282cb99975cc4de0c9d8a279384e
 

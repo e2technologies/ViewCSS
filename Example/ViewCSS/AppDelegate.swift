@@ -31,6 +31,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             "ui_button": [
                 "text-align": "left",
                 "background-color": "orange",
+                "text-shadow": "2px 2px 1px gray"
             ],
             "view_controller.label1": [
                 "font-size": "30px",
@@ -41,11 +42,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 "text-align": "center",
             ],
             ".label2": [
-                "font-size": "90%",
-                "font-weight": "100",
+                "font-size": "200%",
+                "font-weight": "500",
                 "text-align": "left",
                 "color": "black",
-                "background-color": "var(--main-color)",
+                "background-color": "transparent",
+                "text-shadow": "2px 2px 1px gray"
             ],
             ".label3": [
                 "font-size": "120%",
@@ -60,7 +62,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             ".primary": [
                 "color": "var(--main-color)",
                 "font-weight": "900",
-                "font-size": "200%"
+                "font-size": "200%",
+                "background-color": "var(--main-color)",
             ]
         ]
         ViewCSSManager.shared.setCSS(dict: css)

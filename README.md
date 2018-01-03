@@ -10,6 +10,7 @@
   - 0.1.0 - Initial Revision
   - 0.2.0 - Added the "font-size-scale" property to support auto scaling of font size
     based on the user's OS settings
+  - 0.3.0 - Added the "text-shadow" and "text-shadow-opacity" properties
 
 ## Examples
 
@@ -141,20 +142,22 @@ The ViewCSS library supports the below CSS properties.  Note that I
 attempted to stick with the standard CSS properties the best that I could,
 but some custom properties had to be created (such as "tint-color")
 
-| Property         | UIView | UILabel | UITextField | UITextView | UIButton | Snoopable |
-|:-----------------|:------:|:-------:|:-----------:|:----------:|:--------:|:---------:|
-| background-color |    X   |    -    |      -      |     -      |     -    |     X     |
-| border-color     |    X   |    -    |      -      |     -      |     -    |     X     |
-| border-radius    |    X   |    -    |      -      |     -      |     -    |     X     |
-| border-width     |    X   |    -    |      -      |     -      |     -    |     X     |
-| color            |        |    X    |      X      |     X      |     X    |     X     |
-| font-family      |        |   SOON  |     SOON    |    SOON    |   SOON   |     X     |
-| font-size        |        |    X    |      X      |     X      |     X    |     X     |
-| font-size-scale  |        |    X    |      X      |     X      |     X    |           |
-| font-weight      |        |    X    |      X      |     X      |     X    |           |
-| opacity          |    X   |    -    |      -      |     -      |     -    |     X     |
-| text-align       |        |    X    |      X      |     X      |     X    |     X     |
-| tint-color       |    X   |    -    |      -      |     -      |     -    |     X     |
+| Property            | UIView | UILabel | UITextField | UITextView | UIButton | Snoopable |
+|:--------------------|:------:|:-------:|:-----------:|:----------:|:--------:|:---------:|
+| background-color    |    X   |    -    |      -      |     -      |     -    |     X     |
+| border-color        |    X   |    -    |      -      |     -      |     -    |     X     |
+| border-radius       |    X   |    -    |      -      |     -      |     -    |     X     |
+| border-width        |    X   |    -    |      -      |     -      |     -    |     X     |
+| color               |        |    X    |      X      |     X      |     X    |     X     |
+| font-family         |        |   SOON  |     SOON    |    SOON    |   SOON   |   SOON    |
+| font-size           |        |    X    |      X      |     X      |     X    |     X     |
+| font-size-scale     |        |    X    |      X      |     X      |     X    |           |
+| font-weight         |        |    X    |      X      |     X      |     X    |           |
+| opacity             |    X   |    -    |      -      |     -      |     -    |     X     |
+| text-align          |        |    X    |      X      |     X      |     X    |     X     |
+| text-shadow         |        |    X    |      X      |     X      |     X    |     X     |
+| text-shadow-opacity |        |    X    |      X      |     X      |     X    |     X     |
+| tint-color          |    X   |    -    |      -      |     -      |     -    |     X     |
 
 #### Standard Types
 
@@ -300,6 +303,31 @@ It supports the following values
   - center - Centers the text
   - justify - Stretches the lines so that each line has equal width (like in
     newspapers and magazines)
+
+##### text-shadow
+The "text-shadow" property will set the "layer.shadow*" attributes of the text
+views.  It has the format
+
+```
+"text-shadow" : "<h-shadow> <v-shadow> <blur-radius> <color>"
+```
+
+The values are defined as follow
+
+  - h-shadow - Required.  The position of the horizontal shadow.  Negative values
+    are allowed
+  - v-shadow - Required.  The position of the vertical shadow.  Negative values are
+    allowed
+  - blur-radius(*length*) - Optional.  The blur radius.  Default 0.
+  - color(*color*) - Optional.  the color of the shadow
+
+##### text-shadow-opacity (custom)
+The "text-shadow-opacity" property will set the "opacity" of the shadow.  This is
+used to override the default of "1.0"
+
+It supports the following values
+
+  - *number* - Specifies the opacity. From 0.0 (fully transparent) to 1.0 (fully opaque)
 
 ##### tint-color (custom)
 The "tint-color" property will set the "tinColor" attribute of the view.

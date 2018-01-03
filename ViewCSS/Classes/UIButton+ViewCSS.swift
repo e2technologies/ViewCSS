@@ -50,3 +50,19 @@ extension UIButton: ViewCSSTextProtocol {
         }
     }
 }
+
+extension UIButton: ViewCSSShadowProtocol {
+    func setCSSShadow(offset: CGSize, radius: CGFloat?, color: UIColor?, opacity: CGFloat) {
+        if let view = self.titleLabel {
+            view.layer.shadowOffset = offset
+            if radius != nil { view.layer.shadowRadius = radius! }
+            if color != nil { view.layer.shadowColor = color!.cgColor }
+            view.layer.shadowOpacity = Float(opacity)
+        }
+    }
+    
+    func getCSSShadowOffset() -> CGSize? { return self.titleLabel?.layer.shadowOffset }
+    func getCSSShadowRadius() -> CGFloat { return self.titleLabel?.layer.shadowRadius ?? 0.0 }
+    func getCSSShadowColor() -> UIColor? { return self.titleLabel?.layer.shadowColor != nil ? UIColor(cgColor: self.layer.shadowColor!) : nil }
+    func getCSSShadowOpacity() -> CGFloat { return CGFloat(self.titleLabel?.layer.shadowOpacity ?? 0.0) }
+}

@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'ViewCSS'
-  s.version          = '0.2.0'
+  s.version          = '0.3.0'
   s.summary          = 'IOS Swift CSS implementation'
 
 # This description is used to generate tags and improve search results.
@@ -19,7 +19,7 @@ Pod::Spec.new do |s|
 
   s.description      = <<-DESC
 ViewCSS is a CSS like plugin for iOS Applications. It provides a simple interface to define overrideable
-proeprties using CSS like commands.
+properties using CSS like commands.
                        DESC
 
   s.homepage         = 'https://github.com/ericchapman/ViewCSS'

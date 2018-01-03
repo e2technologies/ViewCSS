@@ -30,3 +30,18 @@ extension UITextField: ViewCSSTextProtocol {
     func getCSSFont() -> UIFont? { return self.font }
     func getCSSTextAlignment() -> NSTextAlignment { return self.textAlignment }
 }
+
+extension UITextField: ViewCSSShadowProtocol {
+    func setCSSShadow(offset: CGSize, radius: CGFloat?, color: UIColor?, opacity: CGFloat) {
+        let view = self
+        view.layer.shadowOffset = offset
+        if radius != nil { view.layer.shadowRadius = radius! }
+        if color != nil { view.layer.shadowColor = color!.cgColor }
+        view.layer.shadowOpacity = Float(opacity)
+    }
+    
+    func getCSSShadowOffset() -> CGSize? { return self.layer.shadowOffset }
+    func getCSSShadowRadius() -> CGFloat { return self.layer.shadowRadius }
+    func getCSSShadowColor() -> UIColor? { return self.layer.shadowColor != nil ? UIColor(cgColor: self.layer.shadowColor!) : nil }
+    func getCSSShadowOpacity() -> CGFloat { return CGFloat(self.layer.shadowOpacity) }
+}
