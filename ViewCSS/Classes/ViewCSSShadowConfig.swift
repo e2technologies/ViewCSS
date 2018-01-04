@@ -27,7 +27,8 @@ public class ViewCSSShadowConfig: ViewCSSBaseConfig {
     static let OPACITY_DEFAULT: CGFloat = 1.0
     
     private var base: String?
-    public private(set) var offset: CGSize?
+    public private(set) var hShadow: CGFloat?
+    public private(set) var vShadow: CGFloat?
     public private(set) var radius: CGFloat?
     public private(set) var color: UIColor?
     public private(set) var opacity: CGFloat?
@@ -49,35 +50,52 @@ public class ViewCSSShadowConfig: ViewCSSBaseConfig {
         if string != nil {
             let shadowComponents = string!.split(separator: " ")
             
-            // Get the horizontal and vertial offsets
+            // h-shadow v-shadow
             if shadowComponents.count >= 2 {
-                let hShadow = self.valueFromString(String(shadowComponents[0]), types: [.length]) as? CGFloat
-                let vShadow = self.valueFromString(String(shadowComponents[1]), types: [.length]) as? CGFloat
-                if hShadow != nil && vShadow != nil {
-                    self.offset = CGSize(width: hShadow!, height: vShadow!)
-                    self.opacity = type(of: self).OPACITY_DEFAULT
-                }
-                else {
-                    self.printWarning(attribute: self.getParam(type(of: self).SHADOW), value: string!)
-                    return
-                }
+                self.setHShadow(string: String(shadowComponents[0]))
+                self.setVShadow(string: String(shadowComponents[1]))
+            }
+            else {
+                return
             }
             
-            // Check for a radius
-            var index = 2;
-            if shadowComponents.count > index {
-                if let radius = self.valueFromString(String(shadowComponents[index]), types: [.length]) as? CGFloat {
-                    self.radius = radius
+            // radius
+            var index = 2
+            if shadowComponents.count > 2 {
+                self.setRadius(string: String(shadowComponents[2]))
+                if self.radius != nil {
                     index += 1
                 }
             }
             
-            // Check for color
+            // color
             if shadowComponents.count > index {
-                if let color = self.valueFromString(String(shadowComponents[index]), types: [.color]) as? UIColor {
-                    self.color = color
-                }
+                self.setColor(string: String(shadowComponents[index]))
             }
+        }
+    }
+    
+    func setHShadow(string: String) {
+        if let hShadow = self.valueFromString(string, types: [.length]) as? CGFloat {
+            self.hShadow = hShadow
+        }
+    }
+    
+    func setVShadow(string: String) {
+        if let vShadow = self.valueFromString(string, types: [.length]) as? CGFloat {
+            self.vShadow = vShadow
+        }
+    }
+    
+    func setRadius(string: String) {
+        if let radius = self.valueFromString(string, types: [.length]) as? CGFloat {
+            self.radius = radius
+        }
+    }
+    
+    func setColor(string: String) {
+        if let color = self.valueFromString(string, types: [.color]) as? UIColor {
+            self.color = color
         }
     }
     

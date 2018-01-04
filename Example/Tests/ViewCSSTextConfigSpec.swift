@@ -38,7 +38,8 @@ class ViewCSSTextConfigSpec: QuickSpec {
                 let css = ["text-align" : "right", "text-shadow" : "5px 6px 10px black"]
                 let config = ViewCSSTextConfig.fromCSS(dict: css)
                 expect(config.align).to(equal(NSTextAlignment.right))
-                expect(config.shadow!.offset).to(equal(CGSize(width: 5, height: 6)))
+                expect(config.shadow!.hShadow).to(equal(5))
+                expect(config.shadow!.vShadow).to(equal(6))
                 expect(config.shadow!.radius).to(equal(10))
                 expect(config.shadow!.color!.toCSS).to(equal("#000000FF"))
                 expect(config.shadow!.opacity).to(equal(1.0))
@@ -48,7 +49,8 @@ class ViewCSSTextConfigSpec: QuickSpec {
                 let css = ["text-align" : "right", "text-shadow" : "5px 6px 10px black", "text-shadow-opacity" : "0.4"]
                 let config = ViewCSSTextConfig.fromCSS(dict: css)
                 expect(config.align).to(equal(NSTextAlignment.right))
-                expect(config.shadow!.offset).to(equal(CGSize(width: 5, height: 6)))
+                expect(config.shadow!.hShadow).to(equal(5))
+                expect(config.shadow!.vShadow).to(equal(6))
                 expect(config.shadow!.radius).to(equal(10))
                 expect(config.shadow!.color!.toCSS).to(equal("#000000FF"))
                 expect(config.shadow!.opacity).to(equal(0.4))

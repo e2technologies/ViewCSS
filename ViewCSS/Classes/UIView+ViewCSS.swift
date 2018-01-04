@@ -94,8 +94,8 @@ extension UIView {
             }
             
             // If we have a valid shadow config, configure it
-            if shadow != nil && shadow!.offset != nil {
-                shadowProtocol.setCSSShadow(offset: shadow!.offset!,
+            if shadow != nil && shadow!.vShadow != nil && shadow!.hShadow != nil {
+                shadowProtocol.setCSSShadow(offset: CGSize(width: shadow!.vShadow!, height: shadow!.hShadow!),
                                             radius: shadow!.radius,
                                             color: shadow!.color,
                                             opacity: (shadow!.opacity ?? 1.0))

@@ -15,12 +15,45 @@ class ViewCSSShadowConfigSpec: QuickSpec {
             })
         }
         
-        describe("#fromCSS") {
-            
+        describe("#setHShadow") {
+            ViewCSSTypeHelper.test(name: "h shadow", types: [.length], routine: { (value: String) -> (Any?) in
+                let config = ViewCSSShadowConfig()
+                config.setHShadow(string: value)
+                return config.hShadow
+            })
+        }
+        
+        describe("#setVShadow") {
+            ViewCSSTypeHelper.test(name: "v shadow", types: [.length], routine: { (value: String) -> (Any?) in
+                let config = ViewCSSShadowConfig()
+                config.setVShadow(string: value)
+                return config.vShadow
+            })
+        }
+        
+        describe("#setRadius") {
+            ViewCSSTypeHelper.test(name: "radius", types: [.length], routine: { (value: String) -> (Any?) in
+                let config = ViewCSSShadowConfig()
+                config.setRadius(string: value)
+                return config.radius
+            })
+        }
+        
+        describe("#setColor") {
+            ViewCSSTypeHelper.test(name: "color", types: [.color], routine: { (value: String) -> (Any?) in
+                let config = ViewCSSShadowConfig()
+                config.setColor(string: value)
+                return config.color
+            })
+        }
+        
+        describe("#setAll") {
             it("ignores everything if the h-shadow and v-shadow are not defined") {
                 let css = ["text-shadow" : ""]
-                let config = ViewCSSShadowConfig.fromCSS(dict: css, base: "text")
-                expect(config.offset).to(beNil())
+                let config = ViewCSSShadowConfig()
+                config.setAll(dict: css)
+                expect(config.hShadow).to(beNil())
+                expect(config.vShadow).to(beNil())
                 expect(config.radius).to(beNil())
                 expect(config.color).to(beNil())
                 expect(config.opacity).to(beNil())
@@ -28,17 +61,21 @@ class ViewCSSShadowConfigSpec: QuickSpec {
             
             it("ignores everything if only the h-shadow is defined") {
                 let css = [ "text-shadow" : "20px"]
-                let config = ViewCSSShadowConfig.fromCSS(dict: css, base: "text")
-                expect(config.offset).to(beNil())
+                let config = ViewCSSShadowConfig()
+                config.setAll(dict: css)
+                expect(config.hShadow).to(beNil())
+                expect(config.vShadow).to(beNil())
                 expect(config.radius).to(beNil())
                 expect(config.color).to(beNil())
                 expect(config.opacity).to(beNil())
             }
             
-            it("sets the offset is the h-shadow and v-shadow are defined") {
+            it("sets the h-shadow and v-shadow if they are defined") {
                 let css = [ "text-shadow" : "20px 40px"]
-                let config = ViewCSSShadowConfig.fromCSS(dict: css, base: "text")
-                expect(config.offset).to(equal(CGSize(width: 20, height: 40)))
+                let config = ViewCSSShadowConfig()
+                config.setAll(dict: css)
+                expect(config.hShadow).to(equal(20))
+                expect(config.vShadow).to(equal(40))
                 expect(config.radius).to(beNil())
                 expect(config.color).to(beNil())
                 expect(config.opacity).to(equal(1.0)) // Defaults opacity to 1.0 since none was included
@@ -46,8 +83,10 @@ class ViewCSSShadowConfigSpec: QuickSpec {
             
             it("sets the radius") {
                 let css = [ "text-shadow" : "20px 40px 5px"]
-                let config = ViewCSSShadowConfig.fromCSS(dict: css, base: "text")
-                expect(config.offset).to(equal(CGSize(width: 20, height: 40)))
+                let config = ViewCSSShadowConfig()
+                config.setAll(dict: css)
+                expect(config.hShadow).to(equal(20))
+                expect(config.vShadow).to(equal(40))
                 expect(config.radius).to(equal(5.0))
                 expect(config.color).to(beNil())
                 expect(config.opacity).to(equal(1.0)) // Defaults opacity to 1.0 since none was included
@@ -55,18 +94,35 @@ class ViewCSSShadowConfigSpec: QuickSpec {
             
             it("sets the radius and the color") {
                 let css = [ "text-shadow" : "20px 40px 5px " + color.toCSS]
-                let config = ViewCSSShadowConfig.fromCSS(dict: css, base: "text")
-                expect(config.offset).to(equal(CGSize(width: 20, height: 40)))
+                let config = ViewCSSShadowConfig()
+                config.setAll(dict: css)
+                expect(config.hShadow).to(equal(20))
+                expect(config.vShadow).to(equal(40))
                 expect(config.radius).to(equal(5.0))
                 expect(config.color?.toCSS).to(equal(color.toCSS))
                 expect(config.opacity).to(equal(1.0)) // Defaults opacity to 1.0 since none was included
             }
-
-            it("skips the radius and sets the color by") {
+            
+            it("skips the radius and sets the color") {
                 let css = [ "text-shadow" : "20px 40px " + color.toCSS]
-                let config = ViewCSSShadowConfig.fromCSS(dict: css, base: "text")
-                expect(config.offset) == CGSize(width: 20, height: 40)
+                let config = ViewCSSShadowConfig()
+                config.setAll(dict: css)
+                expect(config.hShadow).to(equal(20))
+                expect(config.vShadow).to(equal(40))
                 expect(config.radius).to(beNil())
+                expect(config.color?.toCSS).to(equal(color.toCSS))
+                expect(config.opacity).to(equal(1.0)) // Defaults opacity to 1.0 since none was included
+            }
+        }
+
+        describe("#fromCSS") {
+            
+            it("sets the radius and the color") {
+                let css = [ "text-shadow" : "20px 40px 5px " + color.toCSS]
+                let config = ViewCSSShadowConfig.fromCSS(dict: css, base: "text")
+                expect(config.hShadow).to(equal(20))
+                expect(config.vShadow).to(equal(40))
+                expect(config.radius).to(equal(5.0))
                 expect(config.color?.toCSS).to(equal(color.toCSS))
                 expect(config.opacity).to(equal(1.0)) // Defaults opacity to 1.0 since none was included
             }
@@ -74,7 +130,8 @@ class ViewCSSShadowConfigSpec: QuickSpec {
             it("overrides the default opacity") {
                 let css = [ "text-shadow" : "20px 40px " + color.toCSS, "text-shadow-opacity" : "0.5"]
                 let config = ViewCSSShadowConfig.fromCSS(dict: css, base: "text")
-                expect(config.offset) == CGSize(width: 20, height: 40)
+                expect(config.hShadow).to(equal(20))
+                expect(config.vShadow).to(equal(40))
                 expect(config.radius).to(beNil())
                 expect(config.color?.toCSS).to(equal(color.toCSS))
                 expect(config.opacity).to(equal(0.5))

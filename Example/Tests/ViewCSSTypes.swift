@@ -102,7 +102,7 @@ class ViewCSSTypeHelper {
                 
                 it(name + " ignores the number if it has a %") {
                     let result = routine("5%")
-                    expect((result as! CGFloat)).to(beNil())
+                    expect((result)).to(beNil())
                 }
             }
             else if type == .percentage {
