@@ -34,9 +34,9 @@ public class ViewCSSBorderConfig: ViewCSSBaseConfig {
     static func fromCSS(dict: Dictionary<String, Any>) -> ViewCSSBorderConfig {
         let config = ViewCSSBorderConfig()
         
-        config.cssRadius(string: self.checkVariables(string: dict[BORDER_RADIUS] as? String))
-        config.cssColor(string: self.checkVariables(string: dict[BORDER_COLOR] as? String))
-        config.cssWidth(string: self.checkVariables(string: dict[BORDER_WIDTH] as? String))
+        config.setRadius(dict: dict)
+        config.setColor(dict: dict)
+        config.setWidth(dict: dict)
         
         return config
     }
@@ -62,51 +62,33 @@ public class ViewCSSBorderConfig: ViewCSSBaseConfig {
         return dict
     }
     
-    private func cssRadius(string: String?) {
-        if string != nil {
-            if let radius = string!.lengthToFloat {
-                self.radius = radius
-            }
-            
-            if self.radius == nil {
-                self.printWarning(attribute: type(of: self).BORDER_RADIUS, value: string!)
-            }
-        }
+    private func setRadius(dict: Dictionary<String, Any>) {
+        self.radius = self.valueFromDict(
+            dict,
+            attribute: type(of: self).BORDER_RADIUS,
+            types: [.length],
+            match: nil) as? CGFloat
     }
     
-    private func cssColor(string: String?) {
-        if string != nil {
-            self.color = UIColor(css: string!)
-            
-            if self.color == nil {
-                self.printWarning(attribute: type(of: self).BORDER_COLOR, value: string!)
-            }
-        }
+    private func setColor(dict: Dictionary<String, Any>) {
+        self.color = self.valueFromDict(
+            dict,
+            attribute: type(of: self).BORDER_COLOR,
+            types: [.color],
+            match: nil) as? UIColor
     }
     
-    private func cssWidth(string: String?) {
-        if string != nil {
-            let trimmedString = string!.trimmingCharacters(in: .whitespaces)
-            
-            if let length = trimmedString.lengthToFloat {
-                self.width = length
-            }
-            else {
-                switch trimmedString {
-                case "medium":
-                    self.width = 2
-                case "thin":
-                    self.width = 1
-                case "thick":
-                    self.width = 3
-                default:
-                    self.width = nil
-                }
-            }
-            
-            if self.width == nil {
-                self.printWarning(attribute: type(of: self).BORDER_WIDTH, value: string!)
-            }
-        }
+    private func setWidth(dict: Dictionary<String, Any>) {
+        self.width = self.valueFromDict(
+            dict,
+            attribute: type(of: self).BORDER_WIDTH,
+            types: [.length, .custom],
+            match: nil,
+            custom: { (string: String) in
+                if string == "medium" { return 2 }
+                else if string == "thin" { return 1 }
+                else if string == "thick" { return 3 }
+                return nil
+            }) as? CGFloat
     }
 }

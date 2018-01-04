@@ -30,8 +30,8 @@ public class ViewCSSBackgroundConfig: ViewCSSBaseConfig {
     static func fromCSS(dict: Dictionary<String, Any>) -> ViewCSSBackgroundConfig {
         let config = ViewCSSBackgroundConfig()
         
-        config.cssColor(string: self.checkVariables(string: dict[BACKGROUND_COLOR] as? String))
-        
+        config.setColor(dict: dict)
+
         return config
     }
     
@@ -47,13 +47,11 @@ public class ViewCSSBackgroundConfig: ViewCSSBaseConfig {
         return dict
     }
     
-    private func cssColor(string: String?) {
-        if string != nil {
-            self.color = UIColor(css: string!)
-            
-            if self.color == nil {
-                self.printWarning(attribute: type(of: self).BACKGROUND_COLOR, value: string!)
-            }
-        }
+    func setColor(dict: Dictionary<String, Any>) {
+        self.color = self.valueFromDict(
+            dict,
+            attribute: type(of: self).BACKGROUND_COLOR,
+            types: [.color],
+            match: nil) as? UIColor
     }
 }

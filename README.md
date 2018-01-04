@@ -5,6 +5,12 @@
 [![License](https://img.shields.io/cocoapods/l/ViewCSS.svg?style=flat)](http://cocoapods.org/pods/ViewCSS)
 [![Platform](https://img.shields.io/cocoapods/p/ViewCSS.svg?style=flat)](http://cocoapods.org/pods/ViewCSS)
 
+ViewCSS is a CSS like plugin for iOS Applications.  It provides a simple
+interface to define different attributes for UIView elements.  It is intended
+to allow application developers/designers a simple interface to enable CSS
+reuse methodologies as well as overriding the values at run-time.  **It is NOT
+intended to replace auto layout, attributed text, NIBs, etc.**
+
 ## Versions
 
   - 0.1.0 - Initial Revision
@@ -77,8 +83,12 @@ ViewCSS is available under the MIT license. See the LICENSE file for more info.
 ### Overview
 
 ViewCSS is a CSS like plugin for iOS Applications.  It provides a simple 
-interface to define different attributes for UIView elements.  Here is an 
-example below
+interface to define different attributes for UIView elements.  It is intended
+to allow application developers/designers a simple interface to enable CSS
+reuse methodologies as well as overriding the values at run-time.  **It is NOT
+intended to replace auto layout, attributed text, NIBs, etc.**
+
+An example of use is shown below
 
 ```swift
 import UIKit

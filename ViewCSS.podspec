@@ -18,8 +18,11 @@ Pod::Spec.new do |s|
 #   * Finally, don't worry about the indent, CocoaPods strips it!
 
   s.description      = <<-DESC
-ViewCSS is a CSS like plugin for iOS Applications. It provides a simple interface to define overrideable
-properties using CSS like commands.
+ViewCSS is a CSS like plugin for iOS Applications.  It provides a simple
+interface to define different attributes for UIView elements.  It is intended
+to allow application developers/designers a simple interface to enable CSS
+reuse methodologies as well as overriding the values at run-time.  It is NOT
+intended to replace auto layout, attributed text, NIBs, etc.
                        DESC
 
   s.homepage         = 'https://github.com/ericchapman/ViewCSS'

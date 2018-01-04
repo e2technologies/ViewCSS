@@ -6,31 +6,17 @@ class ViewCSSTextConfigSpec: QuickSpec {
     override func spec() {
 
         describe("#setAlign") {
-            var config: ViewCSSTextConfig?
-            beforeEach {
-                config = ViewCSSTextConfig()
-            }
-            
-            it("parses center") {
-                let css = ["text-align" : "center"]
-                config!.setAlign(dict: css)
-                expect(config!.align).to(equal(NSTextAlignment.center))
-            }
-            it("parses left") {
-                let css = ["text-align" : "left"]
-                config!.setAlign(dict: css)
-                expect(config!.align).to(equal(NSTextAlignment.left))
-            }
-            it("parses right") {
-                let css = ["text-align" : "right"]
-                config!.setAlign(dict: css)
-                expect(config!.align).to(equal(NSTextAlignment.right))
-            }
-            it("parses justify") {
-                let css = ["text-align" : "justify"]
-                config!.setAlign(dict: css)
-                expect(config!.align).to(equal(NSTextAlignment.justified))
-            }
+            let custom = [
+                "center" : NSTextAlignment.center,
+                "left" : NSTextAlignment.left,
+                "right" : NSTextAlignment.right,
+                "justify" : NSTextAlignment.justified
+            ]
+            ViewCSSTypeHelper.test(name: "align", types: [.custom], routine: { (value: String) -> (Any?) in
+                let config = ViewCSSTextConfig()
+                config.setAlign(dict: ["text-align": value])
+                return config.align
+            }, custom: custom)
         }
         
         describe("#fromCSS") {
