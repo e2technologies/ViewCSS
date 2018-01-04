@@ -65,23 +65,17 @@ public class ViewCSSTextConfig: ViewCSSBaseConfig {
     }
     
     func setAlign(dict: Dictionary<String, Any>) {
-        if let string = self.valueFromDict(dict, attribute: type(of: self).TEXT_ALIGN, types: [.normal]) as? String {
-            switch string {
-            case "center":
-                self.align = NSTextAlignment.center
-            case "left":
-                self.align = NSTextAlignment.left
-            case "right":
-                self.align = NSTextAlignment.right
-            case "justify":
-                self.align = NSTextAlignment.justified
-            default:
-                self.align = nil
-            }
-            
-            if self.align == nil {
-                self.printWarning(attribute: type(of: self).TEXT_ALIGN, value: string)
-            }
-        }
+        self.align = self.valueFromDict(
+            dict,
+            attribute: type(of: self).TEXT_ALIGN,
+            types: [.custom],
+            match: nil)
+        { (string: String) -> (Any?) in
+            if string == "center" { return NSTextAlignment.center }
+            else if string == "left" { return NSTextAlignment.left }
+            else if string == "right" { return NSTextAlignment.right }
+            else if string == "justify" { return NSTextAlignment.justified }
+            return nil
+        } as? NSTextAlignment
     }
 }

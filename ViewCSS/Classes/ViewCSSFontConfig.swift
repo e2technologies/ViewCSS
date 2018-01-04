@@ -56,9 +56,9 @@ public class ViewCSSFontConfig: ViewCSSBaseConfig {
     static func fromCSS(dict: Dictionary<String, Any>) -> ViewCSSFontConfig {
         let config = ViewCSSFontConfig()
         
-        config.cssSize(string: self.checkVariables(string: dict[FONT_SIZE] as? String))
-        config.cssSizeScale(string: self.checkVariables(string: dict[FONT_SIZE_SCALE] as? String))
-        config.cssWeight(string: self.checkVariables(string: dict[FONT_WEIGHT] as? String))
+        config.setSize(dict: dict)
+        config.setSizeScale(dict: dict)
+        config.setWeight(dict: dict)
         
         return config
     }
@@ -97,103 +97,69 @@ public class ViewCSSFontConfig: ViewCSSBaseConfig {
         return nil
     }
     
-    private func cssSize(string: String?) {
-        if string != nil {
-            let trimmedString = string!.trimmingCharacters(in: .whitespaces)
-            
-            if let percentage = trimmedString.percentageToFloat {
-                self.size = type(of: self).DEFAULT_FONT_SIZE * percentage
-            }
-            else if let length = trimmedString.lengthToFloat {
-                self.size = length
-            }
-            else {
-                var offset: CGFloat? = nil
-                switch trimmedString {
-                case "xx-small":
-                    offset = -6
-                case "x-small":
-                    offset = -4
-                case "small":
-                    offset = -2
-                case "medium":
-                    offset = 0
-                case "large":
-                    offset = 2
-                case "x-large":
-                    offset = 4
-                case "xx-large":
-                    offset = 6
-                default:
-                    offset = nil
+    private func setSize(dict: Dictionary<String, Any>) {
+        self.valueFromDict(
+            dict,
+            attribute: type(of: self).FONT_SIZE,
+            types: [.percentage, .length, .custom],
+            match:
+            { (value: Any, type: ViewCSSBaseConfig.PropertyType) in
+                if type == .percentage, let percentage = value as? CGFloat {
+                    self.size = ViewCSSFontConfig.DEFAULT_FONT_SIZE * percentage
                 }
-                
-                if offset != nil {
-                    self.size = type(of: self).DEFAULT_FONT_SIZE + offset!
+                else if type == .length, let length = value as? CGFloat {
+                    self.size = length
                 }
-            }
-            
-            if self.size == nil {
-                self.printWarning(attribute: type(of: self).FONT_SIZE, value: string!)
-            }
+                else if type == .custom, let offset = value as? CGFloat {
+                    self.size = ViewCSSFontConfig.DEFAULT_FONT_SIZE + offset
+                }
+        }) { (string: String) in
+            if string == "xx-small" { return -6 }
+            else if string == "x-small" { return -4 }
+            else if string == "small" { return -2 }
+            else if string == "medium" { return 0 }
+            else if string == "large" { return 2 }
+            else if string == "x-large" { return 4 }
+            else if string == "xx-large" { return 6 }
+            else { return nil }
         }
     }
     
-    private func cssSizeScale(string: String?) {
-        if string != nil {
-            let trimmedString = string!.trimmingCharacters(in: .whitespaces)
-            
-            if trimmedString == "auto" {
-                self.sizeScale = type(of: self).AUTO_SCALE
-            }
-            else if let number = trimmedString.numberToFloat {
-                self.sizeScale = number
-            }
-            
-            if self.sizeScale == nil {
-                self.printWarning(attribute: type(of: self).FONT_SIZE_SCALE, value: string!)
-            }
-        }
+    private func setSizeScale(dict: Dictionary<String, Any>) {
+        self.sizeScale = self.valueFromDict(
+            dict,
+            attribute: type(of: self).FONT_SIZE_SCALE,
+            types: [.custom, .number],
+            match: nil)
+        { (string: String) in
+            if string == "auto" { return ViewCSSFontConfig.AUTO_SCALE }
+            else { return nil }
+        } as? CGFloat
     }
     
-    private func cssWeight(string: String?) {
-        if string != nil {
+    private func setWeight(dict: Dictionary<String, Any>) {
+        self.weight = self.valueFromDict(
+            dict,
+            attribute: type(of: self).FONT_WEIGHT,
+            types: [.custom],
+            match: nil)
+        { (string: String) in
             if #available(iOS 8.2, *) {
-                switch string! {
-                case "normal":
-                    self.weight = UIFont.Weight.regular
-                case "bold":
-                    self.weight = UIFont.Weight.bold
-                case "bolder":
-                    self.weight = UIFont.Weight.black
-                case "lighter":
-                    self.weight = UIFont.Weight.thin
-                case "100":
-                    self.weight = UIFont.Weight.ultraLight
-                case "200":
-                    self.weight = UIFont.Weight.thin
-                case "300":
-                    self.weight = UIFont.Weight.light
-                case "400":
-                    self.weight = UIFont.Weight.regular
-                case "500":
-                    self.weight = UIFont.Weight.medium
-                case "600":
-                    self.weight = UIFont.Weight.semibold
-                case "700":
-                    self.weight = UIFont.Weight.bold
-                case "800":
-                    self.weight = UIFont.Weight.heavy
-                case "900":
-                    self.weight = UIFont.Weight.black
-                default:
-                    self.weight = nil
-                }
+                if string == "normal" { return UIFont.Weight.regular }
+                else if string == "bold" { return UIFont.Weight.bold }
+                else if string == "bolder" { return UIFont.Weight.black }
+                else if string == "lighter" { return UIFont.Weight.thin }
+                else if string == "100" { return UIFont.Weight.ultraLight }
+                else if string == "200" { return UIFont.Weight.thin }
+                else if string == "300" { return UIFont.Weight.light }
+                else if string == "400" { return UIFont.Weight.regular }
+                else if string == "500" { return UIFont.Weight.medium }
+                else if string == "600" { return UIFont.Weight.semibold }
+                else if string == "700" { return UIFont.Weight.bold }
+                else if string == "800" { return UIFont.Weight.heavy }
+                else if string == "900" { return UIFont.Weight.black }
             }
-            
-            if self.weight == nil {
-                self.printWarning(attribute: type(of: self).FONT_WEIGHT, value: string!)
-            }
-        }
+            return nil
+        } as? UIFont.Weight
     }
 }

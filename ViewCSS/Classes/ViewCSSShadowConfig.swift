@@ -72,37 +72,35 @@ public class ViewCSSShadowConfig: ViewCSSBaseConfig {
             if shadowComponents.count > index {
                 self.setColor(string: String(shadowComponents[index]))
             }
+            
+            // opacity
+            if self.hShadow != nil && self.vShadow != nil {
+                self.opacity = type(of: self).OPACITY_DEFAULT
+            }
         }
     }
     
     func setHShadow(string: String) {
-        if let hShadow = self.valueFromString(string, types: [.length]) as? CGFloat {
-            self.hShadow = hShadow
-        }
+        self.hShadow = self.valueFromString(string, types: [.length], match: nil) as? CGFloat
     }
     
     func setVShadow(string: String) {
-        if let vShadow = self.valueFromString(string, types: [.length]) as? CGFloat {
-            self.vShadow = vShadow
-        }
+        self.vShadow = self.valueFromString(string, types: [.length], match: nil) as? CGFloat
     }
     
     func setRadius(string: String) {
-        if let radius = self.valueFromString(string, types: [.length]) as? CGFloat {
-            self.radius = radius
-        }
+        self.radius = self.valueFromString(string, types: [.length], match: nil) as? CGFloat
     }
     
     func setColor(string: String) {
-        if let color = self.valueFromString(string, types: [.color]) as? UIColor {
-            self.color = color
-        }
+        self.color = self.valueFromString(string, types: [.color], match: nil) as? UIColor
     }
     
     func setOpacity(dict: Dictionary<String, Any>) {
         if let opacity = self.valueFromDict(dict,
                                             attribute: self.getParam(type(of: self).SHADOW_OPACITY),
-                                            types:[.number]) as? CGFloat {
+                                            types:[.number],
+                                            match: nil) as? CGFloat {
             self.opacity = opacity
         }
     }

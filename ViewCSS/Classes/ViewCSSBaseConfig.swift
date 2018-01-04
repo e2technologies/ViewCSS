@@ -28,43 +28,90 @@ public class ViewCSSBaseConfig {
         case length
         case number
         case percentage
-        case normal
+        case custom
     }
     
-    static func valueFromDict(_ dict: Dictionary<String, Any?>, attribute: String, types:[PropertyType]) -> Any? {
-        let string = dict[attribute] as? String
-        let value = self.valueFromString(string, types: types)
+    @discardableResult
+    func valueFromDict(_ dict: Dictionary<String, Any?>,
+                       attribute: String,
+                       types:[PropertyType],
+                       match: ((Any, PropertyType)->())?,
+                       custom: ((String) -> (Any?))?=nil) -> Any? {
         
-        if value == nil {
-            // TODO: Report Error
+        return type(of: self).valueFromDict(dict,
+                                            attribute: attribute,
+                                            types: types,
+                                            match: match,
+                                            custom: custom)
+    }
+    
+    @discardableResult
+    static func valueFromDict(_ dict: Dictionary<String, Any?>,
+                              attribute: String,
+                              types:[PropertyType],
+                              match: ((Any, PropertyType)->())?,
+                              custom: ((String) -> (Any?))?=nil) -> Any? {
+        
+        if let string = dict[attribute] as? String {
+            let value = self.valueFromString(string,
+                                             types: types,
+                                             match: match,
+                                             custom: custom)
+            
+            if value == nil {
+                self.printWarning(attribute: attribute, value: string)
+            }
+            
+            return value
         }
         
-        return value
+        return nil
+    }
+   
+    @discardableResult
+    func valueFromString(_ string: String?,
+                         types:[PropertyType],
+                         match: ((Any, PropertyType)->())?,
+                         custom: ((String) -> (Any?))?=nil) -> Any? {
+        
+        return type(of: self).valueFromString(string,
+                                              types: types,
+                                              match: match,
+                                              custom: custom)
     }
     
-    func valueFromDict(_ dict: Dictionary<String, Any?>, attribute: String, types:[PropertyType]) -> Any? {
-        return type(of: self).valueFromDict(dict, attribute: attribute, types: types)
-    }
-    
-    static func valueFromString(_ string: String?, types:[PropertyType]) -> Any? {
+    @discardableResult
+    static func valueFromString(_ string: String?,
+                                types:[PropertyType],
+                                match: ((Any, PropertyType)->())?,
+                                custom: ((String) -> (Any?))?=nil) -> Any? {
 
         if let variabled = self.checkVariables(string: string) {
+            let trimmedString = variabled.trimmingCharacters(in: .whitespaces)
             for type in types {
-                let trimmedString = variabled.trimmingCharacters(in: .whitespaces)
+                var value: Any? = nil
+                
                 if type == .color {
-                    return UIColor(css: trimmedString)
+                    value = UIColor(css: trimmedString)
                 }
                 else if type == .length {
-                    return trimmedString.lengthToFloat
+                    value = trimmedString.lengthToFloat
                 }
                 else if type == .number {
-                    return trimmedString.numberToFloat
+                    value = trimmedString.numberToFloat
                 }
                 else if type == .percentage {
-                    return trimmedString.percentageToFloat
+                    value = trimmedString.percentageToFloat
                 }
-                else if type == .normal {
-                    return trimmedString
+                else if type == .custom && custom != nil {
+                    value = custom!(trimmedString)
+                }
+                
+                if value != nil {
+                    if match != nil {
+                        match!(value!, type)
+                    }
+                    return value
                 }
             }
         }
@@ -72,11 +119,11 @@ public class ViewCSSBaseConfig {
         return nil
     }
     
-    func valueFromString(_ string: String?, types:[PropertyType]) -> Any? {
-        return type(of: self).valueFromString(string, types:types)
+    func printWarning(attribute: String, value: String) {
+        type(of: self).printWarning(attribute: attribute, value: value)
     }
     
-    func printWarning(attribute: String, value: String) {
+    static func printWarning(attribute: String, value: String) {
         print("ViewCSSManager WARN: Invalid CSS value '" + value + "' for attribute '" + attribute + "'")
     }
     

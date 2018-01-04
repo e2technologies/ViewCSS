@@ -215,6 +215,7 @@ extension UIColor {
             }
                 // Parse the RGB function method
             else {
+                if !cleanCss.hasSuffix(")") { return nil }
                 cleanCss = String(cleanCss.dropFirst(4))
                 cleanCss = String(cleanCss.dropLast())
                 

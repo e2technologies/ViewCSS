@@ -13,8 +13,9 @@
 		607FACDB1AFB9204008FA782 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 607FACD91AFB9204008FA782 /* Main.storyboard */; };
 		607FACDD1AFB9204008FA782 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDC1AFB9204008FA782 /* Images.xcassets */; };
 		607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDE1AFB9204008FA782 /* LaunchScreen.xib */; };
+		6937F0331FFE70F30099AA2A /* ViewCSSBackgroundConfigSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6937F0321FFE70F30099AA2A /* ViewCSSBackgroundConfigSpec.swift */; };
 		694372E21FFD4B3E00E87258 /* ViewCSSShadowConfigSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 694372E01FFD494D00E87258 /* ViewCSSShadowConfigSpec.swift */; };
-		694372E71FFD84D000E87258 /* ViewCSSTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 694372E61FFD84D000E87258 /* ViewCSSTypes.swift */; };
+		694372E71FFD84D000E87258 /* ViewCSSHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 694372E61FFD84D000E87258 /* ViewCSSHelpers.swift */; };
 		694372E91FFD9C6500E87258 /* ViewCSSCGFloatSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 694372E81FFD9C6500E87258 /* ViewCSSCGFloatSpec.swift */; };
 		694372EB1FFD9D8800E87258 /* ViewCSSStringSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 694372EA1FFD9D8800E87258 /* ViewCSSStringSpec.swift */; };
 		694372ED1FFDA9E100E87258 /* ViewCSSTextConfigSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 694372EC1FFDA9E100E87258 /* ViewCSSTextConfigSpec.swift */; };
@@ -46,8 +47,9 @@
 		607FACDF1AFB9204008FA782 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		607FACE51AFB9204008FA782 /* ViewCSS_Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ViewCSS_Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACEA1AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		6937F0321FFE70F30099AA2A /* ViewCSSBackgroundConfigSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewCSSBackgroundConfigSpec.swift; sourceTree = "<group>"; };
 		694372E01FFD494D00E87258 /* ViewCSSShadowConfigSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewCSSShadowConfigSpec.swift; sourceTree = "<group>"; };
-		694372E61FFD84D000E87258 /* ViewCSSTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewCSSTypes.swift; sourceTree = "<group>"; };
+		694372E61FFD84D000E87258 /* ViewCSSHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewCSSHelpers.swift; sourceTree = "<group>"; };
 		694372E81FFD9C6500E87258 /* ViewCSSCGFloatSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewCSSCGFloatSpec.swift; sourceTree = "<group>"; };
 		694372EA1FFD9D8800E87258 /* ViewCSSStringSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewCSSStringSpec.swift; sourceTree = "<group>"; };
 		694372EC1FFDA9E100E87258 /* ViewCSSTextConfigSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewCSSTextConfigSpec.swift; sourceTree = "<group>"; };
@@ -135,8 +137,9 @@
 				694372E81FFD9C6500E87258 /* ViewCSSCGFloatSpec.swift */,
 				694372EA1FFD9D8800E87258 /* ViewCSSStringSpec.swift */,
 				694372EC1FFDA9E100E87258 /* ViewCSSTextConfigSpec.swift */,
+				6937F0321FFE70F30099AA2A /* ViewCSSBackgroundConfigSpec.swift */,
 				694372E01FFD494D00E87258 /* ViewCSSShadowConfigSpec.swift */,
-				694372E61FFD84D000E87258 /* ViewCSSTypes.swift */,
+				694372E61FFD84D000E87258 /* ViewCSSHelpers.swift */,
 				607FACE91AFB9204008FA782 /* Supporting Files */,
 			);
 			path = Tests;
@@ -403,7 +406,8 @@
 				694372EB1FFD9D8800E87258 /* ViewCSSStringSpec.swift in Sources */,
 				694372E91FFD9C6500E87258 /* ViewCSSCGFloatSpec.swift in Sources */,
 				694372ED1FFDA9E100E87258 /* ViewCSSTextConfigSpec.swift in Sources */,
-				694372E71FFD84D000E87258 /* ViewCSSTypes.swift in Sources */,
+				6937F0331FFE70F30099AA2A /* ViewCSSBackgroundConfigSpec.swift in Sources */,
+				694372E71FFD84D000E87258 /* ViewCSSHelpers.swift in Sources */,
 				694372E21FFD4B3E00E87258 /* ViewCSSShadowConfigSpec.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
