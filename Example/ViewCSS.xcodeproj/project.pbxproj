@@ -15,6 +15,9 @@
 		607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDE1AFB9204008FA782 /* LaunchScreen.xib */; };
 		694372E21FFD4B3E00E87258 /* ViewCSSShadowConfigSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 694372E01FFD494D00E87258 /* ViewCSSShadowConfigSpec.swift */; };
 		694372E71FFD84D000E87258 /* ViewCSSTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 694372E61FFD84D000E87258 /* ViewCSSTypes.swift */; };
+		694372E91FFD9C6500E87258 /* ViewCSSCGFloatSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 694372E81FFD9C6500E87258 /* ViewCSSCGFloatSpec.swift */; };
+		694372EB1FFD9D8800E87258 /* ViewCSSStringSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 694372EA1FFD9D8800E87258 /* ViewCSSStringSpec.swift */; };
+		694372ED1FFDA9E100E87258 /* ViewCSSTextConfigSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 694372EC1FFDA9E100E87258 /* ViewCSSTextConfigSpec.swift */; };
 		C35B903113EA9711C394B6BC /* Pods_ViewCSS_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3BED46F41441FF83D5FCAF70 /* Pods_ViewCSS_Tests.framework */; };
 /* End PBXBuildFile section */
 
@@ -45,6 +48,9 @@
 		607FACEA1AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		694372E01FFD494D00E87258 /* ViewCSSShadowConfigSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewCSSShadowConfigSpec.swift; sourceTree = "<group>"; };
 		694372E61FFD84D000E87258 /* ViewCSSTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewCSSTypes.swift; sourceTree = "<group>"; };
+		694372E81FFD9C6500E87258 /* ViewCSSCGFloatSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewCSSCGFloatSpec.swift; sourceTree = "<group>"; };
+		694372EA1FFD9D8800E87258 /* ViewCSSStringSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewCSSStringSpec.swift; sourceTree = "<group>"; };
+		694372EC1FFDA9E100E87258 /* ViewCSSTextConfigSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewCSSTextConfigSpec.swift; sourceTree = "<group>"; };
 		723EFFD0E6EDFCDAE18194CA /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 		87E7B8DCC0FB9579767E6CBC /* Pods-ViewCSS_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ViewCSS_Tests.release.xcconfig"; path = "Pods/Target Support Files/Pods-ViewCSS_Tests/Pods-ViewCSS_Tests.release.xcconfig"; sourceTree = "<group>"; };
 		8B4FD99CDE85B0FEFA661E5E /* Pods-ViewCSS_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ViewCSS_Tests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ViewCSS_Tests/Pods-ViewCSS_Tests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -126,6 +132,9 @@
 		607FACE81AFB9204008FA782 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
+				694372E81FFD9C6500E87258 /* ViewCSSCGFloatSpec.swift */,
+				694372EA1FFD9D8800E87258 /* ViewCSSStringSpec.swift */,
+				694372EC1FFDA9E100E87258 /* ViewCSSTextConfigSpec.swift */,
 				694372E01FFD494D00E87258 /* ViewCSSShadowConfigSpec.swift */,
 				694372E61FFD84D000E87258 /* ViewCSSTypes.swift */,
 				607FACE91AFB9204008FA782 /* Supporting Files */,
@@ -391,6 +400,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				694372EB1FFD9D8800E87258 /* ViewCSSStringSpec.swift in Sources */,
+				694372E91FFD9C6500E87258 /* ViewCSSCGFloatSpec.swift in Sources */,
+				694372ED1FFDA9E100E87258 /* ViewCSSTextConfigSpec.swift in Sources */,
 				694372E71FFD84D000E87258 /* ViewCSSTypes.swift in Sources */,
 				694372E21FFD4B3E00E87258 /* ViewCSSShadowConfigSpec.swift in Sources */,
 			);

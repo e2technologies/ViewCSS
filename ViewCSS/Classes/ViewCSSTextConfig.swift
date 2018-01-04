@@ -32,7 +32,7 @@ public class ViewCSSTextConfig: ViewCSSBaseConfig {
         let config = ViewCSSTextConfig()
         
         config.shadow = ViewCSSShadowConfig.fromCSS(dict: dict, base: "text")
-        config.cssAlign(string: self.checkVariables(string: dict[TEXT_ALIGN] as? String))
+        config.setAlign(dict: dict)
         
         return config
     }
@@ -64,9 +64,9 @@ public class ViewCSSTextConfig: ViewCSSBaseConfig {
         return dict
     }
     
-    private func cssAlign(string: String?) {
-        if string != nil {
-            switch string! {
+    func setAlign(dict: Dictionary<String, Any>) {
+        if let string = self.valueFromDict(dict, attribute: type(of: self).TEXT_ALIGN, types: [.normal]) as? String {
+            switch string {
             case "center":
                 self.align = NSTextAlignment.center
             case "left":
@@ -80,7 +80,7 @@ public class ViewCSSTextConfig: ViewCSSBaseConfig {
             }
             
             if self.align == nil {
-                self.printWarning(attribute: type(of: self).TEXT_ALIGN, value: string!)
+                self.printWarning(attribute: type(of: self).TEXT_ALIGN, value: string)
             }
         }
     }

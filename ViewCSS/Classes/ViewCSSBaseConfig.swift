@@ -28,6 +28,7 @@ public class ViewCSSBaseConfig {
         case length
         case number
         case percentage
+        case normal
     }
     
     static func valueFromDict(_ dict: Dictionary<String, Any?>, attribute: String, types:[PropertyType]) -> Any? {
@@ -41,26 +42,38 @@ public class ViewCSSBaseConfig {
         return value
     }
     
+    func valueFromDict(_ dict: Dictionary<String, Any?>, attribute: String, types:[PropertyType]) -> Any? {
+        return type(of: self).valueFromDict(dict, attribute: attribute, types: types)
+    }
+    
     static func valueFromString(_ string: String?, types:[PropertyType]) -> Any? {
-        if string == nil { return nil }
-        
-        for type in types {
-            let trimmedString = string!.trimmingCharacters(in: .whitespaces)
-            if type == .color {
-                return UIColor(css: trimmedString)
-            }
-            else if type == .length {
-                return trimmedString.lengthToFloat
-            }
-            else if type == .number {
-                return trimmedString.numberToFloat
-            }
-            else if type == .percentage {
-                return trimmedString.percentageToFloat
+
+        if let variabled = self.checkVariables(string: string) {
+            for type in types {
+                let trimmedString = variabled.trimmingCharacters(in: .whitespaces)
+                if type == .color {
+                    return UIColor(css: trimmedString)
+                }
+                else if type == .length {
+                    return trimmedString.lengthToFloat
+                }
+                else if type == .number {
+                    return trimmedString.numberToFloat
+                }
+                else if type == .percentage {
+                    return trimmedString.percentageToFloat
+                }
+                else if type == .normal {
+                    return trimmedString
+                }
             }
         }
-        
+  
         return nil
+    }
+    
+    func valueFromString(_ string: String?, types:[PropertyType]) -> Any? {
+        return type(of: self).valueFromString(string, types:types)
     }
     
     func printWarning(attribute: String, value: String) {
@@ -70,4 +83,5 @@ public class ViewCSSBaseConfig {
     static func checkVariables(string: String?) -> String? {
         return ViewCSSManager.shared.checkForVariable(string: string)
     }
+
 }

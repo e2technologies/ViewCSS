@@ -62,6 +62,7 @@ extension String {
     }
     
     func valueOfHex(start: Int, length: Int) -> CGFloat? {
+        if start < 0 || start > self.count || (start + length) > self.count { return nil }
         let startIndex = self.index(self.startIndex, offsetBy: start)
         let endIndex = self.index(self.startIndex, offsetBy: (start+length))
         let hexString = String(self[startIndex..<endIndex])

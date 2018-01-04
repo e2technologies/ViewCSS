@@ -51,13 +51,14 @@ public class ViewCSSShadowConfig: ViewCSSBaseConfig {
             
             // Get the horizontal and vertial offsets
             if shadowComponents.count >= 2 {
-                let hShadow = type(of: self).valueFromString(String(shadowComponents[0]), types: [.length]) as? CGFloat
-                let vShadow = type(of: self).valueFromString(String(shadowComponents[1]), types: [.length]) as? CGFloat
+                let hShadow = self.valueFromString(String(shadowComponents[0]), types: [.length]) as? CGFloat
+                let vShadow = self.valueFromString(String(shadowComponents[1]), types: [.length]) as? CGFloat
                 if hShadow != nil && vShadow != nil {
                     self.offset = CGSize(width: hShadow!, height: vShadow!)
                     self.opacity = type(of: self).OPACITY_DEFAULT
                 }
                 else {
+                    self.printWarning(attribute: self.getParam(type(of: self).SHADOW), value: string!)
                     return
                 }
             }
@@ -65,7 +66,7 @@ public class ViewCSSShadowConfig: ViewCSSBaseConfig {
             // Check for a radius
             var index = 2;
             if shadowComponents.count > index {
-                if let radius = type(of: self).valueFromString(String(shadowComponents[index]), types: [.length]) as? CGFloat {
+                if let radius = self.valueFromString(String(shadowComponents[index]), types: [.length]) as? CGFloat {
                     self.radius = radius
                     index += 1
                 }
@@ -73,21 +74,17 @@ public class ViewCSSShadowConfig: ViewCSSBaseConfig {
             
             // Check for color
             if shadowComponents.count > index {
-                if let color = type(of: self).valueFromString(String(shadowComponents[index]), types: [.color]) as? UIColor {
+                if let color = self.valueFromString(String(shadowComponents[index]), types: [.color]) as? UIColor {
                     self.color = color
                 }
-            }
-            
-            if self.offset == nil {
-                self.printWarning(attribute: self.getParam(type(of: self).SHADOW), value: string!)
             }
         }
     }
     
     func setOpacity(dict: Dictionary<String, Any>) {
-        if let opacity = type(of: self).valueFromDict(dict,
-                                                      attribute: self.getParam(type(of: self).SHADOW_OPACITY),
-                                                      types:[.number]) as? CGFloat {
+        if let opacity = self.valueFromDict(dict,
+                                            attribute: self.getParam(type(of: self).SHADOW_OPACITY),
+                                            types:[.number]) as? CGFloat {
             self.opacity = opacity
         }
     }

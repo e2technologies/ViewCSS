@@ -22,7 +22,7 @@ class ViewController: UIViewController, ViewCSSCustomizableProtocol {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-        self.css(object: self.label1, class: "label1")
+        /*self.css(object: self.label1, class: "label1")
         self.label2?.css(class: "label2")
         self.css(object: self.label3, class: "label3")
         self.label4?.css(class: "primary", style: "background-color:lightgray;text-align:center;") { (config: ViewCSSConfig) in
@@ -37,7 +37,7 @@ class ViewController: UIViewController, ViewCSSCustomizableProtocol {
         config = ViewController.cssConfig(class: "label1")
         print(String(describing: config))
         
-        ViewCSSManager.shared.printSnoop()
+        ViewCSSManager.shared.printSnoop()*/
     }
     
     func cssCustomize(object: Any?, class klass: String?, style: String?, config: ViewCSSConfig) {
