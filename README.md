@@ -18,6 +18,7 @@ intended to replace auto layout, attributed text, NIBs, etc.**
     based on the user's OS settings
   - 0.3.0 - Added the "text-shadow" and "text-shadow-opacity" properties
   - 0.4.0 - Implemented unit tests, some code rework, small bug fixes, etc.  No changes to the API
+  - 0.5.0 - Adding ".cssText" method to support text manipulation tags like "text-decoration"
 
 ## Examples
 
@@ -429,7 +430,7 @@ Note that the library also supports nested variables.  For example
 
 It will recursively search until a variable is not found
 
-### Methods
+### NSObject Methods
 
 #### func css(object: Any?, class klass: String?, custom: ((ViewCSSConfig) -> Void)?=nil)
 The library extends "NSObject" to provide "css" helper methods that can
@@ -548,14 +549,123 @@ class MyCustomCell: UITableViewCell {
 Note that the same value must be used for "class" and "style" for the library 
 to get the correct config.
 
+### UILabel/UITextView ".cssText" Method
+In order to support different text manipulations, ViewCSS wraps the
+"NSAttributedText" features to allow CSS to be applied to displayed text.
+An example is shown below
+
+```swift
+class MyCustomCell: UITableViewCell {
+    @IBOutlet weak var label: UILabel?
+    
+    override func awakFromNib() {
+        super.awakeFromNib()
+        
+        self.css(object: self.label, class: "label")
+    }
+    
+    var setText(_ text: String) {
+        self.label?.cssText = text
+    }
+}
+```
+
+The ".cssText" method will use the CSS currently defined for the label object
+(in this case class="label") in order to generate the text.  The following
+properties are supported by the ".cssText" method
+
+  - text-transform
+
+#### span
+
+As an added bonus, the ".cssText" method also supports the HTML "span"
+element to allow portions of the text to be modified independently.  An 
+example of this is shown below
+
+```swift
+class MyCustomCell: UITableViewCell {
+    @IBOutlet weak var label: UILabel?
+    
+    override func awakFromNib() {
+        super.awakeFromNib()
+        
+        self.css(object: self.label, class: "label")
+    }
+    
+    var setText(firstName: String, lastName: String) {
+        self.label?.cssText = "\(firstName)<span class="bold">\(lastName)</span>"
+    }
+}
+```
+
+The above example will use the current properties defined for the
+"self.label" object for displaying the "firstName" and then use the 
+properties listed in the "bold" class to display the "lastName".  Note
+that this is one of the few places where inheritance is used in the 
+library.  The "bold" span text will default to the "label" class and then
+override any properties that are defined in the "bold" class.  Note that
+from the attribute dictionary perspective, it will search the following
+classes in the following order
+
+  - my_custom_cell.bold
+  - .bold
+  - (inherited) my_custom_cell.label
+  - (inherited) .label
+  - (inherited) my_custom_cell
+
+It basically operates the same as if you had passed the "bold" class in
+first when calling ".css" during the initialization
+
+```swift
+self.css(object: self.label, class: "bold label")
+```
+
+Note that multiple classes and the style attribute are also supported.
+Here is a more complex example
+
+```swift
+class MyCustomCell: UITableViewCell {
+    @IBOutlet weak var label: UILabel?
+    
+    override func awakFromNib() {
+        super.awakeFromNib()
+        
+        self.css(object: self.label, class: "right label", style="text-align:right;")
+    }
+    
+    var setText(firstName: String, lastName: String) {
+        self.label?.cssText = "\(firstName)<span class="link bar" style="text-transform:uppercase;">\(lastName)</span>"
+    }
+}
+```
+
+The attribute dictionary would be formed by looking for elements in the 
+following order (keeping the first match)
+
+  - "text-transform:uppercase;"
+  - my_custom_cell.link
+  - .link
+  - my_custom_cell.bar
+  - .bar
+  - (inherited) "text-align:right;"
+  - (inherited) my_custom_cell.bold
+  - (inherited) .bold
+  - (inherited) my_custom_cell.label
+  - (inherited) .label
+  - (inherited) my_custom_cell
+
+Note that the above example is intended to illustrate the order in which the 
+library parses the attribute dictionary.  It is not recommended to make examples 
+that are this complicated.  
+
 ### Customizations
 Sometimes there is a need to customize an additional element.  For example,
 maybe a button is created that has a custom "bar" at the bottom and you
 always want that to be the same color as the text.  There are 2 ways to do
 this.
 
-#### custom attribute
-The "custom" attribute is an option on the CSS call.  It will call back once
+#### "custom" callback
+The "custom" callback is an option on the CSS call.  It will call back once
 the CSS has been applied.  Below is an example
 
 ```swift
@@ -566,16 +676,16 @@ class MyButton: UIButton {
 	    super.awakeFromNib()
 	    
 	    self.css() { (config: ViewCSSConfig) in
-	    	self.bar.backgroundColor = config.color
+	    	self.bar?.backgroundColor = config.color
 	    }
 	}
 	
 }
 ```
 
-#### cssCustomize
-The "cssCustomize" provides a similar option as above, but uses a protocol
-instead.  Below is an example
+#### ViewCSSCustomizableProtocol
+The "ViewCSSCustomizableProtocol" provides a similar option as above, but 
+uses a protocol instead.  Below is an example
 
 ```swift
 class MyButton: UIButton, ViewCSSCustomizableProtocol {
@@ -588,7 +698,7 @@ class MyButton: UIButton, ViewCSSCustomizableProtocol {
 	}
 	
 	func cssCustomize(object: Any?, class klass: String?, style: String?, config: ViewCSSConfig) {
-	    self.bar.backgroundColor = config.color
+	    self.bar?.backgroundColor = config.color
 	}
 	
 }
