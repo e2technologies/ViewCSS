@@ -42,12 +42,46 @@ extension UIView: ViewCSSProtocol {
     func getCSSOpacity() -> CGFloat { return self.alpha }
 }
 
-private var CSSKeyObjectHandle: UInt8 = 0
+private var CSSKeyClassNameHandle: UInt8 = 0
+private var CSSKeyClassHandle: UInt8 = 0
+private var CSSKeyStyleHandle: UInt8 = 0
 
 extension UIView {
+    
+    var cssClassName: String? {
+        get {
+            return objc_getAssociatedObject(self, &CSSKeyClassNameHandle) as? String
+        }
+        set {
+            objc_setAssociatedObject(self, &CSSKeyClassNameHandle, newValue, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        }
+    }
+    
+    var cssClass: String? {
+        get {
+            return objc_getAssociatedObject(self, &CSSKeyClassHandle) as? String
+        }
+        set {
+            objc_setAssociatedObject(self, &CSSKeyClassHandle, newValue, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        }
+    }
+    
+    var cssStyle: String? {
+        get {
+            return objc_getAssociatedObject(self, &CSSKeyStyleHandle) as? String
+        }
+        set {
+            objc_setAssociatedObject(self, &CSSKeyStyleHandle, newValue, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        }
+    }
 
     func css(className: String, class klass: String?, style: String?, custom: ((ViewCSSConfig) -> Void)?=nil) {
         let cssManager = ViewCSSManager.shared
+        
+        // Store the class name, class, and style for later reference
+        self.cssClassName = className
+        self.cssClass = klass
+        self.cssStyle = style
         
         // Clear the missing flag (probably a better place to do this)
         cssManager.classMissing = false

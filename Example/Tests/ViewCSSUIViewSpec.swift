@@ -188,5 +188,36 @@ class ViewCSSUIViewSpec: QuickSpec {
             }
         }
         
+        describe("stores attributes") {
+            it("stores the class name") {
+                let view = UIView()
+                view.css()
+                expect(view.cssClassName).to(equal("ui_view"))
+                expect(view.cssClass).to(beNil())
+                expect(view.cssStyle).to(beNil())
+            }
+            it("stores the class") {
+                let view = UIView()
+                view.css(class: "button")
+                expect(view.cssClassName).to(equal("ui_view"))
+                expect(view.cssClass).to(equal("button"))
+                expect(view.cssStyle).to(beNil())
+            }
+            it("stores the style") {
+                let view = UIView()
+                view.css(style: "background-color:red;")
+                expect(view.cssClassName).to(equal("ui_view"))
+                expect(view.cssStyle).to(equal("background-color:red;"))
+                expect(view.cssClass).to(beNil())
+            }
+            it("stores the class and the style") {
+                let view = UIView()
+                view.css(class: "button", style: "background-color:red;")
+                expect(view.cssClassName).to(equal("ui_view"))
+                expect(view.cssStyle).to(equal("background-color:red;"))
+                expect(view.cssClass).to(equal("button"))
+            }
+        }
+        
     }
 }
