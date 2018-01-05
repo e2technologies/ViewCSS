@@ -64,7 +64,7 @@ public class ViewCSSManager {
             var newString = nextString!.trimmingCharacters(in: .whitespaces)
             
             // If it starts with "var(", perform the lookup
-            if newString.hasPrefix("var(") {
+            if newString.hasPrefix("var(") && newString.hasSuffix(")") {
                 
                 // Strip the var parameteres
                 newString = String(newString.dropFirst(4))
@@ -73,7 +73,7 @@ public class ViewCSSManager {
                 // Get the next one
                 nextString = self.styleLookupRoot![newString] as? String
             }
-        } while nextString != nil && nextString!.hasPrefix("var(")
+        } while nextString != nil && nextString!.hasPrefix("var(") && nextString!.hasSuffix(")")
         
         return nextString
     }
@@ -93,7 +93,7 @@ public class ViewCSSManager {
         return config
     }
 
-    private func getCacheKey(className: String, style: String?, class klass: String?) -> String {
+    func getCacheKey(className: String, style: String?, class klass: String?) -> String {
         var cacheKey = className
         if style != nil && !style!.isEmpty {
             cacheKey += " " + style!
@@ -129,15 +129,12 @@ public class ViewCSSManager {
         return self.styleLookup[":root"] as? Dictionary<String, Any>
     }
     
-    private func generateStyleDictionary(className: String, style: String?, class klass: String?) -> Dictionary<String, Any> {
-        
-        // Create a merged dictionary with all of the values
+    func parseStyle(_ string: String?) -> Dictionary<String, Any> {
         var dict = Dictionary<String, Any>()
         
-        // Priority 1: Style attributes
-        if style != nil {
+        if string != nil {
             // Remove the whitespace
-            let inlineStyle = style!.trimmingCharacters(in: .whitespaces)
+            let inlineStyle = string!.replacingOccurrences(of: " ", with: "")
             
             // Break the inline into components and set as values in the dictionary
             for subStyle in inlineStyle.split(separator: ";") {
@@ -147,6 +144,14 @@ public class ViewCSSManager {
             }
         }
         
+        return dict
+    }
+    
+    private func generateStyleDictionary(className: String, style: String?, class klass: String?) -> Dictionary<String, Any> {
+        
+        // Priority 1: Style attributes
+        var dict = self.parseStyle(style)
+
         // Priority 2: Classes
         if klass != nil {
             var numberOfMatches: Int = 0
