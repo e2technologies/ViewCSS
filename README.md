@@ -17,7 +17,7 @@ intended to replace auto layout, attributed text, NIBs, etc.**
   - 0.2.0 - Added the "font-size-scale" property to support auto scaling of font size
     based on the user's OS settings
   - 0.3.0 - Added the "text-shadow" and "text-shadow-opacity" properties
-  - 0.4.0 - Implemented unit tests, some code rework, small bug fixes, no change to the API
+  - 0.4.0 - Implemented unit tests, some code rework, small bug fixes, etc.  No changes to the API
 
 ## Examples
 
@@ -70,10 +70,6 @@ it, simply add the following line to your Podfile:
 ```ruby
 pod 'ViewCSS'
 ```
-
-## Author
-
-Eric Chapman, eric.chappy@gmail.com
 
 ## License
 
