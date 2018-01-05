@@ -97,7 +97,7 @@ public class ViewCSSFontConfig: ViewCSSBaseConfig {
         return nil
     }
     
-    private func setSize(dict: Dictionary<String, Any>) {
+    func setSize(dict: Dictionary<String, Any>) {
         self.valueFromDict(
             dict,
             attribute: type(of: self).FONT_SIZE,
@@ -125,7 +125,7 @@ public class ViewCSSFontConfig: ViewCSSBaseConfig {
         }
     }
     
-    private func setSizeScale(dict: Dictionary<String, Any>) {
+    func setSizeScale(dict: Dictionary<String, Any>) {
         self.sizeScale = self.valueFromDict(
             dict,
             attribute: type(of: self).FONT_SIZE_SCALE,
@@ -137,7 +137,7 @@ public class ViewCSSFontConfig: ViewCSSBaseConfig {
         } as? CGFloat
     }
     
-    private func setWeight(dict: Dictionary<String, Any>) {
+    func setWeight(dict: Dictionary<String, Any>) {
         self.weight = self.valueFromDict(
             dict,
             attribute: type(of: self).FONT_WEIGHT,

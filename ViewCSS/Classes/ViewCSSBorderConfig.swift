@@ -62,7 +62,7 @@ public class ViewCSSBorderConfig: ViewCSSBaseConfig {
         return dict
     }
     
-    private func setRadius(dict: Dictionary<String, Any>) {
+    func setRadius(dict: Dictionary<String, Any>) {
         self.radius = self.valueFromDict(
             dict,
             attribute: type(of: self).BORDER_RADIUS,
@@ -70,7 +70,7 @@ public class ViewCSSBorderConfig: ViewCSSBaseConfig {
             match: nil) as? CGFloat
     }
     
-    private func setColor(dict: Dictionary<String, Any>) {
+    func setColor(dict: Dictionary<String, Any>) {
         self.color = self.valueFromDict(
             dict,
             attribute: type(of: self).BORDER_COLOR,
@@ -78,7 +78,7 @@ public class ViewCSSBorderConfig: ViewCSSBaseConfig {
             match: nil) as? UIColor
     }
     
-    private func setWidth(dict: Dictionary<String, Any>) {
+    func setWidth(dict: Dictionary<String, Any>) {
         self.width = self.valueFromDict(
             dict,
             attribute: type(of: self).BORDER_WIDTH,

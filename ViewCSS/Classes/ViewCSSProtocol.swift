@@ -40,7 +40,16 @@ protocol ViewCSSProtocol {
     func getCSSOpacity() -> CGFloat
 }
 
-protocol ViewCSSTextProtocol: ViewCSSProtocol {
+protocol ViewCSSShadowProtocol: ViewCSSProtocol {
+    func setCSSShadow(offset: CGSize, radius: CGFloat?, color: UIColor?, opacity: CGFloat)
+    
+    func getCSSShadowOffset() -> CGSize?
+    func getCSSShadowRadius() -> CGFloat
+    func getCSSShadowColor() -> UIColor?
+    func getCSSShadowOpacity() -> CGFloat
+}
+
+protocol ViewCSSTextProtocol: ViewCSSShadowProtocol {
     func setCSSTextColor(_ color: UIColor)
     func setCSSFont(_ font: UIFont)
     func setCSSTextAlignment( _ alignment: NSTextAlignment)
@@ -50,11 +59,3 @@ protocol ViewCSSTextProtocol: ViewCSSProtocol {
     func getCSSTextAlignment() -> NSTextAlignment
 }
 
-protocol ViewCSSShadowProtocol: ViewCSSProtocol {
-    func setCSSShadow(offset: CGSize, radius: CGFloat?, color: UIColor?, opacity: CGFloat)
-    
-    func getCSSShadowOffset() -> CGSize?
-    func getCSSShadowRadius() -> CGFloat
-    func getCSSShadowColor() -> UIColor?
-    func getCSSShadowOpacity() -> CGFloat
-}

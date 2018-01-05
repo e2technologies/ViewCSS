@@ -8,7 +8,8 @@ class ViewCSSShadowConfigSpec: QuickSpec {
         let color = UIColor(css: "blue")!
         
         describe("#setOpacity") {
-            ViewCSSTypeHelper.test(name: "shadow opacity", types: [.number], routine: { (value: String) -> (Any?) in
+            ViewCSSTypeHelper.test(name: "shadow opacity", types: [.number], routine: {
+                (value: String, type: ViewCSSBaseConfig.PropertyType) -> (Any?) in
                 let config = ViewCSSShadowConfig()
                 config.setOpacity(dict: ["shadow-opacity": value])
                 return config.opacity
@@ -16,7 +17,8 @@ class ViewCSSShadowConfigSpec: QuickSpec {
         }
         
         describe("#setHShadow") {
-            ViewCSSTypeHelper.test(name: "h shadow", types: [.length], routine: { (value: String) -> (Any?) in
+            ViewCSSTypeHelper.test(name: "h shadow", types: [.length], routine: {
+                (value: String, type: ViewCSSBaseConfig.PropertyType) -> (Any?) in
                 let config = ViewCSSShadowConfig()
                 config.setHShadow(string: value)
                 return config.hShadow
@@ -24,7 +26,8 @@ class ViewCSSShadowConfigSpec: QuickSpec {
         }
         
         describe("#setVShadow") {
-            ViewCSSTypeHelper.test(name: "v shadow", types: [.length], routine: { (value: String) -> (Any?) in
+            ViewCSSTypeHelper.test(name: "v shadow", types: [.length], routine: {
+                (value: String, type: ViewCSSBaseConfig.PropertyType) -> (Any?) in
                 let config = ViewCSSShadowConfig()
                 config.setVShadow(string: value)
                 return config.vShadow
@@ -32,7 +35,8 @@ class ViewCSSShadowConfigSpec: QuickSpec {
         }
         
         describe("#setRadius") {
-            ViewCSSTypeHelper.test(name: "radius", types: [.length], routine: { (value: String) -> (Any?) in
+            ViewCSSTypeHelper.test(name: "radius", types: [.length], routine: {
+                (value: String, type: ViewCSSBaseConfig.PropertyType) -> (Any?) in
                 let config = ViewCSSShadowConfig()
                 config.setRadius(string: value)
                 return config.radius
@@ -40,7 +44,8 @@ class ViewCSSShadowConfigSpec: QuickSpec {
         }
         
         describe("#setColor") {
-            ViewCSSTypeHelper.test(name: "color", types: [.color], routine: { (value: String) -> (Any?) in
+            ViewCSSTypeHelper.test(name: "color", types: [.color], routine: {
+                (value: String, type: ViewCSSBaseConfig.PropertyType) -> (Any?) in
                 let config = ViewCSSShadowConfig()
                 config.setColor(string: value)
                 return config.color
@@ -140,56 +145,53 @@ class ViewCSSShadowConfigSpec: QuickSpec {
         
         describe("#toCSS") {
             
-            // Iterate through the different supported class type
-            let klasses: [UIView.Type] = [UILabel.self, UITextField.self, UITextView.self, UIButton.self]
-            for klass in klasses {
-                ViewCSSShadowProtocolHelper.iterate(callback: { (view: UIView) in
-                    let targetView: UIView
-                    if let button = view as? UIButton { targetView = button.titleLabel! }
-                    else { targetView = view }
-                    
-                    beforeEach {
-                        targetView.layer.shadowOffset = CGSize(width: 2.0, height: 3.0)
-                        targetView.layer.shadowColor = color.cgColor
-                        targetView.layer.shadowRadius = 5.0
-                        targetView.layer.shadowOpacity = 0.6
-                    }
-                    
-                    it("prints the CSS for " + String(describing: klass)) {
-                        let css = ViewCSSShadowConfig.toCSS(object: targetView, base: "text")
-                        expect(css["text-shadow"]).to(equal("2px 3px 5px " + color.toCSS))
-                        expect(css["text-shadow-opacity"]).to(equal("0.6"))
-                    }
-                    
-                    it("skips the opacity when 1.0 for " + String(describing: klass)) {
-                        targetView.layer.shadowOpacity = 1.0
-                        let css = ViewCSSShadowConfig.toCSS(object: targetView, base: "text")
-                        expect(css["text-shadow"]).to(equal("2px 3px 5px " + color.toCSS))
-                        expect(css["text-shadow-opacity"]).to(beNil())
-                    }
-                    
-                    it("skips the everything when the opacity is 0.0 for " + String(describing: klass)) {
-                        targetView.layer.shadowOpacity = 0.0
-                        let css = ViewCSSShadowConfig.toCSS(object: targetView, base: "text")
-                        expect(css["text-shadow"]).to(beNil())
-                        expect(css["text-shadow-opacity"]).to(beNil())
-                    }
-                    
-                    it("skips the color when nil for " + String(describing: klass)) {
-                        targetView.layer.shadowColor = nil
-                        let css = ViewCSSShadowConfig.toCSS(object: targetView, base: "text")
-                        expect(css["text-shadow"]).to(equal("2px 3px 5px"))
-                        expect(css["text-shadow-opacity"]).to(equal("0.6"))
-                    }
-                    
-                    it("skips the radius when 0 for " + String(describing: klass)) {
-                        targetView.layer.shadowRadius = 0.0
-                        let css = ViewCSSShadowConfig.toCSS(object: targetView, base: "text")
-                        expect(css["text-shadow"]).to(equal("2px 3px " + color.toCSS))
-                        expect(css["text-shadow-opacity"]).to(equal("0.6"))
-                    }
-                })
-            }
+            ViewCSSShadowProtocolHelper.iterate(callback: { (klass: UIView.Type) in
+                let view = klass.init()
+                let targetView: UIView
+                if let button = view as? UIButton { targetView = button.titleLabel! }
+                else { targetView = view }
+                
+                beforeEach {
+                    targetView.layer.shadowOffset = CGSize(width: 2.0, height: 3.0)
+                    targetView.layer.shadowColor = color.cgColor
+                    targetView.layer.shadowRadius = 5.0
+                    targetView.layer.shadowOpacity = 0.6
+                }
+                
+                it("prints the CSS for " + String(describing: klass)) {
+                    let css = ViewCSSShadowConfig.toCSS(object: targetView, base: "text")
+                    expect(css["text-shadow"]).to(equal("2px 3px 5px " + color.toCSS))
+                    expect(css["text-shadow-opacity"]).to(equal("0.6"))
+                }
+                
+                it("skips the opacity when 1.0 for " + String(describing: klass)) {
+                    targetView.layer.shadowOpacity = 1.0
+                    let css = ViewCSSShadowConfig.toCSS(object: targetView, base: "text")
+                    expect(css["text-shadow"]).to(equal("2px 3px 5px " + color.toCSS))
+                    expect(css["text-shadow-opacity"]).to(beNil())
+                }
+                
+                it("skips the everything when the opacity is 0.0 for " + String(describing: klass)) {
+                    targetView.layer.shadowOpacity = 0.0
+                    let css = ViewCSSShadowConfig.toCSS(object: targetView, base: "text")
+                    expect(css["text-shadow"]).to(beNil())
+                    expect(css["text-shadow-opacity"]).to(beNil())
+                }
+                
+                it("skips the color when nil for " + String(describing: klass)) {
+                    targetView.layer.shadowColor = nil
+                    let css = ViewCSSShadowConfig.toCSS(object: targetView, base: "text")
+                    expect(css["text-shadow"]).to(equal("2px 3px 5px"))
+                    expect(css["text-shadow-opacity"]).to(equal("0.6"))
+                }
+                
+                it("skips the radius when 0 for " + String(describing: klass)) {
+                    targetView.layer.shadowRadius = 0.0
+                    let css = ViewCSSShadowConfig.toCSS(object: targetView, base: "text")
+                    expect(css["text-shadow"]).to(equal("2px 3px " + color.toCSS))
+                    expect(css["text-shadow-opacity"]).to(equal("0.6"))
+                }
+            })
         }
     }
 }
