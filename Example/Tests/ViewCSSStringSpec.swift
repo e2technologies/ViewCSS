@@ -80,6 +80,183 @@ class ViewCSSStringSpec: QuickSpec {
                 expect("1513".valueOfHex(start: 5, length: 3)).to(beNil())
             }
         }
+        
+        describe("#parseStyle") {
+            it("parses the parameters from a string") {
+                let parsed = "background-color : red; text-align : right ;   ;;;  border-radius: 2px".parseStyle()
+                expect(parsed["background-color"]).to(equal("red"))
+                expect(parsed["text-align"]).to(equal("right"))
+                expect(parsed["border-radius"]).to(equal("2px"))
+            }
+        }
+        
+        describe("#extractAttributes") {
+            it("extracts the tag") {
+                var count = 0
+                "span".extractAttributes(tagCallback: { (tag: String) in
+                    expect(tag).to(equal("span"))
+                    count += 1
+                }, attributeCallback: { (name: String, attribute: String) in
+                    count += 1
+                })
+                expect(count).to(equal(1))
+            }
+            
+            it("extracts the tag with a leading/trailing space") {
+                var count = 0
+                " span ".extractAttributes(tagCallback: { (tag: String) in
+                    expect(tag).to(equal("span"))
+                    count += 1
+                }, attributeCallback: { (name: String, attribute: String) in
+                    count += 1
+                })
+                expect(count).to(equal(1))
+            }
+            
+            it("extracts the tag with an attribute") {
+                var count = 0
+                " span class=\"temp1 temp2\"".extractAttributes(tagCallback: { (tag: String) in
+                    expect(tag).to(equal("span"))
+                    count += 1
+                }, attributeCallback: { (name: String, attribute: String) in
+                    expect(name).to(equal("class"))
+                    expect(attribute).to(equal("temp1 temp2"))
+                    count += 1
+                })
+                expect(count).to(equal(2))
+            }
+            
+            it("extracts the tag with 2 attributes") {
+                var count = 0
+                " span class=\"temp1 temp2\" style=\"background-color:red;\"".extractAttributes(tagCallback: { (tag: String) in
+                    expect(tag).to(equal("span"))
+                    count += 1
+                }, attributeCallback: { (name: String, attribute: String) in
+                    if count == 1 {
+                        expect(name).to(equal("class"))
+                        expect(attribute).to(equal("temp1 temp2"))
+                    }
+                    if count == 2 {
+                        expect(name).to(equal("style"))
+                        expect(attribute).to(equal("background-color:red;"))
+                    }
+                    count += 1
+                })
+                expect(count).to(equal(3))
+            }
+        }
+        
+        describe("#extractTags") {
+            it("reads out a string with no tags") {
+                var count = 0
+                "This is some text".extractTags() { (text: String?, tag: String?, attributes: Dictionary<String, String>) in
+                    if count == 0 {
+                        expect(text).to(equal("This is some text"))
+                        expect(tag).to(beNil())
+                        expect(attributes).to(beEmpty())
+                    }
+                    count += 1
+                }
+                expect(count).to(equal(1))
+            }
+            
+            it("reads out a string with a single terminated tag") {
+                var count = 0
+                "This is <br/>some text".extractTags() { (text: String?, tag: String?, attributes: Dictionary<String, String>) in
+                    if count == 0 {
+                        expect(text).to(equal("This is "))
+                        expect(tag).to(beNil())
+                        expect(attributes).to(beEmpty())
+                    }
+                    else if count == 1 {
+                        expect(text).to(beNil())
+                        expect(tag).to(equal("br"))
+                        expect(attributes).to(beEmpty())
+                    }
+                    else if count == 2 {
+                        expect(text).to(equal("some text"))
+                        expect(tag).to(beNil())
+                        expect(attributes).to(beEmpty())
+                    }
+                    count += 1
+                }
+                expect(count).to(equal(3))
+            }
+            
+            it("reads out a single span") {
+                var count = 0
+                "This is <span>some</span> text".extractTags() { (text: String?, tag: String?, attributes: Dictionary<String, String>) in
+                    if count == 0 {
+                        expect(text).to(equal("This is "))
+                        expect(tag).to(beNil())
+                        expect(attributes).to(beEmpty())
+                    }
+                    else if count == 1 {
+                        expect(text).to(equal("some"))
+                        expect(tag).to(equal("span"))
+                        expect(attributes).to(beEmpty())
+                    }
+                    else if count == 2 {
+                        expect(text).to(equal(" text"))
+                        expect(tag).to(beNil())
+                        expect(attributes).to(beEmpty())
+                    }
+                    count += 1
+                }
+                expect(count).to(equal(3))
+            }
+            
+            it("reads out a single span with attributes") {
+                var count = 0
+                "This is <span class=\"label\">some</span> text".extractTags() { (text: String?, tag: String?, attributes: Dictionary<String, String>) in
+                    if count == 0 {
+                        expect(text).to(equal("This is "))
+                        expect(tag).to(beNil())
+                        expect(attributes).to(beEmpty())
+                    }
+                    else if count == 1 {
+                        expect(text).to(equal("some"))
+                        expect(tag).to(equal("span"))
+                        expect(attributes).to(equal(["class":"label"]))
+                    }
+                    else if count == 2 {
+                        expect(text).to(equal(" text"))
+                        expect(tag).to(beNil())
+                        expect(attributes).to(beEmpty())
+                    }
+                    count += 1
+                }
+                expect(count).to(equal(3))
+            }
+            
+            it("reads out a miltiple tags with multiple attributes") {
+                var count = 0
+                "This is <span class=\"label\">some</span> <a href=\"http://www.example.com\">text</a>".extractTags() { (text: String?, tag: String?, attributes: Dictionary<String, String>) in
+                    if count == 0 {
+                        expect(text).to(equal("This is "))
+                        expect(tag).to(beNil())
+                        expect(attributes).to(beEmpty())
+                    }
+                    else if count == 1 {
+                        expect(text).to(equal("some"))
+                        expect(tag).to(equal("span"))
+                        expect(attributes).to(equal(["class":"label"]))
+                    }
+                    else if count == 2 {
+                        expect(text).to(equal(" "))
+                        expect(tag).to(beNil())
+                        expect(attributes).to(beEmpty())
+                    }
+                    else if count == 3 {
+                        expect(text).to(equal("text"))
+                        expect(tag).to(equal("a"))
+                        expect(attributes).to(equal(["href":"http://www.example.com"]))
+                    }
+                    count += 1
+                }
+                expect(count).to(equal(4))
+            }
+        }
     }
 
 }

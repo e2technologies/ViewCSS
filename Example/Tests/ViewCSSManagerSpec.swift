@@ -74,16 +74,6 @@ class ViewCSSManagerSpec: QuickSpec {
             }
         }
         
-        describe("#parseStyle") {
-            it("parses the parameters from a string") {
-                let string = "background-color : red; text-align : right ;   ;;;  border-radius: 2px"
-                let parsed = manager!.parseStyle(string)
-                expect(parsed["background-color"] as? String).to(equal("red"))
-                expect(parsed["text-align"] as? String).to(equal("right"))
-                expect(parsed["border-radius"] as? String).to(equal("2px"))
-            }
-        }
-        
         describe("#getConfig") {
             let css = [
                 "ui_label" : [

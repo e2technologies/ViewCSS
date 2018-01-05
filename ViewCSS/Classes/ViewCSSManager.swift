@@ -129,28 +129,13 @@ public class ViewCSSManager {
         return self.styleLookup[":root"] as? Dictionary<String, Any>
     }
     
-    func parseStyle(_ string: String?) -> Dictionary<String, Any> {
+    private func generateStyleDictionary(className: String, style: String?, class klass: String?) -> Dictionary<String, Any> {
         var dict = Dictionary<String, Any>()
         
-        if string != nil {
-            // Remove the whitespace
-            let inlineStyle = string!.replacingOccurrences(of: " ", with: "")
-            
-            // Break the inline into components and set as values in the dictionary
-            for subStyle in inlineStyle.split(separator: ";") {
-                let components = subStyle.split(separator: ":")
-                if components.count != 2 { continue }
-                dict[String(components[0])] = String(components[1])
-            }
-        }
-        
-        return dict
-    }
-    
-    private func generateStyleDictionary(className: String, style: String?, class klass: String?) -> Dictionary<String, Any> {
-        
         // Priority 1: Style attributes
-        var dict = self.parseStyle(style)
+        if style != nil {
+            dict = dict.merging(style!.parseStyle()) { (current, _) in current }
+        }
 
         // Priority 2: Classes
         if klass != nil {
@@ -158,6 +143,8 @@ public class ViewCSSManager {
             
             // Get the list
             for subStyle in klass!.split(separator: " ") {
+                if subStyle.isEmpty { continue }
+                
                 // Look for the class by itself and the class with a "."
                 for name in [String(className + "." + subStyle), String("."+subStyle)] {
                     // If we find a match, merge it into the dictionary
@@ -182,5 +169,23 @@ public class ViewCSSManager {
         }
         
         return dict
+    }
+    
+    func generateAttributedString(object: Any?, text: String?) -> NSAttributedString? {
+        if text == nil { return nil }
+        if let view = object as? UIView {
+            //let className = view.cssClassName
+            //let klass = view.cssClass
+            //let style = view.cssStyle
+            
+            // Iterate over the text and generate the attributed string.  Need to
+            // parse out the "span" tags
+            //var currentIndex
+        }
+        return nil
+    }
+    
+    func parseSpanString(_ string: String, span: (String, String?, String?) -> ()) {
+        
     }
 }

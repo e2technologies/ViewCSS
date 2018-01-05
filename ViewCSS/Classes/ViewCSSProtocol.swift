@@ -59,3 +59,7 @@ protocol ViewCSSTextProtocol: ViewCSSShadowProtocol {
     func getCSSTextAlignment() -> NSTextAlignment
 }
 
+protocol ViewCSSDisplayTextProtocol: ViewCSSTextProtocol {
+    func setCSSText(_ text: String?)
+}
+
