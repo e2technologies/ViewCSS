@@ -1,6 +1,6 @@
 # ViewCSS
 
-[![CI Status](http://img.shields.io/travis/Eric Chapman/ViewCSS.svg?style=flat)](https://travis-ci.org/Eric Chapman/ViewCSS)
+[![CI Status](http://img.shields.io/travis/ericchapman/ViewCSS.svg?style=flat)](https://travis-ci.org/ericchapman/ViewCSS)
 [![Version](https://img.shields.io/cocoapods/v/ViewCSS.svg?style=flat)](http://cocoapods.org/pods/ViewCSS)
 [![License](https://img.shields.io/cocoapods/l/ViewCSS.svg?style=flat)](http://cocoapods.org/pods/ViewCSS)
 [![Platform](https://img.shields.io/cocoapods/p/ViewCSS.svg?style=flat)](http://cocoapods.org/pods/ViewCSS)
@@ -17,7 +17,7 @@ intended to replace auto layout, attributed text, NIBs, etc.**
   - 0.2.0 - Added the "font-size-scale" property to support auto scaling of font size
     based on the user's OS settings
   - 0.3.0 - Added the "text-shadow" and "text-shadow-opacity" properties
-  - 0.4.0 - Implemented unit tests., small bug fixes, no change to the API
+  - 0.4.0 - Implemented unit tests, some code rework, small bug fixes, no change to the API
 
 ## Examples
 
