@@ -17,6 +17,7 @@ intended to replace auto layout, attributed text, NIBs, etc.**
   - 0.2.0 - Added the "font-size-scale" property to support auto scaling of font size
     based on the user's OS settings
   - 0.3.0 - Added the "text-shadow" and "text-shadow-opacity" properties
+  - 0.4.0 - Implemented unit tests., small bug fixes, no change to the API
 
 ## Examples
 
