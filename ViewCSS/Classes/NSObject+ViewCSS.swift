@@ -103,4 +103,16 @@ public extension NSObject {
         let className = cssManager.getClassName(class: self)
         return cssManager.getConfig(className: className, class: klass, style: style)
     }
+    
+    // ================================================================
+    // CSS Scale Properties
+    // ================================================================
+    
+    var cssScale: CGFloat {
+        return ViewCSSAutoScaleCache.shared.scale
+    }
+    
+    class var cssScale: CGFloat {
+        return ViewCSSAutoScaleCache.shared.scale
+    }
 }

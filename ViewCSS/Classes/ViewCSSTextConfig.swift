@@ -25,6 +25,7 @@ public class ViewCSSTextConfig: ViewCSSBaseConfig {
     
     static let TEXT_ALIGN = "text-align"
     static let TEXT_TRANSFORM = "text-transform"
+    static let TEXT_OVERFLOW = "text-overflow"
     static let TEXT_DECORATION_LINE = "text-decoration-line"
     static let TEXT_DECORATION_COLOR = "text-decoration-color"
     static let TEXT_DECORATION_STYLE = "text-decoration-style"
@@ -42,6 +43,7 @@ public class ViewCSSTextConfig: ViewCSSBaseConfig {
     }
     
     public private(set) var align: NSTextAlignment?
+    public private(set) var overflow: NSLineBreakMode?
     public private(set) var shadow: ViewCSSShadowConfig?
     public private(set) var transform: Transform?
     public private(set) var decorationLine: DecorationLine?
@@ -54,6 +56,7 @@ public class ViewCSSTextConfig: ViewCSSBaseConfig {
         config.shadow = ViewCSSShadowConfig.fromCSS(dict: dict, base: "text")
         config.setAlign(dict: dict)
         config.setTransform(dict: dict)
+        config.setOverflow(dict: dict)
         config.setDecorationLine(dict: dict)
         config.setDecorationStyle(dict: dict)
         config.setDecorationColor(dict: dict)
@@ -80,6 +83,21 @@ public class ViewCSSTextConfig: ViewCSSBaseConfig {
             }
             if align != nil {
                 dict[TEXT_ALIGN] = align
+            }
+            
+            if let lineBreakMode = textProtocol.getCSSTextOverflow() {
+                var overflow: String? = nil
+                switch lineBreakMode {
+                case .byClipping:
+                    overflow = "clip"
+                case .byTruncatingTail:
+                    overflow = "ellipsis"
+                default:
+                    overflow = nil
+                }
+                if overflow != nil {
+                    dict[TEXT_OVERFLOW] = overflow
+                }
             }
         }
         
@@ -115,6 +133,19 @@ public class ViewCSSTextConfig: ViewCSSBaseConfig {
             else if string == "capitalize" { return Transform.capitalize }
             return nil
             } as? Transform
+    }
+    
+    func setOverflow(dict: Dictionary<String, Any>) {
+        self.overflow = self.valueFromDict(
+            dict,
+            attribute: type(of: self).TEXT_OVERFLOW,
+            types: [.custom],
+            match: nil)
+        { (string: String) -> (Any?) in
+            if string == "clip" { return NSLineBreakMode.byClipping }
+            else if string == "ellipsis" { return NSLineBreakMode.byTruncatingTail }
+            return nil
+            } as? NSLineBreakMode
     }
     
     func setDecorationLine(dict: Dictionary<String, Any>) {

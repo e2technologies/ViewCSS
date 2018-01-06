@@ -23,6 +23,10 @@ import Foundation
 
 extension UIButton: ViewCSSTextProtocol {
     func setCSSTextColor(_ color: UIColor) { self.setTitleColor(color, for: .normal) }
+    func setCSSTextOverflow(_ overflow: NSLineBreakMode) {
+        self.titleLabel?.adjustsFontSizeToFitWidth = false
+        self.titleLabel?.lineBreakMode = overflow
+    }
     func setCSSFont(_ font: UIFont) { self.titleLabel?.font = font }
     func setCSSTextAlignment( _ alignment: NSTextAlignment) {
         if alignment == .left {
@@ -37,6 +41,7 @@ extension UIButton: ViewCSSTextProtocol {
     }
     
     func getCSSTextColor() -> UIColor? { return self.titleColor(for: .normal) }
+    func getCSSTextOverflow() -> NSLineBreakMode? { return self.titleLabel?.lineBreakMode }
     func getCSSFont() -> UIFont? { return self.titleLabel?.font }
     func getCSSTextAlignment() -> NSTextAlignment {
         if self.contentHorizontalAlignment == .left {

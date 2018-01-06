@@ -152,6 +152,11 @@ extension UIView {
             if let align = config.text?.align {
                 textProtocol.setCSSTextAlignment(align)
             }
+            
+            // Set the overflow
+            if let overflow = config.text?.overflow {
+                textProtocol.setCSSTextOverflow(overflow)
+            }
         }
         
         // Call the custom config callback

@@ -23,10 +23,12 @@ import Foundation
 
 extension UITextField: ViewCSSTextProtocol {
     func setCSSTextColor(_ color: UIColor) { self.textColor = color }
+    func setCSSTextOverflow(_ overflow: NSLineBreakMode) {}
     func setCSSFont(_ font: UIFont) { self.font = font }
     func setCSSTextAlignment( _ alignment: NSTextAlignment) { self.textAlignment = alignment }
     
     func getCSSTextColor() -> UIColor? { return self.textColor }
+    func getCSSTextOverflow() -> NSLineBreakMode? { return nil }
     func getCSSFont() -> UIFont? { return self.font }
     func getCSSTextAlignment() -> NSTextAlignment { return self.textAlignment }
 }

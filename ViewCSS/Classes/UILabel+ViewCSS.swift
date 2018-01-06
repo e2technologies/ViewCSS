@@ -23,10 +23,15 @@ import Foundation
 
 extension UILabel: ViewCSSTextProtocol {
     func setCSSTextColor(_ color: UIColor) { self.textColor = color }
+    func setCSSTextOverflow(_ overflow: NSLineBreakMode) {
+        self.adjustsFontSizeToFitWidth = false
+        self.lineBreakMode = overflow
+    }
     func setCSSFont(_ font: UIFont) { self.font = font }
     func setCSSTextAlignment( _ alignment: NSTextAlignment) { self.textAlignment = alignment }
     
     func getCSSTextColor() -> UIColor? { return self.textColor }
+    func getCSSTextOverflow() -> NSLineBreakMode? { return self.lineBreakMode }
     func getCSSFont() -> UIFont? { return self.font }
     func getCSSTextAlignment() -> NSTextAlignment { return self.textAlignment }
 }

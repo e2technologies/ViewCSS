@@ -51,10 +51,12 @@ protocol ViewCSSShadowProtocol: ViewCSSProtocol {
 
 protocol ViewCSSTextProtocol: ViewCSSShadowProtocol {
     func setCSSTextColor(_ color: UIColor)
+    func setCSSTextOverflow(_ overflow: NSLineBreakMode)
     func setCSSFont(_ font: UIFont)
     func setCSSTextAlignment( _ alignment: NSTextAlignment)
     
     func getCSSTextColor() -> UIColor?
+    func getCSSTextOverflow() -> NSLineBreakMode?
     func getCSSFont() -> UIFont?
     func getCSSTextAlignment() -> NSTextAlignment
 }

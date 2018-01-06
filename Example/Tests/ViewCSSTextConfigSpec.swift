@@ -36,6 +36,19 @@ class ViewCSSTextConfigSpec: QuickSpec {
             }, custom: custom)
         }
         
+        describe("#setOverflow") {
+            let custom = [
+                "clip" : NSLineBreakMode.byClipping,
+                "ellipsis" : NSLineBreakMode.byTruncatingTail,
+                ]
+            ViewCSSTypeHelper.test(name: "overflow", types: [.custom], routine: {
+                (value: String, type: ViewCSSBaseConfig.PropertyType) -> (Any?) in
+                let config = ViewCSSTextConfig()
+                config.setOverflow(dict: ["text-overflow": value])
+                return config.overflow
+            }, custom: custom)
+        }
+        
         describe("#setDecorationLine") {
             let custom = [
                 "overline" : ViewCSSTextConfig.DecorationLine.overline,
@@ -78,9 +91,10 @@ class ViewCSSTextConfigSpec: QuickSpec {
             it("parses the text-align and the text-shadow") {
                 let css = ["text-align" : "right", "text-shadow" : "5px 6px 10px " + color.toCSS,
                            "text-transform": "uppercase", "text-decoration-color" : "blue",
-                           "text-decoration-style" : "dotted"]
+                           "text-decoration-style" : "dotted", "text-overflow" : "ellipsis"]
                 let config = ViewCSSTextConfig.fromCSS(dict: css)
                 expect(config.align).to(equal(NSTextAlignment.right))
+                expect(config.overflow).to(equal(NSLineBreakMode.byTruncatingTail))
                 expect(config.shadow!.hShadow).to(equal(5))
                 expect(config.shadow!.vShadow).to(equal(6))
                 expect(config.shadow!.radius).to(equal(10))
@@ -120,9 +134,11 @@ class ViewCSSTextConfigSpec: QuickSpec {
                     targetView.layer.shadowOpacity = 0.6
                     if let button = view as? UIButton {
                         button.contentHorizontalAlignment = .right
+                        button.titleLabel?.lineBreakMode = NSLineBreakMode.byTruncatingTail
                     }
                     else if let label = view as? UILabel {
                         label.textAlignment = .right
+                        label.lineBreakMode = NSLineBreakMode.byTruncatingTail
                     }
                     else if let textView = view as? UITextView {
                         textView.textAlignment = .right
@@ -137,6 +153,15 @@ class ViewCSSTextConfigSpec: QuickSpec {
                     expect(css["text-shadow"]).to(equal("2px 3px 5px " + color.toCSS))
                     expect(css["text-shadow-opacity"]).to(equal("0.6"))
                     expect(css["text-align"]).to(equal("right"))
+                    if let _ = view as? UIButton {
+                        expect(css["text-overflow"]).to(equal("ellipsis"))
+                    }
+                    else if let _ = view as? UILabel {
+                        expect(css["text-overflow"]).to(equal("ellipsis"))
+                    }
+                    else {
+                        expect(css["text-overflow"]).to(beNil())
+                    }
                 }
             })
         }

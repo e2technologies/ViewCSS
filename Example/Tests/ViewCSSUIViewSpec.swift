@@ -83,6 +83,13 @@ class ViewCSSUIViewSpec: QuickSpec {
                     view.css(class: "view")
                     expect(view.textAlignment).to(equal(NSTextAlignment.right))
                 }
+                it("text-overflow") {
+                    self.manager.setCSS(dict: [".view" : ["text-overflow" : "clip"]])
+                    let view = UILabel()
+                    view.css(class: "view")
+                    expect(view.lineBreakMode).to(equal(NSLineBreakMode.byClipping))
+                    expect(view.adjustsFontSizeToFitWidth).to(equal(false))
+                }
                 it("font-size font-weight font-scale") {
                     self.manager.setCSS(dict: [".view" : ["font-size" : "20px", "font-weight" : "bold", "font-size-scale" : "0.75"]])
                     let view = UILabel()
@@ -114,6 +121,12 @@ class ViewCSSUIViewSpec: QuickSpec {
                     let view = UITextView()
                     view.css(class: "view")
                     expect(view.textAlignment).to(equal(NSTextAlignment.right))
+                }
+                it("text-overflow") {
+                    self.manager.setCSS(dict: [".view" : ["text-overflow" : "clip"]])
+                    let view = UITextView()
+                    view.css(class: "view")
+                    // Not supported
                 }
                 it("font-size font-weight font-scale") {
                     self.manager.setCSS(dict: [".view" : ["font-size" : "20px", "font-weight" : "bold", "font-size-scale" : "0.75"]])
@@ -147,6 +160,12 @@ class ViewCSSUIViewSpec: QuickSpec {
                     view.css(class: "view")
                     expect(view.textAlignment).to(equal(NSTextAlignment.right))
                 }
+                it("text-overflow") {
+                    self.manager.setCSS(dict: [".view" : ["text-overflow" : "clip"]])
+                    let view = UITextField()
+                    view.css(class: "view")
+                    // Not supported
+                }
                 it("font-size font-weight font-scale") {
                     self.manager.setCSS(dict: [".view" : ["font-size" : "20px", "font-weight" : "bold", "font-size-scale" : "0.75"]])
                     let view = UITextField()
@@ -178,6 +197,13 @@ class ViewCSSUIViewSpec: QuickSpec {
                     let view = UIButton()
                     view.css(class: "view")
                     expect(view.contentHorizontalAlignment).to(equal(UIControlContentHorizontalAlignment.right))
+                }
+                it("text-overflow") {
+                    self.manager.setCSS(dict: [".view" : ["text-overflow" : "clip"]])
+                    let view = UIButton()
+                    view.css(class: "view")
+                    expect(view.titleLabel?.lineBreakMode).to(equal(NSLineBreakMode.byClipping))
+                    expect(view.titleLabel?.adjustsFontSizeToFitWidth).to(equal(false))
                 }
                 it("font-size font-weight font-scale") {
                     self.manager.setCSS(dict: [".view" : ["font-size" : "20px", "font-weight" : "bold", "font-size-scale" : "0.75"]])
