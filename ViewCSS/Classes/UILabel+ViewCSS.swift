@@ -46,12 +46,9 @@ extension UILabel: ViewCSSShadowProtocol {
     func getCSSShadowOpacity() -> CGFloat { return CGFloat(self.layer.shadowOpacity) }
 }
 
-extension UILabel: ViewCSSDisplayTextProtocol {
+public extension UILabel {
     var cssText: String? {
         get { return nil }
-        set { self.setCSSText(newValue) }
-    }
-    func setCSSText(_ text: String?) {
-        self.attributedText = ViewCSSManager.shared.generateAttributedString(object: self, text: text)
+        set { self.attributedText = ViewCSSManager.shared.generateAttributedString(object: self, text: newValue) }
     }
 }

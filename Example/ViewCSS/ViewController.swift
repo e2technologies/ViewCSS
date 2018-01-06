@@ -15,6 +15,7 @@ class ViewController: UIViewController, ViewCSSCustomizableProtocol {
     @IBOutlet weak var label2: UILabel?
     @IBOutlet weak var label3: UILabel?
     @IBOutlet weak var label4: UILabel?
+    @IBOutlet weak var textView1: UITextView?
     @IBOutlet weak var button1: UIButton?
     @IBOutlet weak var button2: UIButton?
 
@@ -25,11 +26,13 @@ class ViewController: UIViewController, ViewCSSCustomizableProtocol {
         self.css(object: self.label1, class: "label1")
         self.label2?.css(class: "label2")
         self.css(object: self.label3, class: "label3")
-        self.label4?.css(class: "primary", style: "background-color:lightgray;text-align:center;") { (config: ViewCSSConfig) in
+        self.label4?.css(class: "primary") { (config: ViewCSSConfig) in
             self.label1?.backgroundColor = config.color
         }
         self.button1?.css(class: "bad_class")
         self.button2?.css()
+        
+        self.textView1?.cssText = "This is a <a style=\"color:white;font-size:20px;\" href=\"https://www.google.com\">link</a>"
         
         var config = self.cssConfig(class: "label1")
         print(String(describing: config))

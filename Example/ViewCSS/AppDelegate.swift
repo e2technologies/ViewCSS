@@ -22,7 +22,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let css: [String:Any] = [
             ":root": [
                 "--main-color": "var(--main-second-color)",
-                "--main-second-color": "yellow",
+                "--main-second-color": "pink",
             ],
             "ui_label": [
                 "text-align": "right",
@@ -57,10 +57,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 "border-radius": "5px",
                 "border-width": "5px",
                 "border-color": "blue",
-                "opacity": "0.25",
             ],
             ".primary": [
-                "color": "var(--main-color)",
+                "color": "white",
                 "font-weight": "900",
                 "font-size": "200%",
                 "background-color": "var(--main-color)",

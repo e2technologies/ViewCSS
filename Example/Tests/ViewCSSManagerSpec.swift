@@ -92,37 +92,37 @@ class ViewCSSManagerSpec: QuickSpec {
             
             it("matches the classname") {
                 manager!.setCSS(dict: css)
-                let config = manager!.getConfig(className: "ui_label", style: nil, class: nil)
+                let config = manager!.getConfig(className: "ui_label", class: nil, style: nil)
                 expect(config.background?.color?.toCSS).to(equal("#FF0000FF"))
             }
             
             it("matches the classname and class") {
                 manager!.setCSS(dict: css)
-                let config = manager!.getConfig(className: "ui_label", style: nil, class: "class")
+                let config = manager!.getConfig(className: "ui_label", class: "class", style: nil)
                 expect(config.background?.color?.toCSS).to(equal("#000000FF"))
             }
             
             it("matches the class") {
                 manager!.setCSS(dict: css)
-                let config = manager!.getConfig(className: "ui_button", style: nil, class: "class")
+                let config = manager!.getConfig(className: "ui_button", class: "class", style: nil)
                 expect(config.background?.color?.toCSS).to(equal("#0000FFFF"))
             }
             
             it("uses the first class, option 1") {
                 manager!.setCSS(dict: css)
-                let config = manager!.getConfig(className: "ui_button", style: nil, class: "class class1")
+                let config = manager!.getConfig(className: "ui_button", class: "class class1", style: nil)
                 expect(config.background?.color?.toCSS).to(equal("#0000FFFF"))
             }
             
             it("uses the first class, option 2") {
                 manager!.setCSS(dict: css)
-                let config = manager!.getConfig(className: "ui_button", style: nil, class: "class1 class")
+                let config = manager!.getConfig(className: "ui_button", class: "class1 class", style: nil)
                 expect(config.background?.color?.toCSS).to(equal("#FFFFFFFF"))
             }
             
             it("style overrides") {
                 manager!.setCSS(dict: css)
-                let config = manager!.getConfig(className: "ui_button", style: "background-color : #00FF00FF;", class: "class")
+                let config = manager!.getConfig(className: "ui_button", class: "class", style: "background-color : #00FF00FF;")
                 expect(config.background?.color?.toCSS).to(equal("#00FF00FF"))
             }
         }

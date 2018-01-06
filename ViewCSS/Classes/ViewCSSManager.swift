@@ -194,30 +194,71 @@ public class ViewCSSManager {
             var parsedText = ""
             var parsedContainers = [ParsedTextContainer]()
             text!.extractTags(callback: { (body: String?, tag: String?, attributes: Dictionary<String, String>) in
+                let cleanBody = body?.fromSafeCSS ?? ""
+                
                 // Combine the parameters from the callback.  Place the overriden ones first
-                let combinedClass = String(format:"%s %s", (attributes["class"] ?? ""), (klass ?? ""))
-                let combinedStyle = String(format:"%s %s", (attributes["style"] ?? ""), (style ?? ""))
+                let combinedClass = String(format:"%@ %@", (attributes["class"] ?? ""), (klass ?? ""))
+                let combinedStyle = String(format:"%@ %@", (attributes["style"] ?? ""), (style ?? ""))
                 
                 // Get the config
                 let config = self.getConfig(className: className, class: combinedClass, style: combinedStyle)
                 
                 // Create the object to store the attributes
                 let textContainer = ParsedTextContainer()
-                textContainer.text = body
+                textContainer.text = cleanBody
                 textContainer.tag = tag
                 textContainer.attributes = attributes
-                textContainer.range = NSRange(location: parsedText.count, length: (body?.count ?? 0))
+                textContainer.range = NSRange(location: parsedText.count, length: cleanBody.count)
                 textContainer.config = config
                 
                 // Add the details for setting up the attributed string
                 parsedContainers.append(textContainer)
                 
                 // Get the parsed out text
-                if body != nil { parsedText += body! }
+                parsedText += cleanBody
             })
             
             // We have the text.  Iterate through the configs and ranges and decide what to do
-            
+            let attributedString = NSMutableAttributedString(string: parsedText)
+            for parsedContainer in parsedContainers {
+                var attributes = Dictionary<NSAttributedStringKey, Any>()
+                
+                // Check for a foreground color
+                if let color = parsedContainer.config?.color {
+                    attributes[NSAttributedStringKey.foregroundColor] = color
+                }
+                
+                // Check for a background color
+                if let color = parsedContainer.config?.background?.color {
+                    attributes[NSAttributedStringKey.backgroundColor] = color
+                }
+                
+                // Check for a font
+                if let font = parsedContainer.config?.font?.getFont() {
+                    attributes[NSAttributedStringKey.font] = font
+                }
+                
+                // Check for a shadow
+                if let textShadow = parsedContainer.config?.text?.shadow {
+                    if textShadow.hShadow != nil && textShadow.vShadow != nil {
+                        let shadow = NSShadow()
+                        shadow.shadowOffset = CGSize(width: textShadow.hShadow!, height: textShadow.vShadow!)
+                        if textShadow.color != nil { shadow.shadowColor = textShadow.color }
+                        if textShadow.radius != nil { shadow.shadowBlurRadius = textShadow.radius! }
+                        attributes[NSAttributedStringKey.shadow] = shadow
+                    }
+                }
+                
+                // Check for a link
+                let href = parsedContainer.attributes!["href"]
+                if parsedContainer.tag == "a" && href != nil {
+                    attributes[NSAttributedStringKey.link] = href!
+                }
+                
+                // Set the value
+                attributedString.addAttributes(attributes, range: parsedContainer.range!)
+            }
+            return attributedString
         }
         return nil
     }

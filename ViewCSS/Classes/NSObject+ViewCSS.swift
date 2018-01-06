@@ -83,7 +83,7 @@ public extension NSObject {
     func cssConfig(class klass: String?, style: String?) -> ViewCSSConfig {
         let cssManager = ViewCSSManager.shared
         let className = cssManager.getClassName(object: self)
-        return cssManager.getConfig(className: className, style: style, class: klass)
+        return cssManager.getConfig(className: className, class: klass, style: style)
     }
     
     // ================================================================
@@ -101,6 +101,6 @@ public extension NSObject {
     class func cssConfig(class klass: String?, style: String?) -> ViewCSSConfig {
         let cssManager = ViewCSSManager.shared
         let className = cssManager.getClassName(class: self)
-        return cssManager.getConfig(className: className, style: style, class: klass)
+        return cssManager.getConfig(className: className, class: klass, style: style)
     }
 }

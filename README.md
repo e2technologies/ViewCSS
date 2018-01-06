@@ -57,6 +57,10 @@ class MyCustomViewController: UIViewController {
         self.css(object: self.label2, class: "bold label2")
     }
     
+    var setText(firstName: String, lastName: String) {
+        self.label1?.cssText = "\(firstName)<span class="bold">\(lastName)</span>"
+    }
+    
 }
 ```
 
@@ -123,6 +127,9 @@ class MyCustomViewController: UIViewController {
         self.css(object: self.label2, class: "bold label2")
     }
     
+    var setText(firstName: String, lastName: String) {
+        self.label1?.cssText = "\(firstName)<span class="bold">\(lastName)</span>"
+    }
 }
 ```
 
@@ -146,9 +153,9 @@ can override the attributes on an "as needed" basis.
 
 ### Supported Properties
 
-The ViewCSS library supports the below CSS properties.  Note that I
-attempted to stick with the standard CSS properties the best that I could,
-but some custom properties had to be created (such as "tint-color")
+#### .css
+
+The ViewCSS library supports the below CSS properties for general configuration
 
 | Property            | UIView | UILabel | UITextField | UITextView | UIButton | Snoopable |
 |:--------------------|:------:|:-------:|:-----------:|:----------:|:--------:|:---------:|
@@ -166,6 +173,20 @@ but some custom properties had to be created (such as "tint-color")
 | text-shadow         |        |    X    |      X      |     X      |     X    |     X     |
 | text-shadow-opacity |        |    X    |      X      |     X      |     X    |     X     |
 | tint-color          |    X   |    -    |      -      |     -      |     -    |     X     |
+
+#### .cssText
+
+The ViewCSS library supports the below CSS properties for .cssText (attributed string) options
+
+  - background-color
+  - color
+  - font-family
+  - font-size
+  - font-size-scale
+  - font-weight
+  - text-shadow
+
+This is only available for UILabel and UITextView.
 
 #### Standard Types
 
@@ -578,9 +599,8 @@ properties are supported by the ".cssText" method
 
 #### span
 
-As an added bonus, the ".cssText" method also supports the HTML "span"
-element to allow portions of the text to be modified independently.  An 
-example of this is shown below
+The ".cssText" method supports the HTML "span" element to allow portions
+of the text to be modified independently.  An example of this is shown below
 
 ```swift
 class MyCustomCell: UITableViewCell {
@@ -593,10 +613,13 @@ class MyCustomCell: UITableViewCell {
     }
     
     var setText(firstName: String, lastName: String) {
-        self.label?.cssText = "\(firstName)<span class="bold">\(lastName)</span>"
+        self.label?.cssText = "\(firstName.toSafeCSS)<span class="bold">\(lastName.toSafeCSS)</span>"
     }
 }
 ```
+
+It is VERY important to note that you must replace "<" and ">" with "\&lt;" and 
+"\&gt;".  The library includes a "toSafeCSS" string property to assist with this.
 
 The above example will use the current properties defined for the
 "self.label" object for displaying the "firstName" and then use the 
@@ -634,7 +657,7 @@ class MyCustomCell: UITableViewCell {
     }
     
     var setText(firstName: String, lastName: String) {
-        self.label?.cssText = "\(firstName)<span class="link bar" style="text-transform:uppercase;">\(lastName)</span>"
+        self.label?.cssText = "\(firstName)<span class=\"link bar\" style=\"text-transform:uppercase;\">\(lastName)</span>"
     }
 }
 ```
@@ -656,7 +679,30 @@ following order (keeping the first match)
 
 Note that the above example is intended to illustrate the order in which the 
 library parses the attribute dictionary.  It is not recommended to make examples 
-that are this complicated.  
+that are this complicated.
+
+#### links
+
+Links are done by using the standard HTML "\<a href=url\>" tag.  An example of
+this is shown below
+
+```swift
+class MyCustomCell: UITableViewCell {
+    @IBOutlet weak var label: UILabel?
+    
+    override func awakFromNib() {
+        super.awakeFromNib()
+        
+        self.css(object: self.label, class: "right label", style="text-align:right;")
+    }
+    
+    var setText(url: String) {
+        self.label?.cssText = "Click <a class=\"link\" href=\"\(url)\">here</a>"
+    }
+}
+```
+
+Note that this only works in UITextViews.
 
 ### Customizations
 Sometimes there is a need to customize an additional element.  For example,

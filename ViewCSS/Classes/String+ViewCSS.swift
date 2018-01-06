@@ -22,6 +22,14 @@
 import Foundation
 
 extension String {
+    var fromSafeCSS: String {
+        return self.replacingOccurrences(of: "&gt;", with: ">").replacingOccurrences(of: "&lt;", with: "<")
+    }
+    
+    public var toSafeCSS: String {
+        return self.replacingOccurrences(of: ">", with: "&gt;").replacingOccurrences(of: "<", with: "&lt;")
+    }
+    
     var camelToSnake: String {
         var newString = ""
         var temp = ""
