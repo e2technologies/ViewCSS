@@ -194,7 +194,7 @@ public class ViewCSSManager {
             var parsedText = ""
             var parsedContainers = [ParsedTextContainer]()
             text!.extractTags(callback: { (body: String?, tag: String?, attributes: Dictionary<String, String>) in
-                let cleanBody = body?.fromSafeCSS ?? ""
+                var cleanBody = body?.fromSafeCSS ?? ""
                 
                 // Combine the parameters from the callback.  Place the overriden ones first
                 let combinedClass = String(format:"%@ %@", (attributes["class"] ?? ""), (klass ?? ""))
@@ -202,6 +202,13 @@ public class ViewCSSManager {
                 
                 // Get the config
                 let config = self.getConfig(className: className, class: combinedClass, style: combinedStyle)
+                
+                // Need to check the text-transform here to change the body if necessary
+                if let transform = config.text?.transform {
+                    if transform == .capitalize { cleanBody = cleanBody.capitalized }
+                    else if transform == .lowercase { cleanBody = cleanBody.lowercased() }
+                    else if transform == .uppercase { cleanBody = cleanBody.uppercased() }
+                }
                 
                 // Create the object to store the attributes
                 let textContainer = ParsedTextContainer()
@@ -253,6 +260,39 @@ public class ViewCSSManager {
                 let href = parsedContainer.attributes!["href"]
                 if parsedContainer.tag == "a" && href != nil {
                     attributes[NSAttributedStringKey.link] = href!
+                }
+                
+                // Check for decoration
+                if let line = parsedContainer.config?.text?.decorationLine {
+                    
+                    // Calculate the style based on the settings
+                    var style = parsedContainer.config?.text?.decorationStyle
+                    if style == nil {
+                        style = NSUnderlineStyle.styleSingle
+                    }
+                    var rawStyle = style!.rawValue
+                    
+                    if style == NSUnderlineStyle.patternDash || style == NSUnderlineStyle.patternDot {
+                        rawStyle |= NSUnderlineStyle.styleSingle.rawValue
+                    }
+                    
+                    // Choose whether underline, overline, or line-through
+                    if line == .underline {
+                        
+                        attributes[NSAttributedStringKey.underlineStyle] = rawStyle
+                        if let color = parsedContainer.config?.text?.decorationColor {
+                            attributes[NSAttributedStringKey.underlineColor] = color
+                        }
+                    }
+                    else if line == .overline {
+                        // TODO: Unsupported
+                    }
+                    else if line == .line_through {
+                        attributes[NSAttributedStringKey.strikethroughStyle] = rawStyle
+                        if let color = parsedContainer.config?.text?.decorationColor {
+                            attributes[NSAttributedStringKey.strikethroughColor] = color
+                        }
+                    }
                 }
                 
                 // Set the value

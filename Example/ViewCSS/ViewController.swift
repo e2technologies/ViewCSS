@@ -32,7 +32,8 @@ class ViewController: UIViewController, ViewCSSCustomizableProtocol {
         self.button1?.css(class: "bad_class")
         self.button2?.css()
         
-        self.textView1?.cssText = "This is a <a style=\"color:white;font-size:20px;\" href=\"https://www.google.com\">link</a>"
+        self.css(object: self.textView1, class: "textView")
+        self.textView1?.cssText = "<span style=\"text-transform:uppercase;\">This is a </span><a style=\"color:red;font-size:20px;\" href=\"https://www.google.com\">link</a>"
         
         var config = self.cssConfig(class: "label1")
         print(String(describing: config))

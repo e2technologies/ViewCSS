@@ -18,7 +18,9 @@ intended to replace auto layout, attributed text, NIBs, etc.**
     based on the user's OS settings
   - 0.3.0 - Added the "text-shadow" and "text-shadow-opacity" properties
   - 0.4.0 - Implemented unit tests, some code rework, small bug fixes, etc.  No changes to the API
-  - 0.5.0 - Adding ".cssText" method to support text manipulation tags like "text-decoration"
+  - 0.5.0 - Adding ".cssText" method to support HTML/CSS based text string (wraps NSAttributedString)
+  - 0.6.0 - Adding "text-transform", "text-decoration-line", "text-decoration-color", 
+    and "text-decoration-style" to ".cssText"
 
 ## Examples
 
@@ -185,6 +187,10 @@ The ViewCSS library supports the below CSS properties for .cssText (attributed s
   - font-size-scale
   - font-weight
   - text-shadow
+  - text-transform
+  - text-decoration-color
+  - text-decoration-line
+  - text-decoration-style
 
 This is only available for UILabel and UITextView.
 
@@ -357,6 +363,47 @@ used to override the default of "1.0"
 It supports the following values
 
   - *number* - Specifies the opacity. From 0.0 (fully transparent) to 1.0 (fully opaque)
+
+##### text-transform
+The "text-transform" property allows the developer to define transform of the
+text
+
+It supports the following values
+
+  - uppercase - Transforms all characters to uppercase
+  - lowercase - Transforms all characters to lowercase
+  - capitalize - Transforms the first character of each word to uppercase
+
+##### text-decoration-color
+The "text-transform-color" property allows the developer to define the color
+of the decoration
+
+It supports the following values
+
+  - *color* - Specifies the color of the text-decoration
+
+##### text-decoration-line
+The "text-decoration-line" property allows the developer to define the type 
+of line to decorate the text with
+
+It supports the following values
+
+  - overline - (UNSUPPORTED) Defines a line above the text
+  - underline - Defines a line below the text
+  - line-through - Defines a line through the text
+
+##### text-decoration-style
+The "text-decoration-style" property allows the developer to define the type 
+of style to apply to the line
+
+It supports the following values
+
+  - solid - The line will display as a single line
+  - double - The line will display as a double line
+  - dotted - The line will display as a dotted line
+  - dashed - The line will display as a dashed line
+  - wavy - (UNSUPPORTED) The line will display as a wavy line
+
 
 ##### tint-color (custom)
 The "tint-color" property will set the "tinColor" attribute of the view.

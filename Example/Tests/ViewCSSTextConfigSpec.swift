@@ -22,9 +22,63 @@ class ViewCSSTextConfigSpec: QuickSpec {
             }, custom: custom)
         }
         
+        describe("#setTransform") {
+            let custom = [
+                "uppercase" : ViewCSSTextConfig.Transform.uppercase,
+                "lowercase" : ViewCSSTextConfig.Transform.lowercase,
+                "capitalize" : ViewCSSTextConfig.Transform.capitalize,
+            ]
+            ViewCSSTypeHelper.test(name: "transform", types: [.custom], routine: {
+                (value: String, type: ViewCSSBaseConfig.PropertyType) -> (Any?) in
+                let config = ViewCSSTextConfig()
+                config.setTransform(dict: ["text-transform": value])
+                return config.transform
+            }, custom: custom)
+        }
+        
+        describe("#setDecorationLine") {
+            let custom = [
+                "overline" : ViewCSSTextConfig.DecorationLine.overline,
+                "underline" : ViewCSSTextConfig.DecorationLine.underline,
+                "line-through" : ViewCSSTextConfig.DecorationLine.line_through,
+                ]
+            ViewCSSTypeHelper.test(name: "decoration line", types: [.custom], routine: {
+                (value: String, type: ViewCSSBaseConfig.PropertyType) -> (Any?) in
+                let config = ViewCSSTextConfig()
+                config.setDecorationLine(dict: ["text-decoration-line": value])
+                return config.decorationLine
+            }, custom: custom)
+        }
+        
+        describe("#setDecorationStyle") {
+            let custom = [
+                "solid" : NSUnderlineStyle.patternSolid,
+                "double" : NSUnderlineStyle.styleDouble,
+                "dotted" : NSUnderlineStyle.patternDot,
+                "dashed" : NSUnderlineStyle.patternDash,
+                ]
+            ViewCSSTypeHelper.test(name: "decoration style", types: [.custom], routine: {
+                (value: String, type: ViewCSSBaseConfig.PropertyType) -> (Any?) in
+                let config = ViewCSSTextConfig()
+                config.setDecorationLine(dict: ["text-decoration-style": value])
+                return config.decorationStyle
+            }, custom: custom)
+        }
+        
+        describe("#setDecorationColor") {
+            ViewCSSTypeHelper.test(name: "decoration color", types: [.color], routine: {
+                (value: String, type: ViewCSSBaseConfig.PropertyType) -> (Any?) in
+                let config = ViewCSSTextConfig()
+                config.setDecorationColor(dict: ["text-decoration-color": value])
+                return config.decorationColor
+            })
+        }
+        
         describe("#fromCSS") {
             it("parses the text-align and the text-shadow") {
-                let css = ["text-align" : "right", "text-shadow" : "5px 6px 10px " + color.toCSS]
+                let css = ["text-align" : "right", "text-shadow" : "5px 6px 10px " + color.toCSS,
+                           "text-transform": "uppercase", "text-decoration-color" : "blue",
+                           "text-decoration-style" : "dotted"]
                 let config = ViewCSSTextConfig.fromCSS(dict: css)
                 expect(config.align).to(equal(NSTextAlignment.right))
                 expect(config.shadow!.hShadow).to(equal(5))
@@ -32,10 +86,14 @@ class ViewCSSTextConfigSpec: QuickSpec {
                 expect(config.shadow!.radius).to(equal(10))
                 expect(config.shadow!.color!.toCSS).to(equal(color.toCSS))
                 expect(config.shadow!.opacity).to(equal(1.0))
+                expect(config.transform).to(equal(ViewCSSTextConfig.Transform.uppercase))
+                expect(config.decorationColor!.toCSS).to(equal("#0000FFFF"))
+                expect(config.decorationStyle).to(equal(NSUnderlineStyle.patternDot))
             }
             
             it("parses the text-align, text-shadow, and the text-shadow-opacity") {
-                let css = ["text-align" : "right", "text-shadow" : "5px 6px 10px " + color.toCSS, "text-shadow-opacity" : "0.4"]
+                let css = ["text-align" : "right", "text-shadow" : "5px 6px 10px " + color.toCSS,
+                           "text-shadow-opacity" : "0.4", "text-decoration-line" : "underline"]
                 let config = ViewCSSTextConfig.fromCSS(dict: css)
                 expect(config.align).to(equal(NSTextAlignment.right))
                 expect(config.shadow!.hShadow).to(equal(5))
@@ -43,6 +101,7 @@ class ViewCSSTextConfigSpec: QuickSpec {
                 expect(config.shadow!.radius).to(equal(10))
                 expect(config.shadow!.color!.toCSS).to(equal(color.toCSS))
                 expect(config.shadow!.opacity).to(equal(0.4))
+                expect(config.decorationLine).to(equal(ViewCSSTextConfig.DecorationLine.underline))
             }
         }
         

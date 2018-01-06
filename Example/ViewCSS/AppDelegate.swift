@@ -41,6 +41,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 "text-transform": "uppercase",
                 "text-align": "center",
             ],
+            ".textView" : [
+                "text-decoration-line" : "underline",
+                "text-decoration-style" : "dotted",
+                "text-decoration-color" : "green",
+                "color" : "black",
+            ],
             ".label2": [
                 "font-size": "200%",
                 "font-weight": "500",

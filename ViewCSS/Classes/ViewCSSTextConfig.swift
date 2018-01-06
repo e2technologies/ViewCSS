@@ -24,15 +24,39 @@ import Foundation
 public class ViewCSSTextConfig: ViewCSSBaseConfig {
     
     static let TEXT_ALIGN = "text-align"
+    static let TEXT_TRANSFORM = "text-transform"
+    static let TEXT_DECORATION_LINE = "text-decoration-line"
+    static let TEXT_DECORATION_COLOR = "text-decoration-color"
+    static let TEXT_DECORATION_STYLE = "text-decoration-style"
+    
+    public enum Transform {
+        case uppercase
+        case lowercase
+        case capitalize
+    }
+    
+    public enum DecorationLine {
+        case underline
+        case overline
+        case line_through
+    }
     
     public private(set) var align: NSTextAlignment?
     public private(set) var shadow: ViewCSSShadowConfig?
+    public private(set) var transform: Transform?
+    public private(set) var decorationLine: DecorationLine?
+    public private(set) var decorationColor: UIColor?
+    public private(set) var decorationStyle: NSUnderlineStyle?
     
     static func fromCSS(dict: Dictionary<String, Any>) -> ViewCSSTextConfig {
         let config = ViewCSSTextConfig()
         
         config.shadow = ViewCSSShadowConfig.fromCSS(dict: dict, base: "text")
         config.setAlign(dict: dict)
+        config.setTransform(dict: dict)
+        config.setDecorationLine(dict: dict)
+        config.setDecorationStyle(dict: dict)
+        config.setDecorationColor(dict: dict)
         
         return config
     }
@@ -77,5 +101,56 @@ public class ViewCSSTextConfig: ViewCSSBaseConfig {
             else if string == "justify" { return NSTextAlignment.justified }
             return nil
         } as? NSTextAlignment
+    }
+    
+    func setTransform(dict: Dictionary<String, Any>) {
+        self.transform = self.valueFromDict(
+            dict,
+            attribute: type(of: self).TEXT_TRANSFORM,
+            types: [.custom],
+            match: nil)
+        { (string: String) -> (Any?) in
+            if string == "uppercase" { return Transform.uppercase }
+            else if string == "lowercase" { return Transform.lowercase }
+            else if string == "capitalize" { return Transform.capitalize }
+            return nil
+            } as? Transform
+    }
+    
+    func setDecorationLine(dict: Dictionary<String, Any>) {
+        self.decorationLine = self.valueFromDict(
+            dict,
+            attribute: type(of: self).TEXT_DECORATION_LINE,
+            types: [.custom],
+            match: nil)
+        { (string: String) -> (Any?) in
+            if string == "overline" { return DecorationLine.overline }
+            else if string == "underline" { return DecorationLine.underline }
+            else if string == "line-through" { return DecorationLine.line_through }
+            return nil
+            } as? DecorationLine
+    }
+    
+    func setDecorationColor(dict: Dictionary<String, Any>) {
+        self.decorationColor = self.valueFromDict(
+            dict,
+            attribute: type(of: self).TEXT_DECORATION_COLOR,
+            types: [.color],
+            match: nil) as? UIColor
+    }
+    
+    func setDecorationStyle(dict: Dictionary<String, Any>) {
+        self.decorationStyle = self.valueFromDict(
+            dict,
+            attribute: type(of: self).TEXT_DECORATION_STYLE,
+            types: [.custom],
+            match: nil)
+        { (string: String) -> (Any?) in
+            if string == "solid" { return NSUnderlineStyle.styleSingle }
+            else if string == "double" { return NSUnderlineStyle.styleDouble }
+            else if string == "dotted" { return NSUnderlineStyle.patternDot }
+            else if string == "dashed" { return NSUnderlineStyle.patternDash }
+            return nil
+            } as? NSUnderlineStyle
     }
 }
