@@ -643,11 +643,11 @@ The attribute dictionary would be formed by looking for elements in the
 following order (keeping the first match)
 
   - "text-transform:uppercase;"
+  - (inherited) "text-align:right;"
   - my_custom_cell.link
   - .link
   - my_custom_cell.bar
   - .bar
-  - (inherited) "text-align:right;"
   - (inherited) my_custom_cell.bold
   - (inherited) .bold
   - (inherited) my_custom_cell.label

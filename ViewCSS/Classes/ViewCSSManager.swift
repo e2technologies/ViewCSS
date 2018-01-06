@@ -78,7 +78,7 @@ public class ViewCSSManager {
         return nextString
     }
 
-    func getConfig(className: String, style: String?, class klass: String?) -> ViewCSSConfig {
+    func getConfig(className: String, class klass: String?, style: String?) -> ViewCSSConfig {
         let cacheKey = self.getCacheKey(className: className, style: style, class: klass)
         
         // Return the config value if it is already in the cache
@@ -172,20 +172,53 @@ public class ViewCSSManager {
     }
     
     func generateAttributedString(object: Any?, text: String?) -> NSAttributedString? {
+        
+        class ParsedTextContainer {
+            var text: String?
+            var tag: String?
+            var attributes: Dictionary<String, String>?
+            var range: NSRange?
+            var config: ViewCSSConfig?
+        }
+        
         if text == nil { return nil }
         if let view = object as? UIView {
-            //let className = view.cssClassName
-            //let klass = view.cssClass
-            //let style = view.cssStyle
+            
+            // Get the stored parameters for the object
+            let className = view.cssClassName ?? ""
+            let klass = view.cssClass
+            let style = view.cssStyle
             
             // Iterate over the text and generate the attributed string.  Need to
             // parse out the "span" tags
-            //var currentIndex
+            var parsedText = ""
+            var parsedContainers = [ParsedTextContainer]()
+            text!.extractTags(callback: { (body: String?, tag: String?, attributes: Dictionary<String, String>) in
+                // Combine the parameters from the callback.  Place the overriden ones first
+                let combinedClass = String(format:"%s %s", (attributes["class"] ?? ""), (klass ?? ""))
+                let combinedStyle = String(format:"%s %s", (attributes["style"] ?? ""), (style ?? ""))
+                
+                // Get the config
+                let config = self.getConfig(className: className, class: combinedClass, style: combinedStyle)
+                
+                // Create the object to store the attributes
+                let textContainer = ParsedTextContainer()
+                textContainer.text = body
+                textContainer.tag = tag
+                textContainer.attributes = attributes
+                textContainer.range = NSRange(location: parsedText.count, length: (body?.count ?? 0))
+                textContainer.config = config
+                
+                // Add the details for setting up the attributed string
+                parsedContainers.append(textContainer)
+                
+                // Get the parsed out text
+                if body != nil { parsedText += body! }
+            })
+            
+            // We have the text.  Iterate through the configs and ranges and decide what to do
+            
         }
         return nil
-    }
-    
-    func parseSpanString(_ string: String, span: (String, String?, String?) -> ()) {
-        
     }
 }

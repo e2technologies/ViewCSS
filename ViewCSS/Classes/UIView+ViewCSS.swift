@@ -87,7 +87,7 @@ extension UIView {
         cssManager.classMissing = false
         
         // Get the config
-        let config = cssManager.getConfig(className: className, style: style, class: klass)
+        let config = cssManager.getConfig(className: className, class: klass, style: style)
         
         // background-color
         if let color = config.background?.color {

@@ -105,6 +105,7 @@ extension String {
         return nil
     }
     
+    // Parses a style attribute into the CSS properties and values
     func parseStyle() -> Dictionary<String, String> {
         var dict = Dictionary<String, String>()
         
@@ -121,6 +122,17 @@ extension String {
         return dict
     }
     
+    // Parses the tag and attributes from the inner part of an HTML tag
+    // It returns the text, tag, and attributes in the callback.  For example
+    //
+    //     "This is <span class="label">some</span> text"
+    //
+    // will trigger the callback 3 times
+    //
+    //     -> callback("This is ", nil, [:])
+    //     -> callback("some", "span", ["class" : "label"])
+    //     -> callback(" text", nil, [:])
+    //
     func extractTags(callback: (String?, String?, Dictionary<String, String>)->()) {
         // Pointers
         var lastText: String? = nil
@@ -248,6 +260,16 @@ extension String {
         }
     }
     
+    // This method will extract the tag and the attributes from inside of an HTML tag.  It
+    // does this by using the callbacks.  For example
+    //
+    //     "a href="some url"
+    //
+    // will do the following
+    //
+    //     -> tagCallback("a")
+    //     -> attributeCallback("href", "some url")
+    //
     func extractAttributes(tagCallback: (String)->(), attributeCallback: (String, String)->()) {
         
         // If the tag begins with a space, trim the spaces
