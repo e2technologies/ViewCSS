@@ -28,6 +28,34 @@ class ViewCSSFontConfigSpec: QuickSpec {
             }, custom: custom)
         }
         
+        describe("#setScaleSizeMin") {
+            ViewCSSTypeHelper.test(name: "font size scale min", types: [.percentage, .length, .number], routine: {
+                (value: String, type: ViewCSSBaseConfig.PropertyType) -> (Any?) in
+                let config = ViewCSSFontConfig()
+                config.setSizeScaleMin(dict: ["font-size-scale-min": value])
+                if (type == .percentage || type == .number) && config.sizeScaleMin != nil {
+                    return config.sizeScaleMin!/15.0
+                }
+                else {
+                    return config.sizeScaleMin
+                }
+            })
+        }
+        
+        describe("#setScaleSizeMax") {
+            ViewCSSTypeHelper.test(name: "font size scale max", types: [.percentage, .length, .number], routine: {
+                (value: String, type: ViewCSSBaseConfig.PropertyType) -> (Any?) in
+                let config = ViewCSSFontConfig()
+                config.setSizeScaleMax(dict: ["font-size-scale-max": value])
+                if (type == .percentage || type == .number) && config.sizeScaleMax != nil {
+                    return config.sizeScaleMax!/15.0
+                }
+                else {
+                    return config.sizeScaleMax
+                }
+            })
+        }
+        
         describe("#setWeight") {
             let custom = [
                 "normal" : UIFont.Weight.regular,
@@ -80,6 +108,16 @@ class ViewCSSFontConfigSpec: QuickSpec {
                 ViewCSSAutoScaleCache.shared.scale = 1.25
                 let config = ViewCSSFontConfig.fromCSS(dict: css)
                 expect(config.scaledSize).to(equal(CGFloat(13.0)))
+            }
+            it("handles the scaled size min") {
+                let css = ["font-size" : "10px", "font-size-scale" : "0.5", "font-size-scale-min" : "8px"]
+                let config = ViewCSSFontConfig.fromCSS(dict: css)
+                expect(config.scaledSize).to(equal(CGFloat(8.0)))
+            }
+            it("handles the scaled size max") {
+                let css = ["font-size" : "10px", "font-size-scale" : "2.0", "font-size-scale-max" : "16px"]
+                let config = ViewCSSFontConfig.fromCSS(dict: css)
+                expect(config.scaledSize).to(equal(CGFloat(16.0)))
             }
         }
         

@@ -37,6 +37,9 @@ intended to replace auto layout, NIBs, etc.**
     - changed auto scale to "0.15" per tick
     - added ".cssScale" property
     - added "text-overflow"
+  - v0.8.0
+    - added "font-size-scale-min"
+    - added "font-size-scale-max"
 
 ## Examples
 

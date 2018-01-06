@@ -29,9 +29,13 @@ public class ViewCSSFontConfig: ViewCSSBaseConfig {
     static let FONT_SIZE = "font-size"
     static let FONT_WEIGHT = "font-weight"
     static let FONT_SIZE_SCALE = "font-size-scale"
+    static let FONT_SIZE_SCALE_MIN = "font-size-scale-min"
+    static let FONT_SIZE_SCALE_MAX = "font-size-scale-max"
     
     public private(set) var size: CGFloat?
     public private(set) var sizeScale: CGFloat?
+    public private(set) var sizeScaleMin: CGFloat?
+    public private(set) var sizeScaleMax: CGFloat?
     public private(set) var weight: UIFont.Weight?
     public var scaledSize: CGFloat? {
         if self.size != nil {
@@ -44,7 +48,19 @@ public class ViewCSSFontConfig: ViewCSSBaseConfig {
             }
             
             if scale != nil {
-                return (scale! * self.size!).rounded()
+                var newSize = scale! * self.size!
+                
+                // Check min
+                if self.sizeScaleMin != nil && newSize < self.sizeScaleMin! {
+                    newSize = self.sizeScaleMin!
+                }
+                
+                // Check min
+                if self.sizeScaleMax != nil && newSize > self.sizeScaleMax! {
+                    newSize = self.sizeScaleMax!
+                }
+                
+                return newSize.rounded()
             }
             
             return self.size
@@ -59,6 +75,8 @@ public class ViewCSSFontConfig: ViewCSSBaseConfig {
         config.setSize(dict: dict)
         config.setSizeScale(dict: dict)
         config.setWeight(dict: dict)
+        config.setSizeScaleMin(dict: dict)
+        config.setSizeScaleMax(dict: dict)
         
         return config
     }
@@ -123,6 +141,44 @@ public class ViewCSSFontConfig: ViewCSSBaseConfig {
             else if string == "xx-large" { return 6 }
             else { return nil }
         }
+    }
+    
+    func setSizeScaleMin(dict: Dictionary<String, Any>) {
+        self.valueFromDict(
+            dict,
+            attribute: type(of: self).FONT_SIZE_SCALE_MIN,
+            types: [.percentage, .length, .number],
+            match:
+            { (value: Any, type: ViewCSSBaseConfig.PropertyType) in
+                if type == .percentage, let percentage = value as? CGFloat {
+                    self.sizeScaleMin = ViewCSSFontConfig.DEFAULT_FONT_SIZE * percentage
+                }
+                else if type == .number, let number = value as? CGFloat {
+                    self.sizeScaleMin = ViewCSSFontConfig.DEFAULT_FONT_SIZE * number
+                }
+                else if type == .length, let length = value as? CGFloat {
+                    self.sizeScaleMin = length
+                }
+        })
+    }
+    
+    func setSizeScaleMax(dict: Dictionary<String, Any>) {
+        self.valueFromDict(
+            dict,
+            attribute: type(of: self).FONT_SIZE_SCALE_MAX,
+            types: [.percentage, .length, .number],
+            match:
+            { (value: Any, type: ViewCSSBaseConfig.PropertyType) in
+                if type == .percentage, let percentage = value as? CGFloat {
+                    self.sizeScaleMax = ViewCSSFontConfig.DEFAULT_FONT_SIZE * percentage
+                }
+                else if type == .number, let number = value as? CGFloat {
+                    self.sizeScaleMax = ViewCSSFontConfig.DEFAULT_FONT_SIZE * number
+                }
+                else if type == .length, let length = value as? CGFloat {
+                    self.sizeScaleMax = length
+                }
+        })
     }
     
     func setSizeScale(dict: Dictionary<String, Any>) {

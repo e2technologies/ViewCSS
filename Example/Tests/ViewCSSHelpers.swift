@@ -124,9 +124,11 @@ class ViewCSSTypeHelper {
                     expect((result as! CGFloat)).to(equal(CGFloat(5)))
                 }
                 
-                it(name + " ignores the number if it has no px") {
-                    let result = routine("5", type)
-                    expect(result).to(beNil())
+                if !types.contains(.number) {
+                    it(name + " ignores the number if it has no px") {
+                        let result = routine("5", type)
+                        expect(result).to(beNil())
+                    }
                 }
                 
                 if !types.contains(.percentage) {
