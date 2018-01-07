@@ -172,8 +172,16 @@ class ViewCSSTypeHelper {
                     for (string, expected) in custom! {
                         it(name + " handles custom value " + string) {
                             let result = routine(string, type)
+                            
+                            if result == nil {
+                                expect(result).notTo(beNil())
+                            }
+                            
                             if let newResult = result as? CGFloat {
                                 expect(newResult).to(equal(expected as? CGFloat))
+                            }
+                            else if let newResult = result as? String {
+                                expect(newResult).to(equal(expected as? String))
                             }
                             else if let newResult = result as? UIColor {
                                 expect(newResult.toCSS).to(equal((expected as? UIColor)?.toCSS))
@@ -187,7 +195,22 @@ class ViewCSSTypeHelper {
                             else if let newResult = result as? NSTextAlignment {
                                 expect(newResult).to(equal(expected as? NSTextAlignment))
                             }
-                            
+                            else if let newResult = result as? NSLineBreakMode {
+                                expect(newResult).to(equal(expected as? NSLineBreakMode))
+                            }
+                            else if let newResult = result as? ViewCSSTextConfig.Transform {
+                                expect(newResult).to(equal(expected as? ViewCSSTextConfig.Transform))
+                            }
+                            else if let newResult = result as? ViewCSSTextConfig.DecorationLine {
+                                expect(newResult).to(equal(expected as? ViewCSSTextConfig.DecorationLine))
+                            }
+                            else if let newResult = result as? NSUnderlineStyle {
+                                expect(newResult).to(equal(expected as? NSUnderlineStyle))
+                            }
+                            else {
+                                // Trigger an error for unexpected values
+                                expect(false).to(equal(true))
+                            }
                         }
                     }
                 }

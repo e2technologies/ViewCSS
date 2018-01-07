@@ -65,7 +65,7 @@ class ViewCSSTextConfigSpec: QuickSpec {
         
         describe("#setDecorationStyle") {
             let custom = [
-                "solid" : NSUnderlineStyle.patternSolid,
+                "solid" : NSUnderlineStyle.styleSingle,
                 "double" : NSUnderlineStyle.styleDouble,
                 "dotted" : NSUnderlineStyle.patternDot,
                 "dashed" : NSUnderlineStyle.patternDash,
@@ -73,7 +73,7 @@ class ViewCSSTextConfigSpec: QuickSpec {
             ViewCSSTypeHelper.test(name: "decoration style", types: [.custom], routine: {
                 (value: String, type: ViewCSSBaseConfig.PropertyType) -> (Any?) in
                 let config = ViewCSSTextConfig()
-                config.setDecorationLine(dict: ["text-decoration-style": value])
+                config.setDecorationStyle(dict: ["text-decoration-style": value])
                 return config.decorationStyle
             }, custom: custom)
         }

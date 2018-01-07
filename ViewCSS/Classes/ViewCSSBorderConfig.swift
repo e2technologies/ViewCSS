@@ -85,9 +85,9 @@ public class ViewCSSBorderConfig: ViewCSSBaseConfig {
             types: [.length, .custom],
             match: nil,
             custom: { (string: String) in
-                if string == "medium" { return 2 }
-                else if string == "thin" { return 1 }
-                else if string == "thick" { return 3 }
+                if string == "medium" { return CGFloat(2) }
+                else if string == "thin" { return CGFloat(1) }
+                else if string == "thick" { return CGFloat(3) }
                 return nil
             }) as? CGFloat
     }

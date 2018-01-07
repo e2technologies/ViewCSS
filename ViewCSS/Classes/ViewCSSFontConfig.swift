@@ -132,13 +132,13 @@ public class ViewCSSFontConfig: ViewCSSBaseConfig {
                     self.size = ViewCSSFontConfig.DEFAULT_FONT_SIZE + offset
                 }
         }) { (string: String) in
-            if string == "xx-small" { return -6 }
-            else if string == "x-small" { return -4 }
-            else if string == "small" { return -2 }
-            else if string == "medium" { return 0 }
-            else if string == "large" { return 2 }
-            else if string == "x-large" { return 4 }
-            else if string == "xx-large" { return 6 }
+            if string == "xx-small" { return CGFloat(-6) }
+            else if string == "x-small" { return CGFloat(-4) }
+            else if string == "small" { return CGFloat(-2) }
+            else if string == "medium" { return CGFloat(0) }
+            else if string == "large" { return CGFloat(2) }
+            else if string == "x-large" { return CGFloat(4) }
+            else if string == "xx-large" { return CGFloat(6) }
             else { return nil }
         }
     }

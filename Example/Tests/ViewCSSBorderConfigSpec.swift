@@ -7,9 +7,9 @@ class ViewCSSBorderConfigSpec: QuickSpec {
 
         describe("#setWidth") {
             let custom = [
-                "medium" : 2,
-                "thin" : 1,
-                "thick" : 3,
+                "medium" : CGFloat(2),
+                "thin" : CGFloat(1),
+                "thick" : CGFloat(3),
             ]
             ViewCSSTypeHelper.test(name: "border width", types: [.length, .custom], routine: {
                 (value: String, type: ViewCSSBaseConfig.PropertyType) -> (Any?) in

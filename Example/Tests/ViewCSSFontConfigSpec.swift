@@ -7,13 +7,13 @@ class ViewCSSFontConfigSpec: QuickSpec {
 
         describe("#setSize") {
             let custom = [
-                "xx-small" : "9px",
-                "x-small" : "11px",
-                "small" : "13px",
-                "medium" : "15px",
-                "large" : "17px",
-                "x-large" : "19px",
-                "xx-large" : "21px",
+                "xx-small" : CGFloat(9),
+                "x-small" : CGFloat(11),
+                "small" : CGFloat(13),
+                "medium" : CGFloat(15),
+                "large" : CGFloat(17),
+                "x-large" : CGFloat(19),
+                "xx-large" : CGFloat(21),
             ]
             ViewCSSTypeHelper.test(name: "font size", types: [.percentage, .length, .custom], routine: {
                 (value: String, type: ViewCSSBaseConfig.PropertyType) -> (Any?) in
