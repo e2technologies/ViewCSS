@@ -62,7 +62,7 @@ class ViewCSSManagerSpec: QuickSpec {
             }
         }
         
-        describe("getClassName") {
+        describe("#getClassName") {
             it("returns the name of a class by class") {
                 let className = manager!.getClassName(class: UILabel.self)
                 expect(className).to(equal("ui_label"))
@@ -71,6 +71,45 @@ class ViewCSSManagerSpec: QuickSpec {
             it("returns the name of a class by instance") {
                 let className = manager!.getClassName(object: UILabel())
                 expect(className).to(equal("ui_label"))
+            }
+        }
+        
+        describe("#generateClassList") {
+            it("adds the class name to the end") {
+                let classList = manager!.generateClassList(className: "ui_label", style: nil, class: "class1")
+                expect(classList).to(equal([
+                    "ui_label.class1",
+                    ".class1",
+                    "ui_label"
+                    ]))
+            }
+            
+            it("parses multiple classes") {
+                let classList = manager!.generateClassList(className: "ui_label", style: nil, class: "class1 class2")
+                expect(classList).to(equal([
+                    "ui_label.class1",
+                    ".class1",
+                    "ui_label.class2",
+                    ".class2",
+                    "ui_label"
+                    ]))
+            }
+            
+            it("inherits the parent object classes") {
+                let label = UILabel()
+                label.css(class: "parent1 parent2")
+                let classList = manager!.generateClassList(className: "ui_label", style: nil, class: "class1 class2", parentObject: label)
+                expect(classList).to(equal([
+                    "ui_label.class1",
+                    ".class1",
+                    "ui_label.class2",
+                    ".class2",
+                    "ui_label.parent1",
+                    ".parent1",
+                    "ui_label.parent2",
+                    ".parent2",
+                    "ui_label"
+                    ]))
             }
         }
         

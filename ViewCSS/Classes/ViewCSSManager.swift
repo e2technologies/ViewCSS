@@ -78,14 +78,18 @@ public class ViewCSSManager {
         return nextString
     }
 
-    func getConfig(className: String, class klass: String?, style: String?) -> ViewCSSConfig {
+    func getConfig(className: String, class klass: String?, style: String?, parentObject: UIView?=nil) -> ViewCSSConfig {
         let cacheKey = self.getCacheKey(className: className, style: style, class: klass)
         
         // Return the config value if it is already in the cache
         if let cachedConfig = self.styleCache[cacheKey] { return cachedConfig }
         
         // Create the consolidated dictionary
-        let dict = self.generateStyleDictionary(className: className, style: style, class: klass)
+        let dict = self.generateStyleDictionary(
+            className: className,
+            style: style,
+            class: klass,
+            parentObject: parentObject)
         
         // Now parse the final dictionary and return it to the user
         let config = ViewCSSConfig.fromCSS(dict: dict)
@@ -129,43 +133,52 @@ public class ViewCSSManager {
         return self.styleLookup[":root"] as? Dictionary<String, Any>
     }
     
-    private func generateStyleDictionary(className: String, style: String?, class klass: String?) -> Dictionary<String, Any> {
+    func generateClassList(className: String, style: String?, class klass: String?, parentObject: UIView?=nil) -> [String] {
+        var classList = [String]()
+        
+        let combinedClass = (klass ?? "") + " " + (parentObject?.cssClass ?? "")
+        
+        for subClass in combinedClass.split(separator: " ") {
+            if subClass.isEmpty { continue }
+            
+            classList.append(String(className + "." + subClass))
+            classList.append(String("."+subClass))
+        }
+        
+        classList.append(className)
+        
+        return classList
+    }
+    
+    func generateStyleDictionary(className: String, style: String?, class klass: String?, parentObject: UIView?=nil) -> Dictionary<String, Any> {
+        
         var dict = Dictionary<String, Any>()
         
         // Priority 1: Style attributes
-        if style != nil {
-            dict = dict.merging(style!.parseStyle()) { (current, _) in current }
-        }
+        let styles = (style ?? "") + ";" + (parentObject?.cssStyle ?? "")
+        dict = dict.merging(styles.parseStyle()) { (current, _) in current }
 
         // Priority 2: Classes
-        if klass != nil {
-            var numberOfMatches: Int = 0
-            
-            // Get the list
-            for subStyle in klass!.split(separator: " ") {
-                if subStyle.isEmpty { continue }
-                
-                // Look for the class by itself and the class with a "."
-                for name in [String(className + "." + subStyle), String("."+subStyle)] {
-                    // If we find a match, merge it into the dictionary
-                    if let subDict = self.styleLookup[name] as? Dictionary<String, Any> {
-                        numberOfMatches += 1
-                        dict = dict.merging(subDict) { (current, _) in current }
-                    }
-                }
-            }
-            
-            // If we didn't find any matches, print a message
-            if numberOfMatches == 0 {
-                print("ViewCSSManager WARN: No match found for CSS class '" + klass! +
-                    "' referenced from the object of type '" + className + "'")
-                self.classMissing = true
+        let classList = self.generateClassList(
+            className: className,
+            style: style,
+            class: klass,
+            parentObject: parentObject)
+        
+        // Iterate through the list and generate the dictionary
+        var numberOfMatches: Int = 0
+        for key in classList {
+            if let subDict = self.styleLookup[key] as? Dictionary<String, Any> {
+                numberOfMatches += 1
+                dict = dict.merging(subDict) { (current, _) in current }
             }
         }
         
-        // Priority 3: General class defines
-        if let subDict = self.styleLookup[className] as? Dictionary<String, Any> {
-            dict = dict.merging(subDict) { (current, _) in current }
+        // If we didn't find any matches, print a message
+        if klass != nil && numberOfMatches == 0 {
+            print("ViewCSSManager WARN: No match found for CSS class '" + klass! +
+                "' referenced from the object of type '" + className + "'")
+            self.classMissing = true
         }
         
         return dict
@@ -186,8 +199,6 @@ public class ViewCSSManager {
             
             // Get the stored parameters for the object
             let className = view.cssClassName ?? ""
-            let klass = view.cssClass
-            let style = view.cssStyle
             
             // Iterate over the text and generate the attributed string.  Need to
             // parse out the "span" tags
@@ -195,13 +206,13 @@ public class ViewCSSManager {
             var parsedContainers = [ParsedTextContainer]()
             text!.extractTags(callback: { (body: String?, tag: String?, attributes: Dictionary<String, String>) in
                 var cleanBody = body?.fromSafeCSS ?? ""
-                
-                // Combine the parameters from the callback.  Place the overriden ones first
-                let combinedClass = String(format:"%@ %@", (attributes["class"] ?? ""), (klass ?? ""))
-                let combinedStyle = String(format:"%@ %@", (attributes["style"] ?? ""), (style ?? ""))
-                
+  
                 // Get the config
-                let config = self.getConfig(className: className, class: combinedClass, style: combinedStyle)
+                let config = self.getConfig(
+                    className: className,
+                    class: attributes["class"],
+                    style: attributes["style"],
+                    parentObject: view)
                 
                 // Need to check the text-transform here to change the body if necessary
                 if let transform = config.text?.transform {
