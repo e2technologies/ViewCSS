@@ -40,6 +40,9 @@ intended to replace auto layout, NIBs, etc.**
   - v0.8.0
     - added "font-size-scale-min"
     - added "font-size-scale-max"
+  - v0.9.0
+    - fixed some small bugs after finding test escape
+    - added "generateCSSText" method
 
 ## Examples
 
@@ -89,7 +92,7 @@ class MyCustomViewController: UIViewController {
 ```
 
 ## Requirements
-IOS 8.0 and greater, SWIFT 4.0
+IOS 8.0 and greater
 
 ## Installation
 
