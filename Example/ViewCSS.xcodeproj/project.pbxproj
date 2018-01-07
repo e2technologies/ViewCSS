@@ -17,6 +17,7 @@
 		6937F0351FFF02A10099AA2A /* ViewCSSManagerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6937F0341FFF02A10099AA2A /* ViewCSSManagerSpec.swift */; };
 		6937F0371FFF0E950099AA2A /* ViewCSSUIViewSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6937F0361FFF0E950099AA2A /* ViewCSSUIViewSpec.swift */; };
 		6937F0391FFF19B20099AA2A /* ViewCSSNSObjectSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6937F0381FFF19B20099AA2A /* ViewCSSNSObjectSpec.swift */; };
+		6937F03C2002CEB30099AA2A /* ViewCSSGenerateCSSTextProtocolSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6937F03A2002CE230099AA2A /* ViewCSSGenerateCSSTextProtocolSpec.swift */; };
 		694372E21FFD4B3E00E87258 /* ViewCSSShadowConfigSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 694372E01FFD494D00E87258 /* ViewCSSShadowConfigSpec.swift */; };
 		694372E71FFD84D000E87258 /* ViewCSSHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 694372E61FFD84D000E87258 /* ViewCSSHelpers.swift */; };
 		694372E91FFD9C6500E87258 /* ViewCSSCGFloatSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 694372E81FFD9C6500E87258 /* ViewCSSCGFloatSpec.swift */; };
@@ -56,6 +57,7 @@
 		6937F0341FFF02A10099AA2A /* ViewCSSManagerSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewCSSManagerSpec.swift; sourceTree = "<group>"; };
 		6937F0361FFF0E950099AA2A /* ViewCSSUIViewSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewCSSUIViewSpec.swift; sourceTree = "<group>"; };
 		6937F0381FFF19B20099AA2A /* ViewCSSNSObjectSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewCSSNSObjectSpec.swift; sourceTree = "<group>"; };
+		6937F03A2002CE230099AA2A /* ViewCSSGenerateCSSTextProtocolSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewCSSGenerateCSSTextProtocolSpec.swift; sourceTree = "<group>"; };
 		694372E01FFD494D00E87258 /* ViewCSSShadowConfigSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewCSSShadowConfigSpec.swift; sourceTree = "<group>"; };
 		694372E61FFD84D000E87258 /* ViewCSSHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewCSSHelpers.swift; sourceTree = "<group>"; };
 		694372E81FFD9C6500E87258 /* ViewCSSCGFloatSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewCSSCGFloatSpec.swift; sourceTree = "<group>"; };
@@ -155,6 +157,7 @@
 				6937F0341FFF02A10099AA2A /* ViewCSSManagerSpec.swift */,
 				6937F0361FFF0E950099AA2A /* ViewCSSUIViewSpec.swift */,
 				6937F0381FFF19B20099AA2A /* ViewCSSNSObjectSpec.swift */,
+				6937F03A2002CE230099AA2A /* ViewCSSGenerateCSSTextProtocolSpec.swift */,
 				607FACE91AFB9204008FA782 /* Supporting Files */,
 			);
 			path = Tests;
@@ -419,6 +422,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6937F0371FFF0E950099AA2A /* ViewCSSUIViewSpec.swift in Sources */,
+				6937F03C2002CEB30099AA2A /* ViewCSSGenerateCSSTextProtocolSpec.swift in Sources */,
 				6937F0391FFF19B20099AA2A /* ViewCSSNSObjectSpec.swift in Sources */,
 				694372EB1FFD9D8800E87258 /* ViewCSSStringSpec.swift in Sources */,
 				694372E91FFD9C6500E87258 /* ViewCSSCGFloatSpec.swift in Sources */,

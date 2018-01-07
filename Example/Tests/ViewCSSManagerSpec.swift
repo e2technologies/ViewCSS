@@ -76,7 +76,7 @@ class ViewCSSManagerSpec: QuickSpec {
         
         describe("#generateClassList") {
             it("adds the class name to the end") {
-                let classList = manager!.generateClassList(className: "ui_label", style: nil, class: "class1")
+                let classList = manager!.generateClassList(className: "ui_label", class: "class1")
                 expect(classList).to(equal([
                     "ui_label.class1",
                     ".class1",
@@ -85,7 +85,7 @@ class ViewCSSManagerSpec: QuickSpec {
             }
             
             it("parses multiple classes") {
-                let classList = manager!.generateClassList(className: "ui_label", style: nil, class: "class1 class2")
+                let classList = manager!.generateClassList(className: "ui_label", class: "class1 class2")
                 expect(classList).to(equal([
                     "ui_label.class1",
                     ".class1",
@@ -96,9 +96,7 @@ class ViewCSSManagerSpec: QuickSpec {
             }
             
             it("inherits the parent object classes") {
-                let label = UILabel()
-                label.css(class: "parent1 parent2")
-                let classList = manager!.generateClassList(className: "ui_label", style: nil, class: "class1 class2", parentObject: label)
+                let classList = manager!.generateClassList(className: "ui_label", class: "class1 class2", parentClass: "parent1 parent2")
                 expect(classList).to(equal([
                     "ui_label.class1",
                     ".class1",

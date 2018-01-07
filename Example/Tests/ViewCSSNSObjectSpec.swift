@@ -7,6 +7,15 @@ class ViewCSSNSObjectSpec: QuickSpec {
     
     override func spec() {
         
+        describe("#cssScale") {
+            it("returns the current scale factor from a class") {
+                expect(NSObject.cssScale).to(equal(ViewCSSAutoScaleCache.shared.scale))
+            }
+            it("returns the current scale factor from an instance") {
+                expect(NSObject().cssScale).to(equal(ViewCSSAutoScaleCache.shared.scale))
+            }
+        }
+        
         describe("#getConfig") {
             it("returns the config for the instance") {
                 let css = [".label": ["background-color" : "red"]]
@@ -23,7 +32,7 @@ class ViewCSSNSObjectSpec: QuickSpec {
             }
         }
         
-        describe("#callback") {
+        describe("#delegate callback") {
             
             context("NSObject") {
                 class CallbackClass: NSObject, ViewCSSCustomizableProtocol {
@@ -71,6 +80,80 @@ class ViewCSSNSObjectSpec: QuickSpec {
                     caller.css(class: "class")
                     expect(caller.count).to(equal(1))
                 }
+            }
+        }
+        
+        describe("#customize callback") {
+            
+            context("NSObject") {
+                it("calls the callback") {
+                    let object = NSObject()
+                    let view = UIView()
+                    var count = 0
+                    object.css(object: view, class: "class") { (config: ViewCSSConfig) in
+                        count += 1
+                    }
+                    expect(count).to(equal(1))
+                }
+            }
+            
+            context("UIView") {
+                it("calls the callback") {
+                    let view = UIView()
+                    var count = 0
+                    view.css(class: "class") { (config: ViewCSSConfig) in
+                        count += 1
+                    }
+                    expect(count).to(equal(1))
+                }
+            }
+        }
+        
+        describe("#generateCSSText") {
+            let object = NSObject()
+            let view = UILabel()
+            let spanText = "some <span class=\"color\">stuff</span>"
+            let linkText = "some <a class=\"color\" href=\"https://www.example.com\">stuff</a>"
+            let expectedText = "some stuff"
+            
+            beforeEach {
+                let css = [
+                    "ns_object.view" : ["background-color" : "red", "color" : "#00FF00FF"],
+                    ".color" : ["color" : "#0000FFFF"],
+                    ]
+                self.manager.setCSS(dict: css)
+                object.css(object: view, class: "view")
+            }
+            
+            it("returns the attributed span text from the class") {
+                let generatedText = NSObject.generateCSSText(parentClass: "view", text: spanText)
+                expect(generatedText!.string).to(equal(expectedText))
+                
+                let attributes = generatedText!.attributes(at: 0, effectiveRange: nil)
+                expect(attributes.count).to(equal(2))
+                expect((attributes[NSAttributedStringKey.backgroundColor] as! UIColor).toCSS).to(equal("#FF0000FF"))
+                expect((attributes[NSAttributedStringKey.foregroundColor] as! UIColor).toCSS).to(equal("#00FF00FF"))
+                
+                let tagttributes = generatedText!.attributes(at: 5, effectiveRange: nil)
+                expect(tagttributes.count).to(equal(2))
+                expect((tagttributes[NSAttributedStringKey.backgroundColor] as! UIColor).toCSS).to(equal("#FF0000FF"))
+                expect((tagttributes[NSAttributedStringKey.foregroundColor] as! UIColor).toCSS).to(equal("#0000FFFF"))
+            }
+            
+            it("returns the attributed link text from the class") {
+                let generatedText = NSObject.generateCSSText(parentClass: "view", text: linkText)
+                expect(generatedText!.string).to(equal(expectedText))
+                
+                let attributes = generatedText!.attributes(at: 0, effectiveRange: nil)
+                expect(attributes.count).to(equal(2))
+                expect((attributes[NSAttributedStringKey.backgroundColor] as! UIColor).toCSS).to(equal("#FF0000FF"))
+                expect((attributes[NSAttributedStringKey.foregroundColor] as! UIColor).toCSS).to(equal("#00FF00FF"))
+                
+                let tagttributes = generatedText!.attributes(at: 5, effectiveRange: nil)
+                expect(tagttributes.count).to(equal(3))
+                expect((tagttributes[NSAttributedStringKey.backgroundColor] as! UIColor).toCSS).to(equal("#FF0000FF"))
+                expect((tagttributes[NSAttributedStringKey.foregroundColor] as! UIColor).toCSS).to(equal("#0000FFFF"))
+                expect((tagttributes[NSAttributedStringKey.link] as! String)).to(equal("https://www.example.com"))
             }
         }
     }

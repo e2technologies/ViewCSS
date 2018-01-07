@@ -60,3 +60,8 @@ protocol ViewCSSTextProtocol: ViewCSSShadowProtocol {
     func getCSSFont() -> UIFont?
     func getCSSTextAlignment() -> NSTextAlignment
 }
+
+public protocol ViewCSSGenerateCSSTextProtocol {
+    var cssText: String? { get set }
+    func generateCSSText(text: String?) -> NSAttributedString?
+}

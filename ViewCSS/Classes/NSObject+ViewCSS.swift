@@ -115,4 +115,46 @@ public extension NSObject {
     class var cssScale: CGFloat {
         return ViewCSSAutoScaleCache.shared.scale
     }
+    
+    // ================================================================
+    // Get attributed text
+    // ================================================================
+    
+    public static func generateCSSText(parentClassName: String?, parentClass: String?,
+                                       parentStyle: String?, text: String?) -> NSAttributedString? {
+        return ViewCSSManager.shared.generateAttributedString(
+            parentClassName: parentClassName,
+            parentClass: parentClass,
+            parentStyle: parentStyle,
+            text: text)
+    }
+    
+    public static func generateCSSText(parentClass: String?, parentStyle: String?, text: String?) -> NSAttributedString? {
+        return self.generateCSSText(
+            parentClassName: ViewCSSManager.shared.getClassName(class: self),
+            parentClass: parentClass,
+            parentStyle: parentStyle,
+            text: text)
+    }
+    
+    public static func generateCSSText(parentStyle: String?, text: String?) -> NSAttributedString? {
+        return self.generateCSSText(
+            parentClass: nil,
+            parentStyle: parentStyle,
+            text: text)
+    }
+    
+    public static func generateCSSText(parentClass: String?, text: String?) -> NSAttributedString? {
+        return self.generateCSSText(
+            parentClass: parentClass,
+            parentStyle: nil,
+            text: text)
+    }
+    
+    public static func generateCSSText(text: String?) -> NSAttributedString? {
+        return self.generateCSSText(
+            parentClass: nil,
+            parentStyle: nil,
+            text: text)
+    }
 }

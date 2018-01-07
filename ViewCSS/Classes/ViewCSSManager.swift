@@ -79,6 +79,19 @@ public class ViewCSSManager {
     }
 
     func getConfig(className: String, class klass: String?, style: String?, parentObject: UIView?=nil) -> ViewCSSConfig {
+        return self.getConfig(className: className,
+                              class: klass,
+                              style: style,
+                              parentClass: parentObject?.cssClass,
+                              parentStyle: parentObject?.cssStyle)
+    }
+    
+    func getConfig(className: String,
+                   class klass: String?,
+                   style: String?,
+                   parentClass: String?,
+                   parentStyle: String?) -> ViewCSSConfig {
+        
         let cacheKey = self.getCacheKey(className: className, style: style, class: klass)
         
         // Return the config value if it is already in the cache
@@ -89,7 +102,8 @@ public class ViewCSSManager {
             className: className,
             style: style,
             class: klass,
-            parentObject: parentObject)
+            parentClass: parentClass,
+            parentStyle: parentStyle)
         
         // Now parse the final dictionary and return it to the user
         let config = ViewCSSConfig.fromCSS(dict: dict)
@@ -133,10 +147,13 @@ public class ViewCSSManager {
         return self.styleLookup[":root"] as? Dictionary<String, Any>
     }
     
-    func generateClassList(className: String, style: String?, class klass: String?, parentObject: UIView?=nil) -> [String] {
+    func generateClassList(className: String,
+                           class klass: String?,
+                           parentClass: String?=nil) -> [String] {
+        
         var classList = [String]()
         
-        let combinedClass = (klass ?? "") + " " + (parentObject?.cssClass ?? "")
+        let combinedClass = (klass ?? "") + " " + (parentClass ?? "")
         
         for subClass in combinedClass.split(separator: " ") {
             if subClass.isEmpty { continue }
@@ -150,20 +167,23 @@ public class ViewCSSManager {
         return classList
     }
     
-    func generateStyleDictionary(className: String, style: String?, class klass: String?, parentObject: UIView?=nil) -> Dictionary<String, Any> {
+    func generateStyleDictionary(className: String,
+                                 style: String?,
+                                 class klass: String?,
+                                 parentClass: String?,
+                                 parentStyle: String?) -> Dictionary<String, Any> {
         
         var dict = Dictionary<String, Any>()
         
         // Priority 1: Style attributes
-        let styles = (style ?? "") + ";" + (parentObject?.cssStyle ?? "")
+        let styles = (style ?? "") + ";" + (parentStyle ?? "")
         dict = dict.merging(styles.parseStyle()) { (current, _) in current }
 
         // Priority 2: Classes
         let classList = self.generateClassList(
             className: className,
-            style: style,
             class: klass,
-            parentObject: parentObject)
+            parentClass: parentClass)
         
         // Iterate through the list and generate the dictionary
         var numberOfMatches: Int = 0
@@ -184,7 +204,25 @@ public class ViewCSSManager {
         return dict
     }
     
-    func generateAttributedString(object: Any?, text: String?) -> NSAttributedString? {
+    func generateAttributedString(parentObject: Any?, text: String?) -> NSAttributedString? {
+        if let view = parentObject as? UIView {
+            return self.generateAttributedString(parentClassName: view.cssClassName,
+                                                 parentClass: view.cssClass,
+                                                 parentStyle: view.cssStyle,
+                                                 text: text)
+        }
+        else {
+            return self.generateAttributedString(parentClassName: nil,
+                                                 parentClass: nil,
+                                                 parentStyle: nil,
+                                                 text: text)
+        }
+    }
+    
+    func generateAttributedString(parentClassName: String?,
+                                  parentClass: String?,
+                                  parentStyle: String?,
+                                  text: String?) -> NSAttributedString? {
         
         class ParsedTextContainer {
             var text: String?
@@ -195,122 +233,120 @@ public class ViewCSSManager {
         }
         
         if text == nil { return nil }
-        if let view = object as? UIView {
             
-            // Get the stored parameters for the object
-            let className = view.cssClassName ?? ""
+        // Get the stored parameters for the object
+        let className = parentClassName ?? ""
+        
+        // Iterate over the text and generate the attributed string.  Need to
+        // parse out the "span" tags
+        var parsedText = ""
+        var parsedContainers = [ParsedTextContainer]()
+        text!.extractTags(callback: { (body: String?, tag: String?, attributes: Dictionary<String, String>) in
+            var cleanBody = body?.fromSafeCSS ?? ""
             
-            // Iterate over the text and generate the attributed string.  Need to
-            // parse out the "span" tags
-            var parsedText = ""
-            var parsedContainers = [ParsedTextContainer]()
-            text!.extractTags(callback: { (body: String?, tag: String?, attributes: Dictionary<String, String>) in
-                var cleanBody = body?.fromSafeCSS ?? ""
-  
-                // Get the config
-                let config = self.getConfig(
-                    className: className,
-                    class: attributes["class"],
-                    style: attributes["style"],
-                    parentObject: view)
-                
-                // Need to check the text-transform here to change the body if necessary
-                if let transform = config.text?.transform {
-                    if transform == .capitalize { cleanBody = cleanBody.capitalized }
-                    else if transform == .lowercase { cleanBody = cleanBody.lowercased() }
-                    else if transform == .uppercase { cleanBody = cleanBody.uppercased() }
-                }
-                
-                // Create the object to store the attributes
-                let textContainer = ParsedTextContainer()
-                textContainer.text = cleanBody
-                textContainer.tag = tag
-                textContainer.attributes = attributes
-                textContainer.range = NSRange(location: parsedText.count, length: cleanBody.count)
-                textContainer.config = config
-                
-                // Add the details for setting up the attributed string
-                parsedContainers.append(textContainer)
-                
-                // Get the parsed out text
-                parsedText += cleanBody
-            })
+            // Get the config
+            let config = self.getConfig(
+                className: className,
+                class: attributes["class"],
+                style: attributes["style"],
+                parentClass: parentClass,
+                parentStyle: parentStyle)
             
-            // We have the text.  Iterate through the configs and ranges and decide what to do
-            let attributedString = NSMutableAttributedString(string: parsedText)
-            for parsedContainer in parsedContainers {
-                var attributes = Dictionary<NSAttributedStringKey, Any>()
-                
-                // Check for a foreground color
-                if let color = parsedContainer.config?.color {
-                    attributes[NSAttributedStringKey.foregroundColor] = color
-                }
-                
-                // Check for a background color
-                if let color = parsedContainer.config?.background?.color {
-                    attributes[NSAttributedStringKey.backgroundColor] = color
-                }
-                
-                // Check for a font
-                if let font = parsedContainer.config?.font?.getFont() {
-                    attributes[NSAttributedStringKey.font] = font
-                }
-                
-                // Check for a shadow
-                if let textShadow = parsedContainer.config?.text?.shadow {
-                    if textShadow.hShadow != nil && textShadow.vShadow != nil {
-                        let shadow = NSShadow()
-                        shadow.shadowOffset = CGSize(width: textShadow.hShadow!, height: textShadow.vShadow!)
-                        if textShadow.color != nil { shadow.shadowColor = textShadow.color }
-                        if textShadow.radius != nil { shadow.shadowBlurRadius = textShadow.radius! }
-                        attributes[NSAttributedStringKey.shadow] = shadow
-                    }
-                }
-                
-                // Check for a link
-                let href = parsedContainer.attributes!["href"]
-                if parsedContainer.tag == "a" && href != nil {
-                    attributes[NSAttributedStringKey.link] = href!
-                }
-                
-                // Check for decoration
-                if let line = parsedContainer.config?.text?.decorationLine {
-                    
-                    // Calculate the style based on the settings
-                    var style = parsedContainer.config?.text?.decorationStyle
-                    if style == nil {
-                        style = NSUnderlineStyle.styleSingle
-                    }
-                    var rawStyle = style!.rawValue
-                    
-                    if style == NSUnderlineStyle.patternDash || style == NSUnderlineStyle.patternDot {
-                        rawStyle |= NSUnderlineStyle.styleSingle.rawValue
-                    }
-                    
-                    // Choose whether underline, overline, or line-through
-                    if line == .underline {
-                        
-                        attributes[NSAttributedStringKey.underlineStyle] = rawStyle
-                        if let color = parsedContainer.config?.text?.decorationColor {
-                            attributes[NSAttributedStringKey.underlineColor] = color
-                        }
-                    }
-                    else if line == .overline {
-                        // TODO: Unsupported
-                    }
-                    else if line == .line_through {
-                        attributes[NSAttributedStringKey.strikethroughStyle] = rawStyle
-                        if let color = parsedContainer.config?.text?.decorationColor {
-                            attributes[NSAttributedStringKey.strikethroughColor] = color
-                        }
-                    }
-                }
-                
-                // Set the value
-                attributedString.addAttributes(attributes, range: parsedContainer.range!)
+            // Need to check the text-transform here to change the body if necessary
+            if let transform = config.text?.transform {
+                if transform == .capitalize { cleanBody = cleanBody.capitalized }
+                else if transform == .lowercase { cleanBody = cleanBody.lowercased() }
+                else if transform == .uppercase { cleanBody = cleanBody.uppercased() }
             }
-            return attributedString
+            
+            // Create the object to store the attributes
+            let textContainer = ParsedTextContainer()
+            textContainer.text = cleanBody
+            textContainer.tag = tag
+            textContainer.attributes = attributes
+            textContainer.range = NSRange(location: parsedText.count, length: cleanBody.count)
+            textContainer.config = config
+            
+            // Add the details for setting up the attributed string
+            parsedContainers.append(textContainer)
+            
+            // Get the parsed out text
+            parsedText += cleanBody
+        })
+            
+        // We have the text.  Iterate through the configs and ranges and decide what to do
+        let attributedString = NSMutableAttributedString(string: parsedText)
+        for parsedContainer in parsedContainers {
+            var attributes = Dictionary<NSAttributedStringKey, Any>()
+            
+            // Check for a foreground color
+            if let color = parsedContainer.config?.color {
+                attributes[NSAttributedStringKey.foregroundColor] = color
+            }
+            
+            // Check for a background color
+            if let color = parsedContainer.config?.background?.color {
+                attributes[NSAttributedStringKey.backgroundColor] = color
+            }
+            
+            // Check for a font
+            if let font = parsedContainer.config?.font?.getFont() {
+                attributes[NSAttributedStringKey.font] = font
+            }
+            
+            // Check for a shadow
+            if let textShadow = parsedContainer.config?.text?.shadow {
+                if textShadow.hShadow != nil && textShadow.vShadow != nil {
+                    let shadow = NSShadow()
+                    shadow.shadowOffset = CGSize(width: textShadow.hShadow!, height: textShadow.vShadow!)
+                    if textShadow.color != nil { shadow.shadowColor = textShadow.color }
+                    if textShadow.radius != nil { shadow.shadowBlurRadius = textShadow.radius! }
+                    attributes[NSAttributedStringKey.shadow] = shadow
+                }
+            }
+            
+            // Check for a link
+            if parsedContainer.tag == "a", let href = parsedContainer.attributes!["href"] {
+                attributes[NSAttributedStringKey.link] = href
+            }
+            
+            // Check for decoration
+            if let line = parsedContainer.config?.text?.decorationLine {
+                
+                // Calculate the style based on the settings
+                var style = parsedContainer.config?.text?.decorationStyle
+                if style == nil {
+                    style = NSUnderlineStyle.styleSingle
+                }
+                var rawStyle = style!.rawValue
+                
+                if style == NSUnderlineStyle.patternDash || style == NSUnderlineStyle.patternDot {
+                    rawStyle |= NSUnderlineStyle.styleSingle.rawValue
+                }
+                
+                // Choose whether underline, overline, or line-through
+                if line == .underline {
+                    
+                    attributes[NSAttributedStringKey.underlineStyle] = rawStyle
+                    if let color = parsedContainer.config?.text?.decorationColor {
+                        attributes[NSAttributedStringKey.underlineColor] = color
+                    }
+                }
+                else if line == .overline {
+                    // TODO: Unsupported
+                }
+                else if line == .line_through {
+                    attributes[NSAttributedStringKey.strikethroughStyle] = rawStyle
+                    if let color = parsedContainer.config?.text?.decorationColor {
+                        attributes[NSAttributedStringKey.strikethroughColor] = color
+                    }
+                }
+            }
+            
+            // Set the value
+            attributedString.addAttributes(attributes, range: parsedContainer.range!)
         }
-        return nil
+        
+        return attributedString
     }
 }

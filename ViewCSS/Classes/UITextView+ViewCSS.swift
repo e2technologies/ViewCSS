@@ -48,9 +48,17 @@ extension UITextView: ViewCSSShadowProtocol {
     func getCSSShadowOpacity() -> CGFloat { return CGFloat(self.layer.shadowOpacity) }
 }
 
-public extension UITextView {
-    var cssText: String? {
-        get { return nil }
-        set { self.attributedText = ViewCSSManager.shared.generateAttributedString(object: self, text: newValue) }
+extension UITextView: ViewCSSGenerateCSSTextProtocol {
+    public var cssText: String? {
+        get { return self.attributedText?.string }
+        set { self.attributedText = self.generateCSSText(text: newValue) }
+    }
+    
+    public func generateCSSText(text: String?) -> NSAttributedString? {
+        return type(of: self).generateCSSText(
+            parentClassName: self.cssClassName,
+            parentClass: self.cssClass,
+            parentStyle: self.cssStyle,
+            text: text)
     }
 }
