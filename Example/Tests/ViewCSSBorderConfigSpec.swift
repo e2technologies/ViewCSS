@@ -5,7 +5,7 @@ import Nimble
 class ViewCSSBorderConfigSpec: QuickSpec {
     override func spec() {
 
-        describe("#setWidth") {
+        describe("#border-width") {
             let custom = [
                 "medium" : CGFloat(2),
                 "thin" : CGFloat(1),
@@ -13,46 +13,25 @@ class ViewCSSBorderConfigSpec: QuickSpec {
             ]
             ViewCSSTypeHelper.test(name: "border width", types: [.length, .custom], routine: {
                 (value: String, type: ViewCSSBaseConfig.PropertyType) -> (Any?) in
-                let config = ViewCSSBorderConfig()
-                config.setWidth(dict: ["border-width": value])
+                let config = ViewCSSBorderConfig(css: ["border-width": value])
                 return config.width
             }, custom: custom)
         }
 
-        describe("#setRadius") {
+        describe("#border-radius") {
             ViewCSSTypeHelper.test(name: "radius", types: [.length], routine: {
                 (value: String, type: ViewCSSBaseConfig.PropertyType) -> (Any?) in
-                let config = ViewCSSBorderConfig()
-                config.setRadius(dict: ["border-radius": value])
+                let config = ViewCSSBorderConfig(css: ["border-radius": value])
                 return config.radius
             })
         }
         
-        describe("#setColor") {
+        describe("#border-color") {
             ViewCSSTypeHelper.test(name: "color", types: [.color], routine: {
                 (value: String, type: ViewCSSBaseConfig.PropertyType) -> (Any?) in
-                let config = ViewCSSBorderConfig()
-                config.setColor(dict: ["border-color": value])
+                let config = ViewCSSBorderConfig(css: ["border-color": value])
                 return config.color
             })
-        }
-        
-        describe("#fromCSS") {
-            it("does nothing") {
-                let css = [String:String]()
-                let config = ViewCSSBorderConfig.fromCSS(dict: css)
-                expect(config.width).to(beNil())
-                expect(config.radius).to(beNil())
-                expect(config.color).to(beNil())
-            }
-            
-            it("imports everything") {
-                let css = ["border-width" : "5px", "border-radius" : "7px", "border-color" : "red"]
-                let config = ViewCSSBorderConfig.fromCSS(dict: css)
-                expect(config.width).to(equal(5))
-                expect(config.radius).to(equal(7))
-                expect(config.color!.toCSS).to(equal("#FF0000FF"))
-            }
         }
         
         describe("#toCSS") {

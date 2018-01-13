@@ -7,56 +7,51 @@ class ViewCSSShadowConfigSpec: QuickSpec {
         
         let color = UIColor(css: "blue")!
         
-        describe("#setOpacity") {
+        describe("#shadow-opacity") {
             ViewCSSTypeHelper.test(name: "shadow opacity", types: [.number], routine: {
                 (value: String, type: ViewCSSBaseConfig.PropertyType) -> (Any?) in
-                let config = ViewCSSShadowConfig()
-                config.setOpacity(dict: ["shadow-opacity": value])
+                let config = ViewCSSShadowConfig(css: ["shadow-opacity": value])
                 return config.opacity
             })
         }
         
-        describe("#setHShadow") {
+        describe("#shadow") {
             ViewCSSTypeHelper.test(name: "h shadow", types: [.length], routine: {
                 (value: String, type: ViewCSSBaseConfig.PropertyType) -> (Any?) in
-                let config = ViewCSSShadowConfig()
-                config.setHShadow(string: value)
+                let config = ViewCSSShadowConfig(css: ["shadow": value + " 2px"])
                 return config.hShadow
             })
-        }
-        
-        describe("#setVShadow") {
+            
             ViewCSSTypeHelper.test(name: "v shadow", types: [.length], routine: {
                 (value: String, type: ViewCSSBaseConfig.PropertyType) -> (Any?) in
-                let config = ViewCSSShadowConfig()
-                config.setVShadow(string: value)
+                let config = ViewCSSShadowConfig(css: ["shadow": "2px " + value])
                 return config.vShadow
             })
-        }
-        
-        describe("#setRadius") {
+            
             ViewCSSTypeHelper.test(name: "radius", types: [.length], routine: {
                 (value: String, type: ViewCSSBaseConfig.PropertyType) -> (Any?) in
-                let config = ViewCSSShadowConfig()
+                let config = ViewCSSShadowConfig(css: ["shadow": "2px 2px " + value])
                 config.setRadius(string: value)
                 return config.radius
             })
-        }
-        
-        describe("#setColor") {
-            ViewCSSTypeHelper.test(name: "color", types: [.color], routine: {
+            
+            ViewCSSTypeHelper.test(name: "color w/ radius", types: [.color], routine: {
                 (value: String, type: ViewCSSBaseConfig.PropertyType) -> (Any?) in
-                let config = ViewCSSShadowConfig()
+                let config = ViewCSSShadowConfig(css: ["shadow": "2px 2px 2px " + value])
                 config.setColor(string: value)
                 return config.color
             })
-        }
-        
-        describe("#setAll") {
+            
+            ViewCSSTypeHelper.test(name: "color w/o radius", types: [.color], routine: {
+                (value: String, type: ViewCSSBaseConfig.PropertyType) -> (Any?) in
+                let config = ViewCSSShadowConfig(css: ["shadow": "2px 2px " + value])
+                config.setColor(string: value)
+                return config.color
+            })
+            
             it("ignores everything if the h-shadow and v-shadow are not defined") {
                 let css = ["shadow" : ""]
-                let config = ViewCSSShadowConfig()
-                config.setAll(dict: css)
+                let config = ViewCSSShadowConfig(css: css)
                 expect(config.hShadow).to(beNil())
                 expect(config.vShadow).to(beNil())
                 expect(config.radius).to(beNil())
@@ -66,8 +61,7 @@ class ViewCSSShadowConfigSpec: QuickSpec {
             
             it("ignores everything if only the h-shadow is defined") {
                 let css = [ "shadow" : "20px"]
-                let config = ViewCSSShadowConfig()
-                config.setAll(dict: css)
+                let config = ViewCSSShadowConfig(css: css)
                 expect(config.hShadow).to(beNil())
                 expect(config.vShadow).to(beNil())
                 expect(config.radius).to(beNil())
@@ -77,8 +71,7 @@ class ViewCSSShadowConfigSpec: QuickSpec {
             
             it("sets the h-shadow and v-shadow if they are defined") {
                 let css = [ "shadow" : "20px 40px"]
-                let config = ViewCSSShadowConfig()
-                config.setAll(dict: css)
+                let config = ViewCSSShadowConfig(css: css)
                 expect(config.hShadow).to(equal(20))
                 expect(config.vShadow).to(equal(40))
                 expect(config.radius).to(beNil())
@@ -88,8 +81,7 @@ class ViewCSSShadowConfigSpec: QuickSpec {
             
             it("sets the radius") {
                 let css = [ "shadow" : "20px 40px 5px"]
-                let config = ViewCSSShadowConfig()
-                config.setAll(dict: css)
+                let config = ViewCSSShadowConfig(css: css)
                 expect(config.hShadow).to(equal(20))
                 expect(config.vShadow).to(equal(40))
                 expect(config.radius).to(equal(5.0))
@@ -99,8 +91,7 @@ class ViewCSSShadowConfigSpec: QuickSpec {
             
             it("sets the radius and the color") {
                 let css = [ "shadow" : "20px 40px 5px " + color.toCSS]
-                let config = ViewCSSShadowConfig()
-                config.setAll(dict: css)
+                let config = ViewCSSShadowConfig(css: css)
                 expect(config.hShadow).to(equal(20))
                 expect(config.vShadow).to(equal(40))
                 expect(config.radius).to(equal(5.0))
@@ -110,31 +101,27 @@ class ViewCSSShadowConfigSpec: QuickSpec {
             
             it("skips the radius and sets the color") {
                 let css = [ "shadow" : "20px 40px " + color.toCSS]
-                let config = ViewCSSShadowConfig()
-                config.setAll(dict: css)
+                let config = ViewCSSShadowConfig(css: css)
                 expect(config.hShadow).to(equal(20))
                 expect(config.vShadow).to(equal(40))
                 expect(config.radius).to(beNil())
                 expect(config.color?.toCSS).to(equal(color.toCSS))
                 expect(config.opacity).to(equal(1.0)) // Defaults opacity to 1.0 since none was included
             }
-        }
-
-        describe("#fromCSS") {
             
             it("sets the radius and the color") {
                 let css = [ "text-shadow" : "20px 40px 5px " + color.toCSS]
-                let config = ViewCSSShadowConfig.fromCSS(dict: css, base: "text")
+                let config = ViewCSSShadowConfig(css: css, base: "text")
                 expect(config.hShadow).to(equal(20))
                 expect(config.vShadow).to(equal(40))
                 expect(config.radius).to(equal(5.0))
                 expect(config.color?.toCSS).to(equal(color.toCSS))
                 expect(config.opacity).to(equal(1.0)) // Defaults opacity to 1.0 since none was included
             }
-
+            
             it("overrides the default opacity") {
                 let css = [ "text-shadow" : "20px 40px " + color.toCSS, "text-shadow-opacity" : "0.5"]
-                let config = ViewCSSShadowConfig.fromCSS(dict: css, base: "text")
+                let config = ViewCSSShadowConfig(css: css, base: "text")
                 expect(config.hShadow).to(equal(20))
                 expect(config.vShadow).to(equal(40))
                 expect(config.radius).to(beNil())

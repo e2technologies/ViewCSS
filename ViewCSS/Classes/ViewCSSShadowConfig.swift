@@ -22,8 +22,6 @@
 import Foundation
 
 public class ViewCSSShadowConfig: ViewCSSBaseConfig {
-    static let SHADOW = "shadow"
-    static let SHADOW_OPACITY = "shadow-opacity"
     static let OPACITY_DEFAULT: CGFloat = 1.0
     
     private var base: String?
@@ -32,6 +30,19 @@ public class ViewCSSShadowConfig: ViewCSSBaseConfig {
     public private(set) var radius: CGFloat?
     public private(set) var color: UIColor?
     public private(set) var opacity: CGFloat?
+    
+    init(css: Dictionary<String, Any>, base: String?=nil) {
+        super.init()
+        self.base = base
+        
+        self.setAll(css: css)
+        
+        // For opacity, we only want to override if we found a match
+        if let opacity = self.valueFromCSS(
+            css,attribute: self.getParam(SHADOW_OPACITY), types:[.number], match: nil) as? CGFloat {
+            self.opacity = opacity
+        }
+    }
     
     private class func getParam(_ param: String, base: String?=nil) -> String {
         if base != nil {
@@ -44,8 +55,8 @@ public class ViewCSSShadowConfig: ViewCSSBaseConfig {
         return type(of: self).getParam(param, base: self.base)
     }
     
-    func setAll(dict: Dictionary<String, Any>) {
-        let string = dict[self.getParam(type(of: self).SHADOW)] as? String
+    func setAll(css: Dictionary<String, Any>) {
+        let string = css[self.getParam(SHADOW)] as? String
         
         if string != nil {
             let shadowComponents = string!.split(separator: " ")
@@ -95,26 +106,7 @@ public class ViewCSSShadowConfig: ViewCSSBaseConfig {
     func setColor(string: String) {
         self.color = self.valueFromString(string, types: [.color], match: nil) as? UIColor
     }
-    
-    func setOpacity(dict: Dictionary<String, Any>) {
-        if let opacity = self.valueFromDict(dict,
-                                            attribute: self.getParam(type(of: self).SHADOW_OPACITY),
-                                            types:[.number],
-                                            match: nil) as? CGFloat {
-            self.opacity = opacity
-        }
-    }
-    
-    static func fromCSS(dict: Dictionary<String, Any>, base: String?=nil) -> ViewCSSShadowConfig {
-        let config = ViewCSSShadowConfig()
-        
-        config.base = base
-        config.setAll(dict: dict)
-        config.setOpacity(dict: dict)
-  
-        return config
-    }
-    
+
     static func toCSS(object: Any, base: String?=nil) -> Dictionary<String, String> {
         var dict = Dictionary<String, String>()
         

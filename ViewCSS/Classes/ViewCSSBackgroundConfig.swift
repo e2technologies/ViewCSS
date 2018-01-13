@@ -23,16 +23,13 @@ import Foundation
 
 public class ViewCSSBackgroundConfig: ViewCSSBaseConfig {
     
-    static let BACKGROUND_COLOR = "background-color"
-    
     public private(set) var color: UIColor?
     
-    static func fromCSS(dict: Dictionary<String, Any>) -> ViewCSSBackgroundConfig {
-        let config = ViewCSSBackgroundConfig()
+    init(css: Dictionary<String, Any>) {
+        super.init()
         
-        config.setColor(dict: dict)
-
-        return config
+        self.color = self.valueFromCSS(
+            css, attribute: BACKGROUND_COLOR, types: [.color], match: nil) as? UIColor
     }
     
     static func toCSS(object: Any) -> Dictionary<String, String> {
@@ -46,12 +43,5 @@ public class ViewCSSBackgroundConfig: ViewCSSBaseConfig {
         
         return dict
     }
-    
-    func setColor(dict: Dictionary<String, Any>) {
-        self.color = self.valueFromDict(
-            dict,
-            attribute: type(of: self).BACKGROUND_COLOR,
-            types: [.color],
-            match: nil) as? UIColor
-    }
+
 }

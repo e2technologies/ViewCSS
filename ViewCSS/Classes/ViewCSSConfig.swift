@@ -23,11 +23,6 @@ import Foundation
 
 public class ViewCSSConfig: ViewCSSBaseConfig {
     
-    // Supported Tags
-    static let TINT_COLOR = "tint-color"
-    static let COLOR = "color"
-    static let OPACITY = "opacity"
-
     public private(set) var font: ViewCSSFontConfig?
     public private(set) var border: ViewCSSBorderConfig?
     public private(set) var text: ViewCSSTextConfig?
@@ -36,18 +31,22 @@ public class ViewCSSConfig: ViewCSSBaseConfig {
     public private(set) var color: UIColor?
     public private(set) var opacity: CGFloat?
     
-    static func fromCSS(dict: Dictionary<String, Any>) -> ViewCSSConfig {
-        let config = ViewCSSConfig()
+    init(css: Dictionary<String, Any>) {
+        super.init()
         
-        config.border = ViewCSSBorderConfig.fromCSS(dict: dict)
-        config.font = ViewCSSFontConfig.fromCSS(dict: dict)
-        config.text = ViewCSSTextConfig.fromCSS(dict: dict)
-        config.background = ViewCSSBackgroundConfig.fromCSS(dict: dict)
-        config.cssTintColor(string: self.checkVariables(string: dict[TINT_COLOR] as? String))
-        config.cssColor(string: self.checkVariables(string: dict[COLOR] as? String))
-        config.cssOpacity(string: self.checkVariables(string: dict[OPACITY] as? String))
+        self.border = ViewCSSBorderConfig(css: css)
+        self.font = ViewCSSFontConfig(css: css)
+        self.text = ViewCSSTextConfig(css: css)
+        self.background = ViewCSSBackgroundConfig(css: css)
         
-        return config
+        self.tintColor = self.valueFromCSS(
+            css, attribute: TINT_COLOR, types: [.color], match: nil) as? UIColor
+        
+        self.color = self.valueFromCSS(
+            css, attribute: COLOR, types: [.color], match: nil) as? UIColor
+        
+        self.opacity = self.valueFromCSS(
+            css, attribute: OPACITY, types:[.number], match: nil) as? CGFloat
     }
     
     static func toCSS(object: Any) -> Dictionary<String, String> {
@@ -79,38 +78,6 @@ public class ViewCSSConfig: ViewCSSBaseConfig {
         dict.merge(ViewCSSTextConfig.toCSS(object: object), uniquingKeysWith: { (current, _) in current })
         
         return dict
-    }
-    
-    private func cssTintColor(string: String?) {
-        if string != nil {
-            self.tintColor = UIColor(css: string!)
-            
-            if self.tintColor == nil {
-                self.printWarning(attribute: type(of: self).TINT_COLOR, value: string!)
-            }
-        }
-    }
-    
-    private func cssColor(string: String?) {
-        if string != nil {
-            self.color = UIColor(css: string!)
-            
-            if self.color == nil {
-                self.printWarning(attribute: type(of: self).COLOR, value: string!)
-            }
-        }
-    }
-    
-    private func cssOpacity(string: String?) {
-        if string != nil {
-            if let number = string!.numberToFloat {
-                self.opacity = number
-            }
-            
-            if self.opacity == nil {
-                self.printWarning(attribute: type(of: self).OPACITY, value: string!)
-            }
-        }
     }
 }
 

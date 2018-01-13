@@ -98,7 +98,7 @@ public class ViewCSSManager {
         if let cachedConfig = self.styleCache[cacheKey] { return cachedConfig }
         
         // Create the consolidated dictionary
-        let dict = self.generateStyleDictionary(
+        let css = self.generateCSSDictionary(
             className: className,
             style: style,
             class: klass,
@@ -106,7 +106,7 @@ public class ViewCSSManager {
             parentStyle: parentStyle)
         
         // Now parse the final dictionary and return it to the user
-        let config = ViewCSSConfig.fromCSS(dict: dict)
+        let config = ViewCSSConfig(css: css)
         self.styleCache[cacheKey] = config
         return config
     }
@@ -167,11 +167,11 @@ public class ViewCSSManager {
         return classList
     }
     
-    func generateStyleDictionary(className: String,
-                                 style: String?,
-                                 class klass: String?,
-                                 parentClass: String?,
-                                 parentStyle: String?) -> Dictionary<String, Any> {
+    func generateCSSDictionary(className: String,
+                               style: String?,
+                               class klass: String?,
+                               parentClass: String?,
+                               parentStyle: String?) -> Dictionary<String, Any> {
         
         var dict = Dictionary<String, Any>()
         

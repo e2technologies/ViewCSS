@@ -23,24 +23,29 @@ import Foundation
 
 public class ViewCSSBorderConfig: ViewCSSBaseConfig {
     
-    static let BORDER_RADIUS = "border-radius"
-    static let BORDER_WIDTH = "border-width"
-    static let BORDER_COLOR = "border-color"
-    
     public private(set) var radius: CGFloat?
     public private(set) var width: CGFloat?
     public private(set) var color: UIColor?
     
-    static func fromCSS(dict: Dictionary<String, Any>) -> ViewCSSBorderConfig {
-        let config = ViewCSSBorderConfig()
+    init(css: Dictionary<String, Any>) {
+        super.init()
         
-        config.setRadius(dict: dict)
-        config.setColor(dict: dict)
-        config.setWidth(dict: dict)
-        
-        return config
-    }
+        self.radius = self.valueFromCSS(
+            css, attribute: BORDER_RADIUS, types: [.length], match: nil) as? CGFloat
     
+        self.color = self.valueFromCSS(
+            css, attribute: BORDER_COLOR, types: [.color], match: nil) as? UIColor
+        
+        self.width = self.valueFromCSS(
+            css, attribute: BORDER_WIDTH, types: [.length, .custom], match: nil,
+            custom: { (string: String) in
+                if string == "medium" { return CGFloat(2) }
+                else if string == "thin" { return CGFloat(1) }
+                else if string == "thick" { return CGFloat(3) }
+                return nil
+        }) as? CGFloat
+    }
+
     static func toCSS(object: Any) -> Dictionary<String, String> {
         var dict = Dictionary<String, String>()
         
@@ -60,35 +65,5 @@ public class ViewCSSBorderConfig: ViewCSSBaseConfig {
         }
         
         return dict
-    }
-    
-    func setRadius(dict: Dictionary<String, Any>) {
-        self.radius = self.valueFromDict(
-            dict,
-            attribute: type(of: self).BORDER_RADIUS,
-            types: [.length],
-            match: nil) as? CGFloat
-    }
-    
-    func setColor(dict: Dictionary<String, Any>) {
-        self.color = self.valueFromDict(
-            dict,
-            attribute: type(of: self).BORDER_COLOR,
-            types: [.color],
-            match: nil) as? UIColor
-    }
-    
-    func setWidth(dict: Dictionary<String, Any>) {
-        self.width = self.valueFromDict(
-            dict,
-            attribute: type(of: self).BORDER_WIDTH,
-            types: [.length, .custom],
-            match: nil,
-            custom: { (string: String) in
-                if string == "medium" { return CGFloat(2) }
-                else if string == "thin" { return CGFloat(1) }
-                else if string == "thick" { return CGFloat(3) }
-                return nil
-            }) as? CGFloat
     }
 }

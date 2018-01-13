@@ -21,6 +21,27 @@
 
 import Foundation
 
+let COLOR = "color"
+let BACKGROUND_COLOR = "background-color"
+let BORDER_RADIUS = "border-radius"
+let BORDER_WIDTH = "border-width"
+let BORDER_COLOR = "border-color"
+let FONT_SIZE = "font-size"
+let FONT_WEIGHT = "font-weight"
+let FONT_SIZE_SCALE = "font-size-scale"
+let FONT_SIZE_SCALE_MIN = "font-size-scale-min"
+let FONT_SIZE_SCALE_MAX = "font-size-scale-max"
+let OPACITY = "opacity"
+let SHADOW = "shadow"
+let SHADOW_OPACITY = "shadow-opacity"
+let TEXT_ALIGN = "text-align"
+let TEXT_DECORATION_LINE = "text-decoration-line"
+let TEXT_DECORATION_COLOR = "text-decoration-color"
+let TEXT_DECORATION_STYLE = "text-decoration-style"
+let TEXT_OVERFLOW = "text-overflow"
+let TEXT_TRANSFORM = "text-transform"
+let TINT_COLOR = "tint-color"
+
 public class ViewCSSBaseConfig {
     
     enum PropertyType {
@@ -32,31 +53,26 @@ public class ViewCSSBaseConfig {
     }
     
     @discardableResult
-    func valueFromDict(_ dict: Dictionary<String, Any?>,
-                       attribute: String,
-                       types:[PropertyType],
-                       match: ((Any, PropertyType)->())?,
-                       custom: ((String) -> (Any?))?=nil) -> Any? {
+    func valueFromCSS(_ css: Dictionary<String, Any?>,
+                      attribute: String,
+                      types:[PropertyType],
+                      match: ((Any, PropertyType)->())?,
+                      custom: ((String) -> (Any?))?=nil) -> Any? {
         
-        return type(of: self).valueFromDict(dict,
-                                            attribute: attribute,
-                                            types: types,
-                                            match: match,
-                                            custom: custom)
+        return type(of: self).valueFromCSS(
+            css, attribute: attribute, types: types, match: match, custom: custom)
     }
     
     @discardableResult
-    static func valueFromDict(_ dict: Dictionary<String, Any?>,
-                              attribute: String,
-                              types:[PropertyType],
-                              match: ((Any, PropertyType)->())?,
-                              custom: ((String) -> (Any?))?=nil) -> Any? {
+    static func valueFromCSS(_ css: Dictionary<String, Any?>,
+                             attribute: String,
+                             types:[PropertyType],
+                             match: ((Any, PropertyType)->())?,
+                             custom: ((String) -> (Any?))?=nil) -> Any? {
         
-        if let string = dict[attribute] as? String {
-            let value = self.valueFromString(string,
-                                             types: types,
-                                             match: match,
-                                             custom: custom)
+        if let string = css[attribute] as? String {
+            let value = self.valueFromString(
+                string, types: types, match: match, custom: custom)
             
             if value == nil {
                 self.printWarning(attribute: attribute, value: string)
@@ -74,10 +90,8 @@ public class ViewCSSBaseConfig {
                          match: ((Any, PropertyType)->())?,
                          custom: ((String) -> (Any?))?=nil) -> Any? {
         
-        return type(of: self).valueFromString(string,
-                                              types: types,
-                                              match: match,
-                                              custom: custom)
+        return type(of: self).valueFromString(
+            string, types: types, match: match, custom: custom)
     }
     
     @discardableResult

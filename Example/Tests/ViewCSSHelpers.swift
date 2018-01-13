@@ -93,7 +93,7 @@ class ViewCSSTypeHelper {
                 it(name + " parses the number") {
                     let result = routine("0.5", type)
                     expect(result).to(beAKindOf(CGFloat.self))
-                    expect((result as! CGFloat)).to(equal(CGFloat(0.5)))
+                    expect((result as? CGFloat)).to(equal(CGFloat(0.5)))
                 }
                 
                 it(name + " supports variabled number") {
@@ -101,7 +101,7 @@ class ViewCSSTypeHelper {
                     ViewCSSManager.shared.setCSS(dict: css)
                     let result = routine("var(--number)", type)
                     expect(result).to(beAKindOf(CGFloat.self))
-                    expect((result as! CGFloat)).to(equal(CGFloat(0.5)))
+                    expect((result as? CGFloat)).to(equal(CGFloat(0.5)))
                 }
                 
                 if !types.contains(.percentage) {
@@ -122,7 +122,7 @@ class ViewCSSTypeHelper {
                 it(name + " parses the length") {
                     let result = routine("5px", type)
                     expect(result).to(beAKindOf(CGFloat.self))
-                    expect((result as! CGFloat)).to(equal(CGFloat(5)))
+                    expect((result as? CGFloat)).to(equal(CGFloat(5)))
                 }
                 
                 it(name + " supports variabled length") {
@@ -130,7 +130,7 @@ class ViewCSSTypeHelper {
                     ViewCSSManager.shared.setCSS(dict: css)
                     let result = routine("var(--length)", type)
                     expect(result).to(beAKindOf(CGFloat.self))
-                    expect((result as! CGFloat)).to(equal(CGFloat(5)))
+                    expect((result as? CGFloat)).to(equal(CGFloat(5)))
                 }
                 
                 if !types.contains(.number) {
@@ -151,7 +151,7 @@ class ViewCSSTypeHelper {
                 it(name + " parses the percentage") {
                     let result = routine("50%", type)
                     expect(result).to(beAKindOf(CGFloat.self))
-                    expect((result as! CGFloat)).to(equal(CGFloat(0.5)))
+                    expect((result as? CGFloat)).to(equal(CGFloat(0.5)))
                 }
                 
                 it(name + " supports variabled percentage") {
@@ -159,7 +159,7 @@ class ViewCSSTypeHelper {
                     ViewCSSManager.shared.setCSS(dict: css)
                     let result = routine("var(--percentage)", type)
                     expect(result).to(beAKindOf(CGFloat.self))
-                    expect((result as! CGFloat)).to(equal(CGFloat(0.5)))
+                    expect((result as? CGFloat)).to(equal(CGFloat(0.5)))
                 }
                 
                 if !types.contains(.number) {

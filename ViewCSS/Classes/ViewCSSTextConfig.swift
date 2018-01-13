@@ -23,13 +23,6 @@ import Foundation
 
 public class ViewCSSTextConfig: ViewCSSBaseConfig {
     
-    static let TEXT_ALIGN = "text-align"
-    static let TEXT_TRANSFORM = "text-transform"
-    static let TEXT_OVERFLOW = "text-overflow"
-    static let TEXT_DECORATION_LINE = "text-decoration-line"
-    static let TEXT_DECORATION_COLOR = "text-decoration-color"
-    static let TEXT_DECORATION_STYLE = "text-decoration-style"
-    
     public enum Transform {
         case uppercase
         case lowercase
@@ -50,18 +43,58 @@ public class ViewCSSTextConfig: ViewCSSBaseConfig {
     public private(set) var decorationColor: UIColor?
     public private(set) var decorationStyle: NSUnderlineStyle?
     
-    static func fromCSS(dict: Dictionary<String, Any>) -> ViewCSSTextConfig {
-        let config = ViewCSSTextConfig()
+    init(css: Dictionary<String, Any>) {
+        super.init()
+        self.shadow = ViewCSSShadowConfig(css: css, base: "text")
         
-        config.shadow = ViewCSSShadowConfig.fromCSS(dict: dict, base: "text")
-        config.setAlign(dict: dict)
-        config.setTransform(dict: dict)
-        config.setOverflow(dict: dict)
-        config.setDecorationLine(dict: dict)
-        config.setDecorationStyle(dict: dict)
-        config.setDecorationColor(dict: dict)
+        self.align = self.valueFromCSS(
+            css, attribute: TEXT_ALIGN, types: [.custom], match: nil)
+        { (string: String) -> (Any?) in
+            if string == "center" { return NSTextAlignment.center }
+            else if string == "left" { return NSTextAlignment.left }
+            else if string == "right" { return NSTextAlignment.right }
+            else if string == "justify" { return NSTextAlignment.justified }
+            return nil
+            } as? NSTextAlignment
         
-        return config
+        self.transform = self.valueFromCSS(
+            css, attribute: TEXT_TRANSFORM, types: [.custom], match: nil)
+        { (string: String) -> (Any?) in
+            if string == "uppercase" { return Transform.uppercase }
+            else if string == "lowercase" { return Transform.lowercase }
+            else if string == "capitalize" { return Transform.capitalize }
+            return nil
+            } as? Transform
+ 
+        self.overflow = self.valueFromCSS(
+            css, attribute: TEXT_OVERFLOW, types: [.custom], match: nil)
+        { (string: String) -> (Any?) in
+            if string == "clip" { return NSLineBreakMode.byClipping }
+            else if string == "ellipsis" { return NSLineBreakMode.byTruncatingTail }
+            return nil
+            } as? NSLineBreakMode
+        
+        self.decorationLine = self.valueFromCSS(
+            css, attribute: TEXT_DECORATION_LINE, types: [.custom], match: nil)
+        { (string: String) -> (Any?) in
+            if string == "overline" { return DecorationLine.overline }
+            else if string == "underline" { return DecorationLine.underline }
+            else if string == "line-through" { return DecorationLine.line_through }
+            return nil
+            } as? DecorationLine
+        
+        self.decorationColor = self.valueFromCSS(
+            css, attribute: TEXT_DECORATION_COLOR, types: [.color], match: nil) as? UIColor
+        
+        self.decorationStyle = self.valueFromCSS(
+            css, attribute: TEXT_DECORATION_STYLE, types: [.custom], match: nil)
+        { (string: String) -> (Any?) in
+            if string == "solid" { return NSUnderlineStyle.styleSingle }
+            else if string == "double" { return NSUnderlineStyle.styleDouble }
+            else if string == "dotted" { return NSUnderlineStyle.patternDot }
+            else if string == "dashed" { return NSUnderlineStyle.patternDash }
+            return nil
+            } as? NSUnderlineStyle
     }
     
     static func toCSS(object: Any) -> Dictionary<String, String> {
@@ -105,83 +138,5 @@ public class ViewCSSTextConfig: ViewCSSBaseConfig {
         
         return dict
     }
-    
-    func setAlign(dict: Dictionary<String, Any>) {
-        self.align = self.valueFromDict(
-            dict,
-            attribute: type(of: self).TEXT_ALIGN,
-            types: [.custom],
-            match: nil)
-        { (string: String) -> (Any?) in
-            if string == "center" { return NSTextAlignment.center }
-            else if string == "left" { return NSTextAlignment.left }
-            else if string == "right" { return NSTextAlignment.right }
-            else if string == "justify" { return NSTextAlignment.justified }
-            return nil
-        } as? NSTextAlignment
-    }
-    
-    func setTransform(dict: Dictionary<String, Any>) {
-        self.transform = self.valueFromDict(
-            dict,
-            attribute: type(of: self).TEXT_TRANSFORM,
-            types: [.custom],
-            match: nil)
-        { (string: String) -> (Any?) in
-            if string == "uppercase" { return Transform.uppercase }
-            else if string == "lowercase" { return Transform.lowercase }
-            else if string == "capitalize" { return Transform.capitalize }
-            return nil
-            } as? Transform
-    }
-    
-    func setOverflow(dict: Dictionary<String, Any>) {
-        self.overflow = self.valueFromDict(
-            dict,
-            attribute: type(of: self).TEXT_OVERFLOW,
-            types: [.custom],
-            match: nil)
-        { (string: String) -> (Any?) in
-            if string == "clip" { return NSLineBreakMode.byClipping }
-            else if string == "ellipsis" { return NSLineBreakMode.byTruncatingTail }
-            return nil
-            } as? NSLineBreakMode
-    }
-    
-    func setDecorationLine(dict: Dictionary<String, Any>) {
-        self.decorationLine = self.valueFromDict(
-            dict,
-            attribute: type(of: self).TEXT_DECORATION_LINE,
-            types: [.custom],
-            match: nil)
-        { (string: String) -> (Any?) in
-            if string == "overline" { return DecorationLine.overline }
-            else if string == "underline" { return DecorationLine.underline }
-            else if string == "line-through" { return DecorationLine.line_through }
-            return nil
-            } as? DecorationLine
-    }
-    
-    func setDecorationColor(dict: Dictionary<String, Any>) {
-        self.decorationColor = self.valueFromDict(
-            dict,
-            attribute: type(of: self).TEXT_DECORATION_COLOR,
-            types: [.color],
-            match: nil) as? UIColor
-    }
-    
-    func setDecorationStyle(dict: Dictionary<String, Any>) {
-        self.decorationStyle = self.valueFromDict(
-            dict,
-            attribute: type(of: self).TEXT_DECORATION_STYLE,
-            types: [.custom],
-            match: nil)
-        { (string: String) -> (Any?) in
-            if string == "solid" { return NSUnderlineStyle.styleSingle }
-            else if string == "double" { return NSUnderlineStyle.styleDouble }
-            else if string == "dotted" { return NSUnderlineStyle.patternDot }
-            else if string == "dashed" { return NSUnderlineStyle.patternDash }
-            return nil
-            } as? NSUnderlineStyle
-    }
+
 }
