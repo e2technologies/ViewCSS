@@ -1,6 +1,7 @@
 # ViewCSS
 
 [![CI Status](http://img.shields.io/travis/ericchapman/ViewCSS.svg?style=flat)](https://travis-ci.org/ericchapman/ViewCSS)
+[![Codecov](https://img.shields.io/codecov/c/github/ericchapman/ViewCSS/master.svg)](https://codecov.io/github/ericchapman/ViewCSS)
 [![Version](https://img.shields.io/cocoapods/v/ViewCSS.svg?style=flat)](http://cocoapods.org/pods/ViewCSS)
 [![License](https://img.shields.io/cocoapods/l/ViewCSS.svg?style=flat)](http://cocoapods.org/pods/ViewCSS)
 [![Platform](https://img.shields.io/cocoapods/p/ViewCSS.svg?style=flat)](http://cocoapods.org/pods/ViewCSS)
