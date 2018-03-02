@@ -92,7 +92,22 @@ public class ViewCSSManager {
                    parentClass: String?,
                    parentStyle: String?) -> ViewCSSConfig {
         
-        let cacheKey = self.getCacheKey(className: className, style: style, class: klass)
+        // Combine the parent/child class
+        var cacheClass = klass ?? ""
+        if parentClass != nil && parentClass!.count > 0 {
+            if cacheClass.count > 0 { cacheClass += " " }
+            cacheClass += parentClass!
+        }
+        
+        // Combine the parent/child Style
+        var cacheStyle = style ?? ""
+        if parentStyle != nil && parentStyle!.count > 0 {
+            if cacheStyle.count > 0 { cacheStyle += " " }
+            cacheStyle += parentStyle!
+        }
+        
+        // Get the cache key
+        let cacheKey = self.getCacheKey(className: className, style: cacheStyle, class: cacheClass)
         
         // Return the config value if it is already in the cache
         if let cachedConfig = self.styleCache[cacheKey] { return cachedConfig }

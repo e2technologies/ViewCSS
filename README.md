@@ -13,36 +13,10 @@ intended to replace auto layout, NIBs, etc.**
 
 ## Versions
 
-  - v0.1.0 
-    - initial revision
-  - v0.2.0
-    - added the "font-size-scale" property to support auto scaling of font size
-      based on the user's OS settings
-  - v0.3.0
-    - added the "text-shadow"
-    - added "text-shadow-opacity"
-  - v0.4.0
-    - implemented unit tests
-    - code cleanup (no change to the API)
-    - small bug fixes, etc
-  - v0.5.0
-    - added ".cssText" property to support HTML/CSS based text string (wraps NSAttributedString)
-  - v0.6.0
-    - added "text-transform"
-    - added "text-decoration-line"
-    - added "text-decoration-color"
-    - added "text-decoration-style"
-  - v0.7.0
-    - moved documentation to the Wiki
-    - changed auto scale to "0.15" per tick
-    - added ".cssScale" property
-    - added "text-overflow"
-  - v0.8.0
-    - added "font-size-scale-min"
-    - added "font-size-scale-max"
-  - v0.9.0
-    - fixed some small bugs after finding test escape
-    - added "generateCSSText" method
+  - v1.0.1
+    - Fixed bug with "cssText" improperly pulling the cached settings
+  - v1.0.0
+    - First full release
 
 ## Examples
 
