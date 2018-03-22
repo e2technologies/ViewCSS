@@ -71,3 +71,18 @@ extension UIButton: ViewCSSShadowProtocol {
     func getCSSShadowColor() -> UIColor? { return self.titleLabel?.layer.shadowColor != nil ? UIColor(cgColor: self.layer.shadowColor!) : nil }
     func getCSSShadowOpacity() -> CGFloat { return CGFloat(self.titleLabel?.layer.shadowOpacity ?? 0.0) }
 }
+
+extension UIButton: ViewCSSGenerateCSSTextProtocol {
+    public var cssText: String? {
+        get { return self.attributedTitle(for: .normal)?.string }
+        set { self.setAttributedTitle(self.generateCSSText(text: newValue), for: .normal) }
+    }
+    
+    public func generateCSSText(text: String?) -> NSAttributedString? {
+        return type(of: self).generateCSSText(
+            parentClassName: self.cssClassName,
+            parentClass: self.cssClass,
+            parentStyle: self.cssStyle,
+            text: text)
+    }
+}

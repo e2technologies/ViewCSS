@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'ViewCSS'
-  s.version          = '1.0.1'
+  s.version          = '1.0.2'
   s.summary          = 'IOS Swift CSS implementation'
 
   s.description      = <<-DESC

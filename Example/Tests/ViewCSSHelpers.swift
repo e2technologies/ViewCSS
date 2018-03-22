@@ -31,7 +31,7 @@ class ViewCSSTextProtocolHelper {
 
 class ViewCSSGenerateCSSTextProtocolHelper {
     static func iterate(callback: (UIView.Type)->()) {
-        let klasses: [UIView.Type] = [UILabel.self, UITextView.self]
+        let klasses: [UIView.Type] = [UILabel.self, UITextView.self, UIButton.self]
         for klass in klasses {
             callback(klass)
         }
