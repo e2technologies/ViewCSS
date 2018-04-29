@@ -219,25 +219,30 @@ public class ViewCSSManager {
         return dict
     }
     
-    func generateAttributedString(parentObject: Any?, text: String?) -> NSAttributedString? {
+    func generateAttributedString(parentObject: Any?,
+                                  text: String?,
+                                  shouldIncludeBackgroundColor: Bool=true) -> NSAttributedString? {
         if let view = parentObject as? UIView {
             return self.generateAttributedString(parentClassName: view.cssClassName,
                                                  parentClass: view.cssClass,
                                                  parentStyle: view.cssStyle,
-                                                 text: text)
+                                                 text: text,
+                                                 shouldIncludeBackgroundColor: shouldIncludeBackgroundColor)
         }
         else {
             return self.generateAttributedString(parentClassName: nil,
                                                  parentClass: nil,
                                                  parentStyle: nil,
-                                                 text: text)
+                                                 text: text,
+                                                 shouldIncludeBackgroundColor: shouldIncludeBackgroundColor)
         }
     }
     
     func generateAttributedString(parentClassName: String?,
                                   parentClass: String?,
                                   parentStyle: String?,
-                                  text: String?) -> NSAttributedString? {
+                                  text: String?,
+                                  shouldIncludeBackgroundColor: Bool=true) -> NSAttributedString? {
         
         class ParsedTextContainer {
             var text: String?
@@ -300,7 +305,7 @@ public class ViewCSSManager {
             }
             
             // Check for a background color
-            if let color = parsedContainer.config?.background?.color {
+            if let color = parsedContainer.config?.background?.color, shouldIncludeBackgroundColor == true {
                 attributes[NSAttributedStringKey.backgroundColor] = color
             }
             

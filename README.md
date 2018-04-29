@@ -14,6 +14,10 @@ intended to replace auto layout, NIBs, etc.**
 
 ## Versions
 
+  - v1.0.3
+    - Fixed issue where "cssText" is applying the background color to the UIButton title label
+  - v1.0.2
+    - Added "cssText" support to UIButton
   - v1.0.1
     - Fixed bug with "cssText" improperly pulling the cached settings
   - v1.0.0

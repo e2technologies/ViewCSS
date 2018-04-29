@@ -83,6 +83,7 @@ extension UIButton: ViewCSSGenerateCSSTextProtocol {
             parentClassName: self.cssClassName,
             parentClass: self.cssClass,
             parentStyle: self.cssStyle,
-            text: text)
+            text: text,
+            shouldIncludeBackgroundColor: false)
     }
 }
