@@ -89,6 +89,11 @@ class ViewCSSGenerateCSSTextProtocolSpec: QuickSpec {
                         expect((tagttributes[NSAttributedStringKey.link] as! String)).to(equal("https://www.example.com"))
                     }
                 }
+                
+                it("returns the attributed text for the class") {
+                    let generatedText = NSObject.generateCSSText(class: "view", text: linkText)
+                    expect(generatedText!.string).to(equal(expectedText))
+                }
             }
         }
     }

@@ -73,6 +73,8 @@ extension UIButton: ViewCSSShadowProtocol {
 }
 
 extension UIButton: ViewCSSGenerateCSSTextProtocol {
+    public static var shouldIncludeBackgroundColor: Bool { return false }
+    
     public var cssText: String? {
         get { return self.attributedTitle(for: .normal)?.string }
         set { self.setAttributedTitle(self.generateCSSText(text: newValue), for: .normal) }
@@ -80,10 +82,10 @@ extension UIButton: ViewCSSGenerateCSSTextProtocol {
     
     public func generateCSSText(text: String?) -> NSAttributedString? {
         return type(of: self).generateCSSText(
-            parentClassName: self.cssClassName,
-            parentClass: self.cssClass,
-            parentStyle: self.cssStyle,
+            className: self.cssClassName,
+            class: self.cssClass,
+            style: self.cssStyle,
             text: text,
-            shouldIncludeBackgroundColor: false)
+            shouldIncludeBackgroundColor: type(of: self).shouldIncludeBackgroundColor)
     }
 }

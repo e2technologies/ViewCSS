@@ -121,54 +121,54 @@ public extension NSObject {
     // ================================================================
     
     public static func generateCSSText(
-        parentClassName: String?,
-        parentClass: String?,
-        parentStyle: String?,
+        className: String?,
+        class klass: String?,
+        style: String?,
         text: String?,
         shouldIncludeBackgroundColor: Bool=true) -> NSAttributedString? {
         
         return ViewCSSManager.shared.generateAttributedString(
-            parentClassName: parentClassName,
-            parentClass: parentClass,
-            parentStyle: parentStyle,
+            parentClassName: className,
+            parentClass: klass,
+            parentStyle: style,
             text: text,
             shouldIncludeBackgroundColor: shouldIncludeBackgroundColor)
     }
     
     public static func generateCSSText(
-        parentClass: String?,
-        parentStyle: String?,
+        class klass: String?,
+        style: String?,
         text: String?,
         shouldIncludeBackgroundColor: Bool=true) -> NSAttributedString? {
         
         return self.generateCSSText(
-            parentClassName: ViewCSSManager.shared.getClassName(class: self),
-            parentClass: parentClass,
-            parentStyle: parentStyle,
+            className: ViewCSSManager.shared.getClassName(class: self),
+            class: klass,
+            style: style,
             text: text,
             shouldIncludeBackgroundColor: shouldIncludeBackgroundColor)
     }
     
     public static func generateCSSText(
-        parentStyle: String?,
+        style: String?,
         text: String?,
         shouldIncludeBackgroundColor: Bool=true) -> NSAttributedString? {
         
         return self.generateCSSText(
-            parentClass: nil,
-            parentStyle: parentStyle,
+            class: nil,
+            style: style,
             text: text,
             shouldIncludeBackgroundColor: shouldIncludeBackgroundColor)
     }
     
     public static func generateCSSText(
-        parentClass: String?,
+        class klass: String?,
         text: String?,
         shouldIncludeBackgroundColor: Bool=true) -> NSAttributedString? {
         
         return self.generateCSSText(
-            parentClass: parentClass,
-            parentStyle: nil,
+            class: klass,
+            style: nil,
             text: text,
             shouldIncludeBackgroundColor: shouldIncludeBackgroundColor)
     }
@@ -178,8 +178,8 @@ public extension NSObject {
         shouldIncludeBackgroundColor: Bool=true) -> NSAttributedString? {
         
         return self.generateCSSText(
-            parentClass: nil,
-            parentStyle: nil,
+            class: nil,
+            style: nil,
             text: text,
             shouldIncludeBackgroundColor: shouldIncludeBackgroundColor)
     }

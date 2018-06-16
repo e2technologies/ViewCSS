@@ -1,7 +1,7 @@
 # ViewCSS
 
-[![CI Status](http://img.shields.io/travis/ericchapman/ViewCSS.svg?style=flat)](https://travis-ci.org/ericchapman/ViewCSS)
-[![Codecov](https://img.shields.io/codecov/c/github/ericchapman/ViewCSS/master.svg)](https://codecov.io/github/ericchapman/ViewCSS)
+[![CI Status](http://img.shields.io/travis/e2technologies/ViewCSS.svg?style=flat)](https://travis-ci.org/e2technologies/ViewCSS)
+[![Codecov](https://img.shields.io/codecov/c/github/e2technologies/ViewCSS/master.svg)](https://codecov.io/github/e2technologies/ViewCSS)
 [![Version](https://img.shields.io/cocoapods/v/ViewCSS.svg?style=flat)](http://cocoapods.org/pods/ViewCSS)
 [![License](https://img.shields.io/cocoapods/l/ViewCSS.svg?style=flat)](http://cocoapods.org/pods/ViewCSS)
 [![Platform](https://img.shields.io/cocoapods/p/ViewCSS.svg?style=flat)](http://cocoapods.org/pods/ViewCSS)
@@ -14,6 +14,8 @@ intended to replace auto layout, NIBs, etc.**
 
 ## Versions
 
+  - v1.0.4
+    - Updated "generateCSSText" method to allow NSAttributedText to be returned in class methods for text height predictions
   - v1.0.3
     - Fixed issue where "cssText" is applying the background color to the UIButton title label
   - v1.0.2
@@ -25,7 +27,7 @@ intended to replace auto layout, NIBs, etc.**
 
 ## Examples
 
-The documentation is located [here](https://github.com/ericchapman/ViewCSS/wiki) on
+The documentation is located [here](https://github.com/e2technologies/ViewCSS/wiki) on
 the Wiki page.
 
 ```swift

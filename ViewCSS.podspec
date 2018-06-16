@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'ViewCSS'
-  s.version          = '1.0.3'
+  s.version          = '1.0.4'
   s.summary          = 'IOS Swift CSS implementation'
 
   s.description      = <<-DESC
@@ -19,10 +19,10 @@ reuse methodologies as well as overriding the values at run-time.  It is NOT
 intended to replace auto layout, attributed text, NIBs, etc.
                        DESC
 
-  s.homepage         = 'https://github.com/ericchapman/ViewCSS/wiki'
+  s.homepage         = 'https://github.com/e2technologies/ViewCSS/wiki'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
-  s.author           = { 'Eric Chapman' => 'eric.chappy@gmail.com' }
-  s.source           = { :git => 'https://github.com/ericchapman/ViewCSS.git', :tag => "v#{s.version.to_s}" }
+  s.author           = { 'Eric Chapman' => 'chapman@e2tec.com' }
+  s.source           = { :git => 'https://github.com/e2technologies/ViewCSS.git', :tag => "v#{s.version.to_s}" }
 
   s.ios.deployment_target = '8.0'
 

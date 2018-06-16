@@ -30,6 +30,10 @@ extension String {
         return self.replacingOccurrences(of: ">", with: "&gt;").replacingOccurrences(of: "<", with: "&lt;")
     }
     
+    // ================================================================
+    // Converts camel case to snake
+    // ================================================================
+    
     var camelToSnake: String {
         var newString = ""
         var temp = ""
@@ -200,7 +204,7 @@ extension String {
             }
             else if state == .inside_start_tag {
                 if noMatch {
-                    // TODO: ERROR - Start tag with no end tag
+                    // TODO: ERROR - Start "<" with no end ">"
                     return
                 }
                 
@@ -232,7 +236,7 @@ extension String {
             }
             else if state == .tagged_text {
                 if noMatch {
-                    // TODO: ERROR - Start Tag with no end tag
+                    // TODO: ERROR - No end tag found
                     return
                 }
                 
@@ -242,7 +246,7 @@ extension String {
             }
             else if state == .inside_end_tag {
                 if noMatch {
-                    // TODO: ERROR - no end tag sensed
+                    // TODO: ERROR - Start "<" with no end ">"
                     return
                 }
                 
@@ -271,7 +275,7 @@ extension String {
     // This method will extract the tag and the attributes from inside of an HTML tag.  It
     // does this by using the callbacks.  For example
     //
-    //     "a href="some url"
+    //     a href="some url"
     //
     // will do the following
     //
@@ -320,7 +324,7 @@ extension String {
             
             let endQuote = self.range(of: "\"", options: .literal, range: currentIndex..<self.endIndex)?.lowerBound
             if endQuote == nil {
-                // TODO: ERROR - no start " found
+                // TODO: ERROR - no end " found
                 return
             }
             

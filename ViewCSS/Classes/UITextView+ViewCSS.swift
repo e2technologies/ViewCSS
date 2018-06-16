@@ -49,6 +49,8 @@ extension UITextView: ViewCSSShadowProtocol {
 }
 
 extension UITextView: ViewCSSGenerateCSSTextProtocol {
+    public static var shouldIncludeBackgroundColor: Bool { return true }
+    
     public var cssText: String? {
         get { return self.attributedText?.string }
         set { self.attributedText = self.generateCSSText(text: newValue) }
@@ -56,9 +58,10 @@ extension UITextView: ViewCSSGenerateCSSTextProtocol {
     
     public func generateCSSText(text: String?) -> NSAttributedString? {
         return type(of: self).generateCSSText(
-            parentClassName: self.cssClassName,
-            parentClass: self.cssClass,
-            parentStyle: self.cssStyle,
-            text: text)
+            className: self.cssClassName,
+            class: self.cssClass,
+            style: self.cssStyle,
+            text: text,
+            shouldIncludeBackgroundColor: type(of: self).shouldIncludeBackgroundColor)
     }
 }
