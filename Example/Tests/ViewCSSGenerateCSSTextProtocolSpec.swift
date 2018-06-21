@@ -9,9 +9,10 @@ class ViewCSSGenerateCSSTextProtocolSpec: QuickSpec {
         ViewCSSGenerateCSSTextProtocolHelper.iterate { (klass:  UIView.Type) in
             let object = NSObject()
             var view = klass.init() as! ViewCSSGenerateCSSTextProtocol
-            let spanText = "some <span class=\"color\">stuff</span>"
-            let linkText = "some <a class=\"color\" href=\"https://www.example.com\">stuff</a>"
-            let expectedText = "some stuff"
+            let spanText = "some 🤷🏻‍♀️ <span class=\"color\">stuff</span>"
+            let linkText = "some 🤷🏻‍♀️ <a class=\"color\" href=\"https://www.example.com\">stuff</a>"
+            let expectedText = "some 🤷🏻‍♀️ stuff"
+            let linkLocation = "some 🤷🏻‍♀️ ".utf16.count
             
             beforeEach {
                 let css = [
@@ -44,7 +45,7 @@ class ViewCSSGenerateCSSTextProtocolSpec: QuickSpec {
                         expect(attributes.count).to(equal(1))
                         expect((attributes[NSAttributedStringKey.foregroundColor] as! UIColor).toCSS).to(equal("#00FF00FF"))
                         
-                        let tagttributes = generatedText!.attributes(at: 5, effectiveRange: nil)
+                        let tagttributes = generatedText!.attributes(at: linkLocation, effectiveRange: nil)
                         expect(tagttributes.count).to(equal(1))
                         expect((tagttributes[NSAttributedStringKey.foregroundColor] as! UIColor).toCSS).to(equal("#0000FFFF"))
                     }
@@ -54,7 +55,7 @@ class ViewCSSGenerateCSSTextProtocolSpec: QuickSpec {
                         expect((attributes[NSAttributedStringKey.backgroundColor] as! UIColor).toCSS).to(equal("#FF0000FF"))
                         expect((attributes[NSAttributedStringKey.foregroundColor] as! UIColor).toCSS).to(equal("#00FF00FF"))
                         
-                        let tagttributes = generatedText!.attributes(at: 5, effectiveRange: nil)
+                        let tagttributes = generatedText!.attributes(at: linkLocation, effectiveRange: nil)
                         expect(tagttributes.count).to(equal(2))
                         expect((tagttributes[NSAttributedStringKey.backgroundColor] as! UIColor).toCSS).to(equal("#FF0000FF"))
                         expect((tagttributes[NSAttributedStringKey.foregroundColor] as! UIColor).toCSS).to(equal("#0000FFFF"))
@@ -71,7 +72,7 @@ class ViewCSSGenerateCSSTextProtocolSpec: QuickSpec {
                         expect(attributes.count).to(equal(1))
                         expect((attributes[NSAttributedStringKey.foregroundColor] as! UIColor).toCSS).to(equal("#00FF00FF"))
                         
-                        let tagttributes = generatedText!.attributes(at: 5, effectiveRange: nil)
+                        let tagttributes = generatedText!.attributes(at: linkLocation, effectiveRange: nil)
                         expect(tagttributes.count).to(equal(2))
                         expect((tagttributes[NSAttributedStringKey.foregroundColor] as! UIColor).toCSS).to(equal("#0000FFFF"))
                         expect((tagttributes[NSAttributedStringKey.link] as! String)).to(equal("https://www.example.com"))
@@ -82,7 +83,7 @@ class ViewCSSGenerateCSSTextProtocolSpec: QuickSpec {
                         expect((attributes[NSAttributedStringKey.backgroundColor] as! UIColor).toCSS).to(equal("#FF0000FF"))
                         expect((attributes[NSAttributedStringKey.foregroundColor] as! UIColor).toCSS).to(equal("#00FF00FF"))
                         
-                        let tagttributes = generatedText!.attributes(at: 5, effectiveRange: nil)
+                        let tagttributes = generatedText!.attributes(at: linkLocation, effectiveRange: nil)
                         expect(tagttributes.count).to(equal(3))
                         expect((tagttributes[NSAttributedStringKey.backgroundColor] as! UIColor).toCSS).to(equal("#FF0000FF"))
                         expect((tagttributes[NSAttributedStringKey.foregroundColor] as! UIColor).toCSS).to(equal("#0000FFFF"))

@@ -284,7 +284,7 @@ public class ViewCSSManager {
             textContainer.text = cleanBody
             textContainer.tag = tag
             textContainer.attributes = attributes
-            textContainer.range = NSRange(location: parsedText.count, length: cleanBody.count)
+            textContainer.range = NSRange(location: parsedText.utf16.count, length: cleanBody.utf16.count)
             textContainer.config = config
             
             // Add the details for setting up the attributed string
