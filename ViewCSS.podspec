@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'ViewCSS'
-  s.version          = '1.0.5'
+  s.version          = '1.0.6'
   s.summary          = 'IOS Swift CSS implementation'
 
   s.description      = <<-DESC
@@ -23,6 +23,7 @@ intended to replace auto layout, attributed text, NIBs, etc.
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = { 'Eric Chapman' => 'chapman@e2tec.com' }
   s.source           = { :git => 'https://github.com/e2technologies/ViewCSS.git', :tag => "v#{s.version.to_s}" }
+  s.swift_version    = '4.0'
 
   s.ios.deployment_target = '8.0'
 
