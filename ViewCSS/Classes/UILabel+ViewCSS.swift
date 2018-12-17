@@ -56,15 +56,6 @@ extension UILabel: ViewCSSGenerateCSSTextProtocol {
     
     public var cssText: String? {
         get { return self.attributedText?.string }
-        set { self.attributedText = self.generateCSSText(text: newValue) }
-    }
-    
-    public func generateCSSText(text: String?) -> NSAttributedString? {
-        return type(of: self).generateCSSText(
-            className: self.cssClassName,
-            class: self.cssClass,
-            style: self.cssStyle,
-            text: text,
-            shouldIncludeBackgroundColor: type(of: self).shouldIncludeBackgroundColor)
+        set { self.attributedText = newValue?.cssText(object: self) }
     }
 }

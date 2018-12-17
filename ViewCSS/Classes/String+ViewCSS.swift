@@ -31,6 +31,72 @@ extension String {
     }
     
     // ================================================================
+    // Methods to convert the string into CSS Text
+    // ================================================================
+    
+    public func cssText(object: UIView) -> NSAttributedString? {
+        
+        // Get the should include value
+        var shouldIncludeBackgroundColor = true
+        if let cssProtocol = object as? ViewCSSGenerateCSSTextProtocol {
+            shouldIncludeBackgroundColor = type(of: cssProtocol).shouldIncludeBackgroundColor
+        }
+        
+        // Call the text method
+        return self.cssText(
+            parentClassName: object.cssClassName,
+            class: object.cssClass,
+            style: object.cssStyle,
+            shouldIncludeBackgroundColor: shouldIncludeBackgroundColor)
+    }
+    
+    public func cssText(parentClass: Any.Type, shouldIncludeBackgroundColor: Bool=true) -> NSAttributedString? {
+        return self.cssText(
+            parentClass: parentClass,
+            class: nil,
+            style: nil,
+            shouldIncludeBackgroundColor: shouldIncludeBackgroundColor)
+    }
+    
+    public func cssText(parentClass: Any.Type, class klass: String?, shouldIncludeBackgroundColor: Bool=true) -> NSAttributedString? {
+        return self.cssText(
+            parentClass: parentClass,
+            class: klass,
+            style: nil,
+            shouldIncludeBackgroundColor: shouldIncludeBackgroundColor)
+    }
+    
+    public func cssText(parentClass: Any.Type, style: String?, shouldIncludeBackgroundColor: Bool=true) -> NSAttributedString? {
+        return self.cssText(
+            parentClass: parentClass,
+            class: nil,
+            style: style,
+            shouldIncludeBackgroundColor: shouldIncludeBackgroundColor)
+    }
+    
+    public func cssText(parentClass: Any.Type, class klass: String?, style: String?, shouldIncludeBackgroundColor: Bool=true) -> NSAttributedString? {
+        // Get the parent class name
+        let parentClassName = ViewCSSManager.shared.getClassName(class: parentClass)
+        
+        // Generate the attributed string
+        return self.cssText(
+            parentClassName: parentClassName,
+            class: klass,
+            style: style,
+            shouldIncludeBackgroundColor: shouldIncludeBackgroundColor)
+    }
+    
+    func cssText(parentClassName: String?, class klass: String?, style: String?, shouldIncludeBackgroundColor: Bool=true) -> NSAttributedString? {
+        // Generate the attributed string
+        return ViewCSSManager.shared.generateAttributedString(
+            parentClassName: parentClassName,
+            parentClass: klass,
+            parentStyle: style,
+            text: self,
+            shouldIncludeBackgroundColor: shouldIncludeBackgroundColor)
+    }
+    
+    // ================================================================
     // Converts camel case to snake
     // ================================================================
     

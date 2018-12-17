@@ -8,7 +8,8 @@ class ViewCSSGenerateCSSTextProtocolSpec: QuickSpec {
     override func spec() {
         ViewCSSGenerateCSSTextProtocolHelper.iterate { (klass:  UIView.Type) in
             let object = NSObject()
-            var view = klass.init() as! ViewCSSGenerateCSSTextProtocol
+            let view = klass.init()
+            var viewProtocol = view as! ViewCSSGenerateCSSTextProtocol
             let spanText = "some 🤷🏻‍♀️ <span class=\"color\">stuff</span>"
             let linkText = "some 🤷🏻‍♀️ <a class=\"color\" href=\"https://www.example.com\">stuff</a>"
             let expectedText = "some 🤷🏻‍♀️ stuff"
@@ -25,19 +26,20 @@ class ViewCSSGenerateCSSTextProtocolSpec: QuickSpec {
             
             describe("#cssText") {
                 it("sets span text") {
-                    view.cssText = spanText
-                    expect(view.cssText).to(equal(expectedText))
+                    viewProtocol.cssText = spanText
+                    expect(viewProtocol.cssText).to(equal(expectedText))
                 }
                 
                 it("sets link text") {
-                    view.cssText = linkText
-                    expect(view.cssText).to(equal(expectedText))
+                    viewProtocol.cssText = linkText
+                    expect(viewProtocol.cssText).to(equal(expectedText))
                 }
             }
             
-            describe("#generateCSSText") {
+            describe("#cssText") {
+                
                 it("returns the attributed span text from the object") {
-                    let generatedText = view.generateCSSText(text: spanText)
+                    let generatedText = spanText.cssText(object: view)
                     expect(generatedText!.string).to(equal(expectedText))
                     
                     if let _ = view as? UIButton {
@@ -64,7 +66,7 @@ class ViewCSSGenerateCSSTextProtocolSpec: QuickSpec {
                 }
                 
                 it("returns the attributed link text from the object") {
-                    let generatedText = view.generateCSSText(text: linkText)
+                    let generatedText = linkText.cssText(object: view)
                     expect(generatedText!.string).to(equal(expectedText))
                     
                     if let _ = view as? UIButton {
@@ -92,7 +94,7 @@ class ViewCSSGenerateCSSTextProtocolSpec: QuickSpec {
                 }
                 
                 it("returns the attributed text for the class") {
-                    let generatedText = NSObject.generateCSSText(class: "view", text: linkText)
+                    let generatedText = linkText.cssText(object: view)
                     expect(generatedText!.string).to(equal(expectedText))
                 }
             }

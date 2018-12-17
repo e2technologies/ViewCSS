@@ -81,6 +81,83 @@ class ViewCSSStringSpec: QuickSpec {
             }
         }
         
+        describe("#cssText") {
+            let object = NSObject()
+            let spanText = "some <span class=\"color\">stuff</span>"
+            let linkText = "some <a class=\"color\" href=\"https://www.example.com\">stuff</a>"
+            let expectedText = "some stuff"
+            
+            beforeEach {
+                let css = [
+                    "ns_object.view" : ["background-color" : "red", "color" : "#00FF00FF"],
+                    ".color" : ["color" : "#0000FFFF"],
+                    ]
+                ViewCSSManager.shared.setCSS(dict: css)
+            }
+            
+            it("returns the attributed span text from the class") {
+                let generatedText = spanText.cssText(parentClass: type(of: object), class: "view")
+                expect(generatedText!.string).to(equal(expectedText))
+                
+                let attributes = generatedText!.attributes(at: 0, effectiveRange: nil)
+                expect(attributes.count).to(equal(2))
+                expect((attributes[NSAttributedStringKey.backgroundColor] as! UIColor).toCSS).to(equal("#FF0000FF"))
+                expect((attributes[NSAttributedStringKey.foregroundColor] as! UIColor).toCSS).to(equal("#00FF00FF"))
+                
+                let tagttributes = generatedText!.attributes(at: 5, effectiveRange: nil)
+                expect(tagttributes.count).to(equal(2))
+                expect((tagttributes[NSAttributedStringKey.backgroundColor] as! UIColor).toCSS).to(equal("#FF0000FF"))
+                expect((tagttributes[NSAttributedStringKey.foregroundColor] as! UIColor).toCSS).to(equal("#0000FFFF"))
+            }
+            
+            it("returns the attributed link text from the class") {
+                let generatedText = linkText.cssText(parentClass: type(of: object), class: "view")
+                expect(generatedText!.string).to(equal(expectedText))
+                
+                let attributes = generatedText!.attributes(at: 0, effectiveRange: nil)
+                expect(attributes.count).to(equal(2))
+                expect((attributes[NSAttributedStringKey.backgroundColor] as! UIColor).toCSS).to(equal("#FF0000FF"))
+                expect((attributes[NSAttributedStringKey.foregroundColor] as! UIColor).toCSS).to(equal("#00FF00FF"))
+                
+                let tagttributes = generatedText!.attributes(at: 5, effectiveRange: nil)
+                expect(tagttributes.count).to(equal(3))
+                expect((tagttributes[NSAttributedStringKey.backgroundColor] as! UIColor).toCSS).to(equal("#FF0000FF"))
+                expect((tagttributes[NSAttributedStringKey.foregroundColor] as! UIColor).toCSS).to(equal("#0000FFFF"))
+                expect((tagttributes[NSAttributedStringKey.link] as! String)).to(equal("https://www.example.com"))
+            }
+            
+            it("returns the attributed link text from the class and style") {
+                let generatedText = linkText.cssText(parentClass: type(of: object), class: "view", style: "background-color:blue;")
+                expect(generatedText!.string).to(equal(expectedText))
+                
+                let attributes = generatedText!.attributes(at: 0, effectiveRange: nil)
+                expect(attributes.count).to(equal(2))
+                expect((attributes[NSAttributedStringKey.backgroundColor] as! UIColor).toCSS).to(equal("#0000FFFF"))
+                expect((attributes[NSAttributedStringKey.foregroundColor] as! UIColor).toCSS).to(equal("#00FF00FF"))
+                
+                let tagttributes = generatedText!.attributes(at: 5, effectiveRange: nil)
+                expect(tagttributes.count).to(equal(3))
+                expect((tagttributes[NSAttributedStringKey.backgroundColor] as! UIColor).toCSS).to(equal("#0000FFFF"))
+                expect((tagttributes[NSAttributedStringKey.foregroundColor] as! UIColor).toCSS).to(equal("#0000FFFF"))
+                expect((tagttributes[NSAttributedStringKey.link] as! String)).to(equal("https://www.example.com"))
+            }
+            
+            it("returns the attributed link text from the style") {
+                let generatedText = linkText.cssText(parentClass: type(of: object), style: "background-color:red;")
+                expect(generatedText!.string).to(equal(expectedText))
+                
+                let attributes = generatedText!.attributes(at: 0, effectiveRange: nil)
+                expect(attributes.count).to(equal(1))
+                expect((attributes[NSAttributedStringKey.backgroundColor] as! UIColor).toCSS).to(equal("#FF0000FF"))
+                
+                let tagttributes = generatedText!.attributes(at: 5, effectiveRange: nil)
+                expect(tagttributes.count).to(equal(3))
+                expect((tagttributes[NSAttributedStringKey.backgroundColor] as! UIColor).toCSS).to(equal("#FF0000FF"))
+                expect((tagttributes[NSAttributedStringKey.foregroundColor] as! UIColor).toCSS).to(equal("#0000FFFF"))
+                expect((tagttributes[NSAttributedStringKey.link] as! String)).to(equal("https://www.example.com"))
+            }
+        }
+        
         describe("#parseStyle") {
             it("parses the parameters from a string") {
                 let parsed = "background-color : red; text-align : right ;   ;;;  border-radius: 2px".parseStyle()

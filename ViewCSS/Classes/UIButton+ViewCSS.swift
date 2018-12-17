@@ -77,15 +77,6 @@ extension UIButton: ViewCSSGenerateCSSTextProtocol {
     
     public var cssText: String? {
         get { return self.attributedTitle(for: .normal)?.string }
-        set { self.setAttributedTitle(self.generateCSSText(text: newValue), for: .normal) }
-    }
-    
-    public func generateCSSText(text: String?) -> NSAttributedString? {
-        return type(of: self).generateCSSText(
-            className: self.cssClassName,
-            class: self.cssClass,
-            style: self.cssStyle,
-            text: text,
-            shouldIncludeBackgroundColor: type(of: self).shouldIncludeBackgroundColor)
+        set { self.setAttributedTitle(newValue?.cssText(object: self), for: .normal) }
     }
 }

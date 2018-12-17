@@ -14,6 +14,8 @@ intended to replace auto layout, NIBs, etc.**
 
 ## Versions
 
+  - v1.0.7
+    - Added "cssText" function to "String" class to simplify text height prediction
   - v1.0.6
     - Defined swift_version = 4.0
   - v1.0.5
