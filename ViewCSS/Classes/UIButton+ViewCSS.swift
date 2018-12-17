@@ -76,7 +76,12 @@ extension UIButton: ViewCSSGenerateCSSTextProtocol {
     public static var shouldIncludeBackgroundColor: Bool { return false }
     
     public var cssText: String? {
-        get { return self.attributedTitle(for: .normal)?.string }
-        set { self.setAttributedTitle(newValue?.cssText(object: self), for: .normal) }
+        get { return self.cssAttributedText?.string }
+        set { self.cssAttributedText = newValue?.cssText(object: self) }
+    }
+    
+    public var cssAttributedText: NSAttributedString? {
+        get { return self.attributedTitle(for: .normal) }
+        set { self.setAttributedTitle(newValue, for: .normal) }
     }
 }

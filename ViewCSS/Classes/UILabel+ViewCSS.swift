@@ -55,7 +55,12 @@ extension UILabel: ViewCSSGenerateCSSTextProtocol {
     public static var shouldIncludeBackgroundColor: Bool { return true }
     
     public var cssText: String? {
-        get { return self.attributedText?.string }
-        set { self.attributedText = newValue?.cssText(object: self) }
+        get { return self.cssAttributedText?.string }
+        set { self.cssAttributedText = newValue?.cssText(object: self) }
+    }
+    
+    public var cssAttributedText: NSAttributedString? {
+        get { return self.attributedText }
+        set { self.attributedText = newValue }
     }
 }

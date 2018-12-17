@@ -64,4 +64,5 @@ protocol ViewCSSTextProtocol: ViewCSSShadowProtocol {
 public protocol ViewCSSGenerateCSSTextProtocol {
     static var shouldIncludeBackgroundColor: Bool { get }
     var cssText: String? { get set }
+    var cssAttributedText: NSAttributedString? { get set }
 }

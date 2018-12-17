@@ -14,6 +14,8 @@ intended to replace auto layout, NIBs, etc.**
 
 ## Versions
 
+  - v1.0.8
+    - Added "cssAttributedText" attribute to make it so you only need to create the string once
   - v1.0.7
     - Added "cssText" function to "String" class to simplify text height prediction
   - v1.0.6
