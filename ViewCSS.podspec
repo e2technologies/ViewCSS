@@ -27,13 +27,6 @@ intended to replace auto layout, attributed text, NIBs, etc.
 
   s.ios.deployment_target = '8.0'
 
-  s.source_files = 'ViewCSS/Classes/ViewCSSAutoScaleCache.swift', 'ViewCSS/Classes/ViewCSSManager.swift', 'ViewCSS/Classes/ViewCSSProtocol.swift'
-  
-  s.subspec 'Configs' do |views|
-      views.source_files = 'ViewCSS/Classes/*Config.swift'
-  end
-  
-  s.subspec 'Extensions' do |views|
-      views.source_files = 'ViewCSS/Classes/*+ViewCSS.swift'
-  end
+  s.source_files = 'ViewCSS/Classes/**/*'
+
 end

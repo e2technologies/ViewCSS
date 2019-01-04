@@ -4,7 +4,7 @@ public protocol ViewCSSCustomizableProtocol {
     func cssCustomize(object: Any?, class klass: String?, style: String?, config: ViewCSSConfig)
 }
 
-protocol ViewCSSProtocol {
+public protocol ViewCSSProtocol {
     func setCSSBackgroundColor(_ color: UIColor)
     func setCSSTintColor(_ color: UIColor)
     func setCSSBorderRadius(_ radius: CGFloat)
@@ -19,7 +19,7 @@ protocol ViewCSSProtocol {
     func getCSSOpacity() -> CGFloat
 }
 
-protocol ViewCSSShadowProtocol: ViewCSSProtocol {
+public protocol ViewCSSShadowProtocol: ViewCSSProtocol {
     func setCSSShadow(offset: CGSize, radius: CGFloat?, color: UIColor?, opacity: CGFloat)
     
     func getCSSShadowOffset() -> CGSize?
@@ -28,7 +28,7 @@ protocol ViewCSSShadowProtocol: ViewCSSProtocol {
     func getCSSShadowOpacity() -> CGFloat
 }
 
-protocol ViewCSSTextProtocol: ViewCSSShadowProtocol {
+public protocol ViewCSSTextProtocol: ViewCSSShadowProtocol {
     func setCSSTextColor(_ color: UIColor)
     func setCSSTextOverflow(_ overflow: NSLineBreakMode)
     func setCSSFont(_ font: UIFont)
