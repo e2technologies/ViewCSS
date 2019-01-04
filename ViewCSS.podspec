@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'ViewCSS'
-  s.version          = '1.0.8'
+  s.version          = '1.0.9'
   s.summary          = 'IOS Swift CSS implementation'
 
   s.description      = <<-DESC
@@ -27,5 +27,13 @@ intended to replace auto layout, attributed text, NIBs, etc.
 
   s.ios.deployment_target = '8.0'
 
-  s.source_files = 'ViewCSS/Classes/**/*'
+  s.source_files = 'ViewCSS/Classes/ViewCSSAutoScaleCache.swift', 'ViewCSS/Classes/ViewCSSManager.swift', 'ViewCSS/Classes/ViewCSSProtocol.swift'
+  
+  s.subspec 'Configs' do |views|
+      views.source_files = 'ViewCSS/Classes/*Config.swift'
+  end
+  
+  s.subspec 'Extensions' do |views|
+      views.source_files = 'ViewCSS/Classes/*+ViewCSS.swift'
+  end
 end

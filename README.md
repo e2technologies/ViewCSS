@@ -14,6 +14,10 @@ intended to replace auto layout, NIBs, etc.**
 
 ## Versions
 
+  - v1.0.9
+    - Updated copyright for 2019
+    - Grouped files in directories
+    - Removed some methods by using "nil" params (no change to the api
   - v1.0.8
     - Added "cssAttributedText" attribute to make it so you only need to create the string once
   - v1.0.7

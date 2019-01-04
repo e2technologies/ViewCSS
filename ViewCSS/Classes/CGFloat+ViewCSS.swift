@@ -1,9 +1,3 @@
-//
-//  CGFloat+ViewCSS.swift
-//  FBSnapshotTestCase
-//
-//  Created by Eric Chapman on 12/31/17.
-//
 
 import Foundation
 
